@@ -2,11 +2,15 @@ package service;
 
 import database.Database;
 import exceptions.*;
-import model.*;
+import model.Reserve;
+import model.Restaurant;
+import model.User;
+import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 public class Mizdooni {
 
@@ -57,6 +61,12 @@ public class Mizdooni {
         // TODO: save reserve cancellation history
     }
 
+    public Collection<AvailableTable> GetAvailableTables(String restaurantName)
+        throws NotExistentRestaurant {
+
+        var restaurant = FindRestaurant(restaurantName);
+        return restaurant.GetAvailableTables();
+    }
 
     User FindUser(String username) throws NotExistentUser {
         try {

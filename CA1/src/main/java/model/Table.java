@@ -3,6 +3,7 @@ package model;
 import exceptions.TableIsReserved;
 import lombok.Getter;
 import lombok.Setter;
+import utils.AvailableTable;
 import utils.PairType;
 
 import java.time.LocalDateTime;
@@ -46,5 +47,23 @@ public class Table extends EntityModel<PairType<String, Integer>> {
 
     public boolean Is(int tableNumber) {
         return getTableNumber() == tableNumber;
+    }
+
+    public AvailableTable GetAvailableTimes(){
+
+        var now = LocalDateTime.now();
+
+        var availableTimes = new AvailableTable(this);
+
+        Reserves
+            .stream()
+            .filter(Reserve::IsActive)
+            .map(Reserve::GetReserveTime)
+            .sorted()
+            .dropWhile(time -> time.isAfter(now))
+            .distinct()
+            .forEach(availableTimes::ConsiderNextReservation);
+
+        return availableTimes;
     }
 }

@@ -3,10 +3,12 @@ package model;
 import exceptions.*;
 import lombok.Getter;
 import lombok.Setter;
+import utils.AvailableTable;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -72,5 +74,19 @@ public class Restaurant extends EntityModel<String> {
         EnsureTimeIsInWorkHours(reserveTime.toLocalTime());
         var table = FindTable(tableNumber);
         return table.MakeReserve(reserveNumber, reservee, reserveTime); // store history
+    }
+
+    public Collection<AvailableTable> GetAvailableTables(){
+
+        var availableTables = new ArrayList<AvailableTable>();
+
+        for(var table : Tables) {
+            var availability = table.GetAvailableTimes();
+            if(!availability.NotAvailable()){
+                availableTables.add(availability);
+            }
+        }
+
+        return availableTables;
     }
 }
