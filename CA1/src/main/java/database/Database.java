@@ -8,7 +8,7 @@ public class Database {
     public final IRepository<String, User> Users;
     public final IRepository<String, Restaurant> Restaurants;
     public final IRepository<PairType<String, Integer>, Table> Tables;
-    public final IRepository<Integer, Reserve> Reserves;
+    public final IRepository<PairType<String, Integer>, Reserve> Reserves;
 
     public final KeyGenerator ReserveIdGenerator;
 

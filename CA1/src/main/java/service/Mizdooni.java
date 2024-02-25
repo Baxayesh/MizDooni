@@ -3,6 +3,7 @@ package service;
 import database.Database;
 import exceptions.*;
 import model.*;
+import utils.PairType;
 import utils.UserRole;
 
 import java.time.LocalDateTime;
@@ -43,11 +44,38 @@ public class Mizdooni {
         return reserve;
     }
 
+    public void CancelReserve(String username, int reserveNumber)
+            throws
+            NotExistentUser,
+            NotExistentReserve,
+            CancelingExpiredReserve,
+            CancelingCanceledReserve
+    {
+
+        var reserve = FindReserve(username, reserveNumber);
+        reserve.Cancel();
+        // TODO: save reserve cancellation history
+    }
+
+
     User FindUser(String username) throws NotExistentUser {
         try {
             return Database.Users.Get(username);
         } catch (KeyNotFound ex) {
             throw new NotExistentUser();
+        }
+    }
+
+    Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {
+
+        if(Database.Users.Exists(username)){
+            throw new NotExistentUser();
+        }
+
+        try{
+            return Database.Reserves.Get(new PairType<>(username, reserveNumber));
+        } catch (KeyNotFound e) {
+            throw new NotExistentReserve();
         }
     }
 
