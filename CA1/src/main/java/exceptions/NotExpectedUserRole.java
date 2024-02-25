@@ -2,7 +2,7 @@ package exceptions;
 
 import utils.UserRole;
 
-public class NotExpectedUserRole extends MizdooniException {
+public class NotExpectedUserRole extends MizdooniUserException {
 
     static String CreateMessage(UserRole expectedRole){
         return String.format("Expected User To Have Role %s", expectedRole.toString());
