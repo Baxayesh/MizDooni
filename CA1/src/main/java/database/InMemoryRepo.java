@@ -57,6 +57,11 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
     }
 
     @Override
+    public boolean Exists(TKey key){
+        return MemoryDb.containsKey(key);
+    }
+
+    @Override
     public void Update(TKey key, TItem updated) throws KeyNotFound, KeyAlreadyExists {
 
         EnsureKeyExists(key);
@@ -66,6 +71,13 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
             MemoryDb.remove(key);
         }
 
+        updated.ConfirmChangesHaveBeenSaved();
+        MemoryDb.put(updated.getKey(), updated);
+    }
+
+    @Override
+    public void Update(TItem updated) throws KeyNotFound {
+        EnsureKeyExists(updated.getKey());
         updated.ConfirmChangesHaveBeenSaved();
         MemoryDb.put(updated.getKey(), updated);
     }

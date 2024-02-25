@@ -12,7 +12,9 @@ public interface IRepository<TKey, TItem extends EntityModel<TKey>> {
     TItem Get(TKey key) throws KeyNotFound;
     Iterable<TItem> GetAll();
     Iterable<TItem> Search(Predicate<TItem> searchCriteria);
+    boolean Exists(TKey key);
     void Update(TKey key, TItem updated) throws KeyNotFound, KeyAlreadyExists;
+    void Update(TItem updated) throws KeyNotFound;
     void Delete(TKey key) throws KeyNotFound;
     int Count();
 
