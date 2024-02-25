@@ -15,7 +15,7 @@ public class Mizdooni {
         Database = new Database();
     }
 
-    public void ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)
+    public Reserve ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)
             throws
             NotExistentUser,
             NotExpectedUserRole,
@@ -26,34 +26,41 @@ public class Mizdooni {
             NotInWorkHour,
             NotExistentTable
     {
+
         var reservee = FindUser(reserveeUsername);
         EnsureUserIs(reservee, UserRole.Costumer);
         var restaurant = FindRestaurant(restaurantName);
-        var reserve = restaurant.MakeReserve(reservee, tableNumber, reserveTime);
+        var reserveNumber = Database.ReserveIdGenerator.GetNext();
+        var reserve = restaurant.MakeReserve(reserveNumber, reservee, tableNumber, reserveTime);
+
+        try{
+            Database.Reserves.Add(reserve);
+        } catch (KeyAlreadyExists ex){
+            throw new RuntimeException(ex);
+        }
+
         // TODO: save reserve history
+        return reserve;
     }
 
     User FindUser(String username) throws NotExistentUser {
-        for(var user : Database.getUsers()){
-            if(user.Is(username)){
-                return user;
-            }
+        try {
+            return Database.Users.Get(username);
+        } catch (KeyNotFound ex) {
+            throw new NotExistentUser();
         }
-
-        throw new NotExistentUser();
     }
 
     Restaurant FindRestaurant(String restaurantName) throws NotExistentRestaurant {
-        for(var restaurant : Database.getRestaurants()){
-            if(restaurant.Is(restaurantName)){
-                return restaurant;
-            }
+        try {
+            return Database.Restaurants.Get(restaurantName);
+        } catch (KeyNotFound ex) {
+            throw new NotExistentRestaurant();
         }
-        throw new NotExistentRestaurant();
     }
 
     void EnsureUserIs(User user, UserRole desiredRole) throws NotExpectedUserRole {
-        if(!user.Is(desiredRole)){
+        if(!user.RoleIs(desiredRole)){
             throw new NotExpectedUserRole(desiredRole);
         }
     }

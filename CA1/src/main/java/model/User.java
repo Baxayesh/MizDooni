@@ -2,26 +2,36 @@ package model;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.NoArgsConstructor;
 import utils.UserRole;
 
 
 @Getter
-@NoArgsConstructor
 @Setter
-public class User {
+public class User extends EntityModel<String> {
 
-    private String Username;
+    //fields: username password, email, address, role
     private UserRole Role;
 
-    public boolean Is(UserRole desiredRole) {
+    static String NormalizeUsername(String username){
+        return  username.strip().toUpperCase();
+    }
+
+    public User(String username, UserRole role) {
+        super(NormalizeUsername(username));
+        Role = role;
+    }
+
+    public String getUsername(){
+        return super.getKey();
+    }
+
+    public boolean RoleIs(UserRole desiredRole) {
         return Role == desiredRole;
     }
 
-    public boolean Is(String username){
-        return Username.equalsIgnoreCase(username);
+    @Override
+    public boolean Is(String otherKey) {
+        return super.Is(NormalizeUsername(otherKey));
     }
-
-    //fields: username password, email, address, role
 
 }

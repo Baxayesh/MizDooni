@@ -1,21 +1,32 @@
 package model;
 
+import exceptions.TableIsReserved;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.NoArgsConstructor;
-import exceptions.TableIsReserved;
+import utils.PairType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Getter
-@NoArgsConstructor
 @Setter
-public class Table {
+public class Table extends EntityModel<PairType<String, Integer>> {
 
     private int TableNumber;
     private int NumberOfSeats;
+    private Restaurant Restaurant;
     private ArrayList<Reserve> Reserves;
+
+    static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
+        return new PairType<>(restaurant.getKey(), tableNumber);
+    }
+
+    public Table(int tableNumber, Restaurant restaurant, int numOfSeats){
+        super(CreateTableKey(restaurant, tableNumber));
+        TableNumber = tableNumber;
+        NumberOfSeats = numOfSeats;
+        Restaurant = restaurant;
+    }
 
 
     void EnsureTableIsFreeIn(LocalDateTime reserveTime) throws TableIsReserved {
@@ -26,14 +37,14 @@ public class Table {
         }
     }
 
-    public Reserve MakeReserve(User reservee, LocalDateTime reserveTime) throws TableIsReserved {
+    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime) throws TableIsReserved {
         EnsureTableIsFreeIn(reserveTime);
-        var reserve = new Reserve(this, reservee, reserveTime);
+        var reserve = new Reserve(reserveNumber, this, reservee, reserveTime);
         Reserves.add(reserve);
         return reserve;
     }
 
     public boolean Is(int tableNumber) {
-        return TableNumber == tableNumber;
+        return getTableNumber() == tableNumber;
     }
 }

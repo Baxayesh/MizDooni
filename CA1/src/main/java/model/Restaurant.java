@@ -2,7 +2,6 @@ package model;
 
 import exceptions.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,26 +9,31 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 @Getter
-@NoArgsConstructor
 @Setter
-public class Restaurant {
+public class Restaurant extends EntityModel<String> {
 
-    //fields: id(?), name, manager, type, work start&end time, description, address
-
-    private String Name;
     private LocalTime OpenTime;
     private LocalTime CloseTime;
     private User Manager;
     private String Type;
     private String Description;
+    private ArrayList<Table> Tables;
     //address
 
-    private ArrayList<Table> Tables;
-
-
-    public boolean Is(String restaurantName) {
-        return Name.equalsIgnoreCase(restaurantName);
+    public String getName(){
+        return super.getKey();
     }
+
+    public Restaurant(String name, LocalTime openTime, LocalTime closeTime, User manager, String type, String description) {
+        super(name);
+        OpenTime = openTime;
+        CloseTime = closeTime;
+        Manager = manager;
+        Type = type;
+        Description = description;
+        Tables = new ArrayList<>();
+    }
+
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {
         var roundTime = LocalTime.of(time.getHour(), 0);
@@ -60,13 +64,13 @@ public class Restaurant {
         throw new NotExistentTable();
     }
 
-    public Reserve MakeReserve(User reservee, int tableNumber, LocalDateTime reserveTime)
+    public Reserve MakeReserve(int reserveNumber, User reservee, int tableNumber, LocalDateTime reserveTime)
             throws TableIsReserved, TimeIsNotRound, TimeBelongsToPast, NotInWorkHour, NotExistentTable {
 
         EnsureTimeIsRound(reserveTime.toLocalTime());
         EnsureTimeBelongsToFuture(reserveTime);
         EnsureTimeIsInWorkHours(reserveTime.toLocalTime());
         var table = FindTable(tableNumber);
-        return table.MakeReserve(reservee, reserveTime); // store history
+        return table.MakeReserve(reserveNumber, reservee, reserveTime); // store history
     }
 }

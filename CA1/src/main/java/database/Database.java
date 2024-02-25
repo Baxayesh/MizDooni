@@ -1,22 +1,24 @@
 package database;
 
-import lombok.Getter;
-import lombok.Setter;
-import model.Restaurant;
-import model.User;
+import model.*;
+import utils.PairType;
 
-import java.util.ArrayList;
+public class Database {
 
-@Getter
-@Setter
-public class Database{
+    public final IRepository<String, User> Users;
+    public final IRepository<String, Restaurant> Restaurants;
+    public final IRepository<PairType<String, Integer>, Table> Tables;
+    public final IRepository<Integer, Reserve> Reserves;
 
-    private ArrayList<Restaurant> Restaurants;
-    private ArrayList<User> Users;
+    public final KeyGenerator ReserveIdGenerator;
 
     public Database(){
-        Restaurants = new ArrayList<>();
-        Users = new ArrayList<>();
+        Users = new InMemoryRepo<>();
+        Restaurants = new InMemoryRepo<>();
+        Tables = new InMemoryRepo<>();
+        Reserves = new InMemoryRepo<>();
+        ReserveIdGenerator = new KeyGenerator();
     }
 
 }
+
