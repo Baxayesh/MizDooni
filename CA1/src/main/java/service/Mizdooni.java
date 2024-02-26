@@ -18,7 +18,12 @@ public class Mizdooni {
     }
 
 
-    public Reserve ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)
+    public Reserve ReserveATable(
+            String reserveeUsername,
+            String restaurantName,
+            int tableNumber,
+            LocalDateTime reserveTime
+    )
             throws
             NotExistentUser,
             NotExpectedUserRole,
@@ -74,6 +79,27 @@ public class Mizdooni {
 
         var restaurant = FindRestaurant(restaurantName);
         return restaurant.GetAvailableTables();
+    }
+
+    public Restaurant[] SearchRestaurantByName(String restaurantName) throws NotExistentRestaurant {
+        var searchResult =
+            Database
+            .Restaurants
+            .Search(restaurant -> restaurant.getName().toLowerCase().contains(restaurantName.toLowerCase()))
+            .toArray(Restaurant[]::new);
+
+        if(searchResult.length < 1)
+            throw new NotExistentRestaurant();
+
+        return searchResult;
+    }
+
+    public Restaurant[] SearchRestaurantByType(String type){
+        return
+            Database
+            .Restaurants
+            .Search(restaurant -> restaurant.getType().equalsIgnoreCase(type))
+            .toArray(Restaurant[]::new);
     }
 
     public void AddReview(String issuerUsername, String restaurantName, Review review)
