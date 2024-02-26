@@ -62,7 +62,7 @@ public class AvailableTable {
         LastDayWithReservation = nextActiveReserve.toLocalDate();
     }
 
-    public boolean NotAvailable(){
-        return AvailableTimes.isEmpty();
+    public boolean HasAnyAvailableTime(){
+        return !AvailableTimes.isEmpty();
     }
 }
