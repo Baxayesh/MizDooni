@@ -13,9 +13,10 @@ public class Mizdooni {
 
     Database Database;
 
-    public Mizdooni(){
-        Database = new Database();
+    public Mizdooni(Database database){
+        Database = database;
     }
+
 
     public Reserve ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)
             throws
