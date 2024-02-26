@@ -1,16 +1,16 @@
 package testUtils;
 
 import database.Database;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import service.Mizdooni;
+import utils.PairType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Getter
 public class MizdooniStubHelper {
 
     private final Mizdooni Service;
@@ -31,9 +31,9 @@ public class MizdooniStubHelper {
     }
 
 
-    public void AddAnonymousRestaurantToMizdooni(String restaurantName){
+    public void AddAnonymousRestaurant(String restaurantName){
         var managerName = "anonymous_manager_of_"+restaurantName;
-        AddAnonymousManagerToMizdooni(managerName);
+        AddAnonymousManager(managerName);
         Service.AddRestaurant(
                 restaurantName,
                 managerName,
@@ -45,7 +45,21 @@ public class MizdooniStubHelper {
         );
     }
 
-    public void AddAnonymousCustomerToMizdooni(String username){
+    public void AddAnonymousRestaurant(String restaurantName, int openingHour, int closureHour){
+        var managerName = "anonymous_manager_of_"+restaurantName;
+        AddAnonymousManager(managerName);
+        Service.AddRestaurant(
+                restaurantName,
+                managerName,
+                "",
+                LocalTime.of(openingHour,0),
+                LocalTime.of(closureHour,0),
+                "",
+                new model.Restaurant.Address("country","city","street")
+        );
+    }
+
+    public void AddAnonymousCustomer(String username){
         Service.AddUser(
                 "customer",
                 username,
@@ -55,7 +69,7 @@ public class MizdooniStubHelper {
         );
     }
 
-    public void AddAnonymousManagerToMizdooni(String username){
+    public void AddAnonymousManager(String username){
         Service.AddUser(
                 "manager",
                 username,
@@ -64,6 +78,7 @@ public class MizdooniStubHelper {
                 new model.User.Address("country","city")
         );
     }
+
 
     @SneakyThrows
     public void AssertReviewExists(

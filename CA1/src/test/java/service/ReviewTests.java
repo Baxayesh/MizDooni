@@ -22,12 +22,11 @@ public class ReviewTests {
 
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewWithNotExistentUsername_THEN_shouldThrowNotExistentUser()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
+    void GIVEN_normalMizdooni_WHEN_addReviewWithNotExistentUsername_THEN_shouldThrowNotExistentUser() {
 
         var restaurant = "restaurant";
         var username = "not_existent_username";
-        stub.AddAnonymousRestaurantToMizdooni(restaurant);
+        stub.AddAnonymousRestaurant(restaurant);
 
         assertThrows(
                 NotExistentUser.class,
@@ -41,13 +40,12 @@ public class ReviewTests {
     }
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewWithManagerUsername_THEN_shouldThrowNotExpectedUserRole()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
+    void GIVEN_normalMizdooni_WHEN_addReviewWithManagerUsername_THEN_shouldThrowNotExpectedUserRole() {
 
         var restaurant = "restaurant";
         var username = "manager";
-        stub.AddAnonymousRestaurantToMizdooni(restaurant);
-        stub.AddAnonymousManagerToMizdooni(username);
+        stub.AddAnonymousRestaurant(restaurant);
+        stub.AddAnonymousManager(username);
 
         assertThrows(
                 NotExpectedUserRole.class,
@@ -61,12 +59,11 @@ public class ReviewTests {
     }
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewForNotExistentRestaurant_THEN_shouldThrowNotExistentRestaurant()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
+    void GIVEN_normalMizdooni_WHEN_addReviewForNotExistentRestaurant_THEN_shouldThrowNotExistentRestaurant() {
 
         var restaurant = "not_existent_restaurant";
         var username = "user";
-        stub.AddAnonymousCustomerToMizdooni(username);
+        stub.AddAnonymousCustomer(username);
 
         assertThrows(
                 NotExistentRestaurant.class,
@@ -81,13 +78,12 @@ public class ReviewTests {
 
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewWithOutOfRangeScores_THEN_shouldThrowScoreOutOfRange()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
+    void GIVEN_normalMizdooni_WHEN_addReviewWithOutOfRangeScores_THEN_shouldThrowScoreOutOfRange() {
 
         var restaurant = "restaurant";
         var username = "user";
-        stub.AddAnonymousRestaurantToMizdooni(restaurant);
-        stub.AddAnonymousCustomerToMizdooni(username);
+        stub.AddAnonymousRestaurant(restaurant);
+        stub.AddAnonymousCustomer(username);
 
         assertThrows(
                 ScoreOutOfRange.class,
@@ -102,14 +98,14 @@ public class ReviewTests {
 
     @Test
     void GIVEN_normalMizdooni_WHEN_addAValidReview_THEN_reviewShouldBeRegisteredInRestaurant()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange, KeyNotFound {
+            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
 
         var restaurant = "restaurant";
         var username = "user";
         var comment  = "comment";
 
-        stub.AddAnonymousRestaurantToMizdooni(restaurant);
-        stub.AddAnonymousCustomerToMizdooni(username);
+        stub.AddAnonymousRestaurant(restaurant);
+        stub.AddAnonymousCustomer(username);
 
         var callTime = LocalDateTime.now();
 
