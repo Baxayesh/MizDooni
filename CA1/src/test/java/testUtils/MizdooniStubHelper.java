@@ -21,10 +21,6 @@ public class MizdooniStubHelper {
         return Service;
     }
 
-    public Database Database(){
-        return Database;
-    }
-
     public MizdooniStubHelper(){
         Database = database.Database.CreateInMemoryDatabase();
         Service = new Mizdooni(Database);
@@ -103,5 +99,48 @@ public class MizdooniStubHelper {
         assertEquals(overallScore, review.getOverallScore());
         assertEquals(comment,review.getComment());
         CustomAssertions.assertEquals(creationTime, review.getIssueTime(), 500);
+    }
+
+    @SneakyThrows
+    public void AddAnonymousTable(String restaurant, int table) {
+
+        var manager = Database.Restaurants.Get(restaurant).getManager().getUsername();
+
+        Service.AddTable(
+                table,
+                restaurant,
+                manager,
+                1
+        );
+    }
+
+    @SneakyThrows
+    public void AddPreviousReserve(String reservee, String restaurant, int table, LocalDateTime reserveTime) {
+
+        if(!Database.Users.Exists(reservee))
+            AddAnonymousCustomer(reservee);
+
+        Service.ReserveATable(
+                reservee,
+                restaurant,
+                table,
+                reserveTime
+        );
+    }
+
+    @SneakyThrows
+    public void AssertReserveRegistered(
+            int reserveNumber,
+            String username,
+            String restaurant,
+            int table,
+            LocalDateTime reserveTime
+    ) {
+        var reserve = Database.Reserves.Get(new PairType<>(username,reserveNumber));
+
+        assertEquals(restaurant, reserve.getTable().getRestaurant().getName());
+        assertEquals(table, reserve.getTable().getTableNumber());
+        assertEquals(reserveTime, reserve.GetReserveTime());
+        assertTrue(reserve.IsActive());
     }
 }
