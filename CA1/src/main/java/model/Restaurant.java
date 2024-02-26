@@ -176,7 +176,7 @@ public class Restaurant extends EntityModel<String> {
     public void addReview(String issuer, Review review) {
         Reviews.put(issuer, review);
     }
-    public class Address {
+    public static class Address {
         private String country;
         private String city;
         private String street;

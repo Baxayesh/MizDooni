@@ -4,15 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import utils.UserRole;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 @Getter
 @Setter
 public class User extends EntityModel<String> {
 
-    private UserRole Role;
     private String role;
     private String username;
     private String password;
@@ -30,10 +25,10 @@ public class User extends EntityModel<String> {
     }
 
     public boolean RoleIs(UserRole desiredRole) {
-        return Role == desiredRole;
+        return role.equalsIgnoreCase(desiredRole.toString());
     }
 
-    public class Address {
+    public static class Address {
         private String country;
         private String city;
 

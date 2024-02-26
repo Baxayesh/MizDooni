@@ -1,18 +1,20 @@
 package model;
 
 import exceptions.ScoreOutOfRange;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class Review {
 
-    double Food;
-    double Service;
-    double Ambiance;
-    double Overall;
-    String Comment;
+    private final double FoodScore;
+    private final double ServiceScore;
+    private final double AmbianceScore;
+    private final double OverallScore;
+    private final String Comment;
 
-    LocalDateTime IssueTime;
+    private final LocalDateTime IssueTime;
 
     static void EnsureScoreIsInValidRange(double score) throws ScoreOutOfRange {
         if(score < 0 || score > 5){
@@ -33,10 +35,10 @@ public class Review {
         EnsureScoreIsInValidRange(ambiance);
         EnsureScoreIsInValidRange(overall);
         IssueTime = LocalDateTime.now();
-        Food = food;
-        Service = service;
-        Ambiance = ambiance;
-        Overall = overall;
+        FoodScore = food;
+        ServiceScore = service;
+        AmbianceScore = ambiance;
+        OverallScore = overall;
         Comment = comment;
     }
 
