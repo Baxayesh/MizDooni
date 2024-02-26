@@ -9,6 +9,7 @@ import utils.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class Mizdooni {
 
@@ -57,6 +58,18 @@ public class Mizdooni {
         var reserve = FindReserve(username, reserveNumber);
         reserve.Cancel();
         // TODO: save reserve cancellation history
+    }
+
+    public Stream<Reserve> GetActiveReserves(String username) throws NotExistentUser, NotExpectedUserRole {
+
+        var user = FindUser(username);
+        EnsureUserIs(user, UserRole.Costumer);
+
+        return
+            Database
+            .Reserves
+            .Search(reserve -> reserve.IsActive() && user.Is(reserve.getReserveeUsername()));
+
     }
 
     public Collection<AvailableTable> GetAvailableTables(String restaurantName)

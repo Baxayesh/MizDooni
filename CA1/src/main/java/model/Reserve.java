@@ -20,6 +20,9 @@ public class Reserve extends EntityModel<PairType<String,Integer>> {
     public int getReserveNumber() {
         return super.getKey().getSecond();
     }
+    public String getReserveeUsername(){
+        return super.getKey().getFirst();
+    }
 
     public Reserve(int reserveNumber, Table table, User reservee, LocalDateTime reserveTime) {
         super(new PairType<>(reservee.getUsername(), reserveNumber));
