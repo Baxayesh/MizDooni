@@ -27,16 +27,17 @@ public class Review {
             double overall,
             String comment
     ) throws ScoreOutOfRange {
+
+        EnsureScoreIsInValidRange(food);
+        EnsureScoreIsInValidRange(service);
+        EnsureScoreIsInValidRange(ambiance);
+        EnsureScoreIsInValidRange(overall);
         IssueTime = LocalDateTime.now();
         Food = food;
         Service = service;
         Ambiance = ambiance;
         Overall = overall;
         Comment = comment;
-        EnsureScoreIsInValidRange(food);
-        EnsureScoreIsInValidRange(service);
-        EnsureScoreIsInValidRange(ambiance);
-        EnsureScoreIsInValidRange(overall);
     }
 
 

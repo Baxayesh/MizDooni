@@ -2,12 +2,16 @@ package service;
 
 import database.Database;
 import exceptions.*;
-import model.*;
+import model.Reserve;
+import model.Restaurant;
+import model.Review;
+import model.User;
 import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Mizdooni {
 
@@ -17,6 +21,38 @@ public class Mizdooni {
         Database = database;
     }
 
+
+    public void AddUser(
+            String role,
+            String username,
+            String password,
+            String email,
+            User.Address address
+    ) {
+
+        throw new RuntimeException("Not Implemented Yet");
+    }
+
+    public void AddRestaurant(
+            String name,
+            String manager,
+            String type,
+            LocalTime openTime,
+            LocalTime closeTime,
+            String description,
+            Restaurant.Address address
+    ){
+        throw new RuntimeException("Not Implemented Yet");
+    }
+
+    public void AddTable(
+            int tableNumber,
+            String restaurantName,
+            String manager,
+            int seatNumber
+    ){
+        throw new RuntimeException("Not Implemented Yet");
+    }
 
     public Reserve ReserveATable(
             String reserveeUsername,
