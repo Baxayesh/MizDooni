@@ -81,33 +81,36 @@ public class Mizdooni {
         return restaurant.GetAvailableTables();
     }
 
-    public Restaurant[] SearchRestaurantByName(String restaurantName) throws NotExistentRestaurant {
-        var searchResult =
-            Database
+    public Restaurant[] SearchRestaurantByName(String restaurantName) {
+        return Database
             .Restaurants
             .Search(restaurant -> restaurant.getName().toLowerCase().contains(restaurantName.toLowerCase()))
             .toArray(Restaurant[]::new);
-
-        if(searchResult.length < 1)
-            throw new NotExistentRestaurant();
-
-        return searchResult;
     }
 
     public Restaurant[] SearchRestaurantByType(String type){
-        return
-            Database
+        return Database
             .Restaurants
             .Search(restaurant -> restaurant.getType().equalsIgnoreCase(type))
             .toArray(Restaurant[]::new);
     }
 
-    public void AddReview(String issuerUsername, String restaurantName, Review review)
+    public void AddReview(
+            String issuerUsername,
+            String restaurantName,
+            double foodScore,
+            double serviceScore,
+            double ambianceScore,
+            double overallScore,
+            String comment
+    )
             throws
             NotExistentUser,
             NotExistentRestaurant,
-            NotExpectedUserRole
+            NotExpectedUserRole,
+            ScoreOutOfRange
     {
+        var review = new Review(foodScore, serviceScore, ambianceScore, overallScore, comment);
 
         var issuer = FindUser(issuerUsername);
         EnsureUserIs(issuer, UserRole.Costumer);
