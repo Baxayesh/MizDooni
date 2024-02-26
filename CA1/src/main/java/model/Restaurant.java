@@ -85,6 +85,45 @@ public class Restaurant extends EntityModel<String> {
         return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
     }
 
+    public String addTable(int tableNumber, Restaurant restaurantName, User managerUsername, int seatsNumber) {
+        // Check if the table number is unique
+        for (Table existingTable : Tables) {
+            if (existingTable.getTableNumber() == tableNumber) {
+                return "Error: Table with the same number already exists.";
+            }
+        }
+
+        // Check if the manager username exists (you'll need a method to verify this)
+        if (!managerExists(managerUsername)) {
+            return "Error: Restaurant manager username does not exist.";
+        }
+
+        // Check if the restaurant name exists (you'll need a method to verify this)
+        if (!restaurantExists(restaurantName.getName())) {
+            return "Error: Restaurant name does not exist.";
+        }
+
+        // Check if seatsNumber is a natural number
+        if (seatsNumber <= 0) {
+            return "Error: Seats number must be a positive integer.";
+        }
+
+        // Create a new table and add it to the list
+        Table newTable = new Table(tableNumber, restaurantName, managerUsername, seatsNumber);
+        Tables.add(newTable);
+
+        return "Table added successfully.";
+    }
+    private boolean managerExists(User managerUsername) {
+        return true;
+    }
+
+    private boolean restaurantExists(String restaurantName) {
+
+        return true;
+    }
+
+
 
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {

@@ -9,6 +9,7 @@ import utils.PairType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+
 @Getter
 @Setter
 public class Table extends EntityModel<PairType<String, Integer>> {
@@ -16,17 +17,19 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     private int TableNumber;
     private int NumberOfSeats;
     private Restaurant Restaurant;
+    private User User;
     private ArrayList<Reserve> Reserves;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
         return new PairType<>(restaurant.getKey(), tableNumber);
     }
 
-    public Table(int tableNumber, Restaurant restaurant, int numOfSeats){
+    public Table(int tableNumber, Restaurant restaurant, User managerUsername , int numOfSeats){
         super(CreateTableKey(restaurant, tableNumber));
         TableNumber = tableNumber;
         NumberOfSeats = numOfSeats;
         Restaurant = restaurant;
+        User = managerUsername;
     }
 
 
