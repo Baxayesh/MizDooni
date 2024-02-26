@@ -1,6 +1,9 @@
 package database;
 
-import model.*;
+import model.Reserve;
+import model.Restaurant;
+import model.Table;
+import model.User;
 import utils.PairType;
 
 public class Database {

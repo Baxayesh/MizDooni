@@ -2,9 +2,7 @@ package service;
 
 import database.Database;
 import exceptions.*;
-import model.Reserve;
-import model.Restaurant;
-import model.User;
+import model.*;
 import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
@@ -68,6 +66,21 @@ public class Mizdooni {
         return restaurant.GetAvailableTables();
     }
 
+    public void AddReview(String issuerUsername, String restaurantName, Review review)
+            throws
+            NotExistentUser,
+            NotExistentRestaurant,
+            NotExpectedUserRole
+    {
+
+        var issuer = FindUser(issuerUsername);
+        EnsureUserIs(issuer, UserRole.Costumer);
+
+        var restaurant = FindRestaurant(restaurantName);
+
+        restaurant.addReview(issuerUsername, review);
+    }
+
     User FindUser(String username) throws NotExistentUser {
         try {
             return Database.Users.Get(username);
@@ -102,5 +115,7 @@ public class Mizdooni {
             throw new NotExpectedUserRole(desiredRole);
         }
     }
+
+
 
 }

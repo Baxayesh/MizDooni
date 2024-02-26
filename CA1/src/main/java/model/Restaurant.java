@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 
 @Getter
 @Setter
@@ -20,6 +21,8 @@ public class Restaurant extends EntityModel<String> {
     private String Type;
     private String Description;
     private ArrayList<Table> Tables;
+    private Dictionary<String, Review> Reviews;
+
     //address
 
     public String getName(){
@@ -88,5 +91,9 @@ public class Restaurant extends EntityModel<String> {
         }
 
         return availableTables;
+    }
+
+    public void addReview(String issuer, Review review) {
+        Reviews.put(issuer, review);
     }
 }

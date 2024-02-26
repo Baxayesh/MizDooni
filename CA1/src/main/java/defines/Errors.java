@@ -21,4 +21,6 @@ public class Errors {
     public static final String CANCELING_EXPIRED_RESERVE = "Cannot Cancel A Reserve From Past";
 
     public static final String CANCELING_CANCELED_RESERVE  = "Reserve Is Already Canceled";
+
+    public static final String SCORE_OUT_OF_RANGE = "Score Is Not In Valid Score Range";
 }
