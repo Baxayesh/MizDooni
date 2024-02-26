@@ -4,9 +4,9 @@ import exceptions.KeyAlreadyExists;
 import exceptions.KeyNotFound;
 import model.EntityModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRepository<TKey, TItem> {
 
@@ -38,22 +38,14 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
     }
 
     @Override
-    public Iterable<TItem> GetAll() {
-        return MemoryDb.values();
+    public Stream<TItem> GetAll() {
+        return MemoryDb.values().stream();
     }
 
 
     @Override
-    public Iterable<TItem> Search(Predicate<TItem> searchCriteria) {
-        var results = new ArrayList<TItem>();
-
-        for (var item : MemoryDb.values()){
-            if(searchCriteria.test(item)){
-                results.add(item);
-            }
-        }
-
-        return results;
+    public Stream<TItem> Search(Predicate<TItem> searchCriteria) {
+        return MemoryDb.values().stream().filter(searchCriteria);
     }
 
     @Override

@@ -15,12 +15,26 @@ public class Database {
 
     public final KeyGenerator ReserveIdGenerator;
 
-    public Database(){
-        Users = new InMemoryRepo<>();
-        Restaurants = new InMemoryRepo<>();
-        Tables = new InMemoryRepo<>();
-        Reserves = new InMemoryRepo<>();
+    public Database(
+            IRepository<String, User> users,
+            IRepository<String, Restaurant> restaurants,
+            IRepository<PairType<String, Integer>, Table> tables,
+            IRepository<PairType<String, Integer>, Reserve> reserves
+    ) {
+        Users = users;
+        Restaurants = restaurants;
+        Tables = tables;
+        Reserves = reserves;
         ReserveIdGenerator = new KeyGenerator();
+    }
+
+    public static Database CreateInMemoryDatabase(){
+        return new Database(
+            new InMemoryRepo<>(),
+            new InMemoryRepo<>(),
+            new InMemoryRepo<>(),
+            new InMemoryRepo<>()
+        );
     }
 
 }

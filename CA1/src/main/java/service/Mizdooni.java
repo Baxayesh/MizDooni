@@ -8,15 +8,15 @@ import utils.PairType;
 import utils.UserRole;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 public class Mizdooni {
 
     Database Database;
 
-    public Mizdooni(){
-        Database = new Database();
+    public Mizdooni(Database database){
+        Database = database;
     }
+
 
     public Reserve ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)
             throws
@@ -42,7 +42,6 @@ public class Mizdooni {
             throw new RuntimeException(ex);
         }
 
-        // TODO: save reserve history
         return reserve;
     }
 
@@ -56,10 +55,21 @@ public class Mizdooni {
 
         var reserve = FindReserve(username, reserveNumber);
         reserve.Cancel();
-        // TODO: save reserve cancellation history
     }
 
-    public Collection<AvailableTable> GetAvailableTables(String restaurantName)
+    public Reserve[] GetActiveReserves(String username) throws NotExistentUser, NotExpectedUserRole {
+
+        var user = FindUser(username);
+        EnsureUserIs(user, UserRole.Costumer);
+
+        return Database
+                .Reserves
+                .Search(reserve -> reserve.IsActive() && user.Is(reserve.getReserveeUsername()))
+                .toArray(Reserve[]::new);
+
+    }
+
+    public AvailableTable[] GetAvailableTables(String restaurantName)
         throws NotExistentRestaurant {
 
         var restaurant = FindRestaurant(restaurantName);
