@@ -6,6 +6,14 @@ public class Errors {
 
     public static  final  String NOT_EXISTENT_RESTAURANT = "Restaurant Does Not Exists";
 
+    public static final String ALREADY_EXISTENT_RESTAURANT = "Restaurant name already exists";
+
+    public static final String ALREADY_EXISTENT_TABLE = "Table Already Exists";
+    public static final String SEAT_NUM_NOT_POS = "Seats number must be a positive integer";
+    public static final String INVALID_USER_DATA = "Invalid roll or missing correct data";
+    public static final String USER_ALREADY_EXISTS = "User Already Exists";
+    public static final String INVALID_ADDRESS = "Address must be Valid";
+
     public static final String NOT_EXISTENT_TABLE = "Table Does Not Exists";
 
     public static final String NOT_EXISTENT_RESERVE = "Reserve Not Found";

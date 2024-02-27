@@ -3,6 +3,7 @@ package model;
 import exceptions.*;
 import lombok.Getter;
 import lombok.Setter;
+import ui.ConsoleMizdooni;
 import utils.AvailableTable;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.regex.Pattern;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 @Getter
 @Setter
@@ -47,11 +51,13 @@ public class Restaurant extends EntityModel<String> {
         this.users = new ArrayList<>();
     }
 
-    public String addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) {
+    public void addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) throws JsonProcessingException {
         // Validate restaurant name
         for (Restaurant restaurant : restaurants) {
             if (restaurant.getName().equals(name)) {
-                return "Error: Restaurant name already exists.";
+                //return "Error: Restaurant name already exists.";
+                Exception e = new RestaurantAlreadyExists();
+                ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
             }
         }
         /*
@@ -70,57 +76,26 @@ public class Restaurant extends EntityModel<String> {
 
         // Validate start and end times
         if (!Pattern.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$", startTime.toString()) || !Pattern.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$", endTime.toString())) {
-            return "Error: Invalid start or end time format.";
+            //return "Error: Invalid start or end time format.";
+            Exception e = new NotInWorkHour();
+            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
         }
 
         // Validate address
         if (country == null || country.isEmpty() || city == null || city.isEmpty() || street == null || street.isEmpty()) {
-            return "Error: Invalid address. Address must include country, city, and street.";
+            //return "Error: Invalid address. Address must include country, city, and street.";
+            Exception e = new InvalidAddress();
+            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
         }
 
         // Add restaurant to the list
         restaurants.add(new Restaurant(name, startTime, endTime, managerUsername, type, description, new Address(country, city, street)));
 
-        return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
+        //return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
+        ConsoleMizdooni.printOutput(new Output(true,"Restaurant added successfully"));
+
     }
 
-    public String addTable(int tableNumber, Restaurant restaurantName, User managerUsername, int seatsNumber) {
-        // Check if the table number is unique
-        for (Table existingTable : Tables) {
-            if (existingTable.getTableNumber() == tableNumber) {
-                return "Error: Table with the same number already exists.";
-            }
-        }
-
-        // Check if the manager username exists (you'll need a method to verify this)
-        if (!managerExists(managerUsername)) {
-            return "Error: Restaurant manager username does not exist.";
-        }
-
-        // Check if the restaurant name exists (you'll need a method to verify this)
-        if (!restaurantExists(restaurantName.getName())) {
-            return "Error: Restaurant name does not exist.";
-        }
-
-        // Check if seatsNumber is a natural number
-        if (seatsNumber <= 0) {
-            return "Error: Seats number must be a positive integer.";
-        }
-
-        // Create a new table and add it to the list
-        Table newTable = new Table(tableNumber, restaurantName, managerUsername, seatsNumber);
-        Tables.add(newTable);
-
-        return "Table added successfully.";
-    }
-    private boolean managerExists(User managerUsername) {
-        return true;
-    }
-
-    private boolean restaurantExists(String restaurantName) {
-
-        return true;
-    }
 
 
 
@@ -184,6 +159,30 @@ public class Restaurant extends EntityModel<String> {
         public Address(String country, String city, String street) {
             this.country = country;
             this.city = city;
+            this.street = street;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public void setStreet(String street) {
             this.street = street;
         }
     }

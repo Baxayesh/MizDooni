@@ -2,13 +2,12 @@ package service;
 
 import database.Database;
 import exceptions.*;
-import model.Reserve;
-import model.Restaurant;
-import model.Review;
-import model.User;
+import model.*;
 import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,9 +15,11 @@ import java.time.LocalTime;
 public class Mizdooni {
 
     Database Database;
+    private static ObjectMapper mapper;
 
     public Mizdooni(Database database){
         Database = database;
+        mapper = new ObjectMapper();
     }
 
 
@@ -28,30 +29,53 @@ public class Mizdooni {
             String password,
             String email,
             User.Address address
-    ) {
+    ) throws JsonProcessingException{
+        var user = new User(role, username, password, email, address);
+        user.addUser(role, username, password, email, address);
 
-        throw new RuntimeException("Not Implemented Yet");
+        try{
+            Database.Users.Add(user);
+        }
+        catch (KeyAlreadyExists ex){
+
+        throw new RuntimeException(ex);}
+
     }
 
     public void AddRestaurant(
             String name,
-            String manager,
+            User manager,
             String type,
             LocalTime openTime,
             LocalTime closeTime,
             String description,
             Restaurant.Address address
-    ){
-        throw new RuntimeException("Not Implemented Yet");
+    ) throws JsonProcessingException{
+        var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address);
+        restaurant.addRestaurant(name, manager, type, openTime, closeTime, description, address.getCountry(), address.getCity(), address.getStreet());
+        try{
+            Database.Restaurants.Add(restaurant);
+        }catch (KeyAlreadyExists ex){
+        throw new RuntimeException(ex);
+        }
+
     }
 
     public void AddTable(
             int tableNumber,
-            String restaurantName,
-            String manager,
+            Restaurant restaurantName,
+            User manager,
             int seatNumber
-    ){
-        throw new RuntimeException("Not Implemented Yet");
+    ) throws JsonProcessingException
+    {
+        var table = new Table(tableNumber, restaurantName, manager, seatNumber);
+        table.addTable(tableNumber, restaurantName, manager, seatNumber);
+
+        try{
+            Database.Tables.Add(table);
+        }catch (KeyAlreadyExists ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     public Reserve ReserveATable(
@@ -190,7 +214,5 @@ public class Mizdooni {
             throw new NotExpectedUserRole(desiredRole);
         }
     }
-
-
 
 }
