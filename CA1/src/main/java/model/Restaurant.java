@@ -1,19 +1,21 @@
 package model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import exceptions.*;
+import exceptions.InvalidAddress;
+import exceptions.NotInWorkHour;
+import exceptions.TimeBelongsToPast;
+import exceptions.TimeIsNotRound;
 import lombok.Getter;
 import lombok.Setter;
 import ui.ConsoleMizdooni;
-import utils.AvailableTable;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -21,45 +23,40 @@ public class Restaurant extends EntityModel<String> {
 
     private LocalTime OpenTime;
     private LocalTime CloseTime;
-    private User Manager;
+    private String ManagerUsername;
     private String Type;
     private String Description;
-    private ArrayList<Table> Tables;
+    private ArrayList<Integer> TableNumbers;
     private Dictionary<String, Review> Reviews;
-
-    //address
     private Address restaurantAddress;
-
-    private List<Restaurant> restaurants;
-    private List<User> users;
 
     public String getName(){
         return super.getKey();
     }
 
-    public Restaurant(String name, LocalTime openTime, LocalTime closeTime, User manager, String type, String description, Address address) {
+    public Restaurant(String name, LocalTime openTime, LocalTime closeTime, String managerUsername, String type, String description, Address address) {
         super(name);
         OpenTime = openTime;
         CloseTime = closeTime;
-        Manager = manager;
+        ManagerUsername = managerUsername;
         Type = type;
         Description = description;
-        Tables = new ArrayList<>();
+        TableNumbers = new ArrayList<>();
         restaurantAddress = address;
-        this.restaurants = new ArrayList<>();
-        this.users = new ArrayList<>();
         Reviews = new Hashtable<>();
     }
 
     public void addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) throws JsonProcessingException {
         // Validate restaurant name
+        //TODO: FIX
+        /*
         for (Restaurant restaurant : restaurants) {
             if (restaurant.getName().equals(name)) {
                 //return "Error: Restaurant name already exists.";
                 Exception e = new RestaurantAlreadyExists();
                 ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
             }
-        }
+        }*/
         /*
         // Validate manager username
         boolean managerExists = false;
@@ -88,10 +85,6 @@ public class Restaurant extends EntityModel<String> {
             ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
         }
 
-        // Add restaurant to the list
-        restaurants.add(new Restaurant(name, startTime, endTime, managerUsername, type, description, new Address(country, city, street)));
-
-        //return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
         ConsoleMizdooni.printOutput(new Output(true,"Restaurant added successfully"));
 
     }
@@ -119,42 +112,27 @@ public class Restaurant extends EntityModel<String> {
             throw new NotInWorkHour();
     }
 
-    Table FindTable(int tableNumber) throws NotExistentTable {
-        for(var table : Tables){
-            if(table.Is(tableNumber)){
-                return table;
-            }
-        }
-
-        throw new NotExistentTable();
-    }
-
-    public Reserve MakeReserve(int reserveNumber, User reservee, int tableNumber, LocalDateTime reserveTime)
-            throws TableIsReserved, TimeIsNotRound, TimeBelongsToPast, NotInWorkHour, NotExistentTable {
+    public void ValidateReserveTime(LocalDateTime reserveTime)
+            throws TimeIsNotRound, TimeBelongsToPast, NotInWorkHour {
 
         EnsureTimeIsRound(reserveTime.toLocalTime());
         EnsureTimeBelongsToFuture(reserveTime);
         EnsureTimeIsInWorkHours(reserveTime.toLocalTime());
-        var table = FindTable(tableNumber);
-        return table.MakeReserve(reserveNumber, reservee, reserveTime); // store history
     }
 
-    public AvailableTable[] GetAvailableTables() {
-        return
-            Tables
-            .stream()
-            .map(Table::GetAvailableTimes)
-            .filter(AvailableTable::HasAnyAvailableTime)
-            .toArray(AvailableTable[]::new);
+    public Stream<Integer> getTableNumbers() {
+        return TableNumbers.stream();
     }
 
     public void addReview(String issuer, Review review) {
         Reviews.put(issuer, review);
     }
+
+    @Getter
     public static class Address {
-        private String country;
-        private String city;
-        private String street;
+        private final String country;
+        private final String city;
+        private final String street;
 
         public Address(String country, String city, String street) {
             this.country = country;
@@ -162,29 +140,6 @@ public class Restaurant extends EntityModel<String> {
             this.street = street;
         }
 
-        public String getCity() {
-            return city;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public String getStreet() {
-            return street;
-        }
-
-        public void setCity(String city) {
-            this.city = city;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
-        }
-
-        public void setStreet(String street) {
-            this.street = street;
-        }
     }
 }
 

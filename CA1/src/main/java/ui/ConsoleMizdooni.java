@@ -88,7 +88,7 @@ public class ConsoleMizdooni {
             case "addRestaurant":
                 if(!jsonData.isEmpty()) {
                     Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.AddRestaurant(restaurant.getName(), restaurant.getManager().getUsername(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
+                    Service.AddRestaurant(restaurant.getName(), restaurant.getManagerUsername(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
                 }
                 break;
             case "addTable":

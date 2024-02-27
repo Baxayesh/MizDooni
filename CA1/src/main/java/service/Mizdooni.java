@@ -52,7 +52,7 @@ public class Mizdooni {
         var managerUser = FindUser(manager);
         EnsureUserIs(managerUser, UserRole.Manager);
 
-        var restaurant = new Restaurant(name,openTime, closeTime, managerUser, type, description, address);
+        var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address);
         restaurant.addRestaurant(name, managerUser, type, openTime, closeTime, description, address.getCountry(), address.getCity(), address.getStreet());
         try{
             Database.Restaurants.Add(restaurant);
@@ -75,7 +75,6 @@ public class Mizdooni {
 
         var table = new Table(tableNumber, restaurant, manager, seatNumber);
         table.addTable(tableNumber, restaurant, manager, seatNumber);
-        restaurant.getTables().add(table);//TODO: fix
 
         try{
             Database.Tables.Add(table);
@@ -105,7 +104,9 @@ public class Mizdooni {
         EnsureUserIs(reservee, UserRole.Client);
         var restaurant = FindRestaurant(restaurantName);
         var reserveNumber = Database.ReserveIdGenerator.GetNext();
-        var reserve = restaurant.MakeReserve(reserveNumber, reservee, tableNumber, reserveTime);
+        restaurant.ValidateReserveTime(reserveTime);
+        var table = FindTable(restaurantName, tableNumber);
+        var reserve = table.MakeReserve(reserveNumber, reservee, reserveTime);
 
         try{
             Database.Reserves.Add(reserve);
@@ -143,8 +144,15 @@ public class Mizdooni {
     public AvailableTable[] GetAvailableTables(String restaurantName)
         throws NotExistentRestaurant {
 
-        var restaurant = FindRestaurant(restaurantName);
-        return restaurant.GetAvailableTables();
+        if(!Database.Restaurants.Exists(restaurantName))
+            throw new NotExistentRestaurant();
+
+        return Database
+                .Tables
+                .Search(table -> table.getRestaurant().Is(restaurantName))
+                .map(Table::GetAvailableTimes)
+                .filter(AvailableTable::HasAnyAvailableTime)
+                .toArray(AvailableTable[]::new);
     }
 
     public Restaurant[] SearchRestaurantByName(String restaurantName) {
@@ -204,6 +212,23 @@ public class Mizdooni {
             return Database.Reserves.Get(new PairType<>(username, reserveNumber));
         } catch (KeyNotFound e) {
             throw new NotExistentReserve();
+        }
+    }
+
+    Table FindTable(String restaurantName, int tableNumber)
+            throws
+            NotExistentTable,
+            NotExistentRestaurant
+    {
+
+        if(!Database.Restaurants.Exists(restaurantName)){
+            throw new NotExistentRestaurant();
+        }
+
+        try{
+            return Database.Tables.Get(new PairType<>(restaurantName, tableNumber));
+        } catch (KeyNotFound e) {
+            throw new NotExistentTable();
         }
     }
 

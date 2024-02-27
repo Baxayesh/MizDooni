@@ -108,7 +108,7 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public void AddAnonymousTable(String restaurant, int table) {
 
-        var manager = Database.Restaurants.Get(restaurant).getManager().getUsername();
+        var manager = Database.Restaurants.Get(restaurant).getManagerUsername();
 
         Service.AddTable(
                 table,
