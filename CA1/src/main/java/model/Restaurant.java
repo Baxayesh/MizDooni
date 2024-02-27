@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import exceptions.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +11,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 
 @Getter
 @Setter
@@ -49,6 +48,7 @@ public class Restaurant extends EntityModel<String> {
         restaurantAddress = address;
         this.restaurants = new ArrayList<>();
         this.users = new ArrayList<>();
+        Reviews = new Hashtable<>();
     }
 
     public void addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) throws JsonProcessingException {

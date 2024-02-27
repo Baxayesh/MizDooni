@@ -1,13 +1,12 @@
 package service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import database.Database;
 import exceptions.*;
 import model.*;
 import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,11 +14,9 @@ import java.time.LocalTime;
 public class Mizdooni {
 
     Database Database;
-    private static ObjectMapper mapper;
 
     public Mizdooni(Database database){
         Database = database;
-        mapper = new ObjectMapper();
     }
 
 
@@ -30,8 +27,8 @@ public class Mizdooni {
             String email,
             User.Address address
     ) throws JsonProcessingException{
-        var user = new User(role, username, password, email, address);
-        user.addUser(role, username, password, email, address);
+        var user = new User(username, role, password, email, address);
+        user.addUser(username, role, password, email, address);
 
         try{
             Database.Users.Add(user);
@@ -44,15 +41,19 @@ public class Mizdooni {
 
     public void AddRestaurant(
             String name,
-            User manager,
+            String manager,
             String type,
             LocalTime openTime,
             LocalTime closeTime,
             String description,
             Restaurant.Address address
-    ) throws JsonProcessingException{
-        var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address);
-        restaurant.addRestaurant(name, manager, type, openTime, closeTime, description, address.getCountry(), address.getCity(), address.getStreet());
+    ) throws JsonProcessingException, NotExistentUser, NotExpectedUserRole {
+
+        var managerUser = FindUser(manager);
+        EnsureUserIs(managerUser, UserRole.Manager);
+
+        var restaurant = new Restaurant(name,openTime, closeTime, managerUser, type, description, address);
+        restaurant.addRestaurant(name, managerUser, type, openTime, closeTime, description, address.getCountry(), address.getCity(), address.getStreet());
         try{
             Database.Restaurants.Add(restaurant);
         }catch (KeyAlreadyExists ex){
@@ -63,13 +64,18 @@ public class Mizdooni {
 
     public void AddTable(
             int tableNumber,
-            Restaurant restaurantName,
-            User manager,
+            String restaurantName,
+            String managerName,
             int seatNumber
-    ) throws JsonProcessingException
-    {
-        var table = new Table(tableNumber, restaurantName, manager, seatNumber);
-        table.addTable(tableNumber, restaurantName, manager, seatNumber);
+    ) throws JsonProcessingException, NotExistentRestaurant, NotExpectedUserRole, NotExistentUser {
+        var restaurant = FindRestaurant(restaurantName);
+
+        var manager = FindUser(managerName);
+        EnsureUserIs(manager, UserRole.Manager);
+
+        var table = new Table(tableNumber, restaurant, manager, seatNumber);
+        table.addTable(tableNumber, restaurant, manager, seatNumber);
+        restaurant.getTables().add(table);//TODO: fix
 
         try{
             Database.Tables.Add(table);
@@ -96,7 +102,7 @@ public class Mizdooni {
     {
 
         var reservee = FindUser(reserveeUsername);
-        EnsureUserIs(reservee, UserRole.Costumer);
+        EnsureUserIs(reservee, UserRole.Client);
         var restaurant = FindRestaurant(restaurantName);
         var reserveNumber = Database.ReserveIdGenerator.GetNext();
         var reserve = restaurant.MakeReserve(reserveNumber, reservee, tableNumber, reserveTime);
@@ -125,7 +131,7 @@ public class Mizdooni {
     public Reserve[] GetActiveReserves(String username) throws NotExistentUser, NotExpectedUserRole {
 
         var user = FindUser(username);
-        EnsureUserIs(user, UserRole.Costumer);
+        EnsureUserIs(user, UserRole.Client);
 
         return Database
                 .Reserves
@@ -173,7 +179,7 @@ public class Mizdooni {
         var review = new Review(foodScore, serviceScore, ambianceScore, overallScore, comment);
 
         var issuer = FindUser(issuerUsername);
-        EnsureUserIs(issuer, UserRole.Costumer);
+        EnsureUserIs(issuer, UserRole.Client);
 
         var restaurant = FindRestaurant(restaurantName);
 

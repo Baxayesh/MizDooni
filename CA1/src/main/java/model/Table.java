@@ -21,7 +21,6 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     private Restaurant Restaurant;
     private User User;
     private ArrayList<Reserve> Reserves;
-    private ArrayList<Table> Tables;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
         return new PairType<>(restaurant.getKey(), tableNumber);
@@ -33,17 +32,19 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         NumberOfSeats = numOfSeats;
         Restaurant = restaurant;
         User = managerUsername;
+        Reserves = new ArrayList<>();
     }
 
     public void addTable(int tableNumber, Restaurant restaurantName, User managerUsername, int seatsNumber) throws JsonProcessingException {
         // Check if the table number is unique
-        for (Table existingTable : Tables) {
+        //TODO:FIX CHECK
+        /*for (Table existingTable : Tables) {
             if (existingTable.getTableNumber() == tableNumber) {
                 //return "Error: Table with the same number already exists.";
                 Exception e = new TableAlreadyExists();
                 ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
             }
-        }
+        }*/
 
         // Check if the manager username exists (you'll need a method to verify this)
         if (!managerExists(managerUsername)) {

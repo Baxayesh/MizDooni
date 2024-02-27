@@ -10,7 +10,12 @@ import java.util.stream.Stream;
 
 public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRepository<TKey, TItem> {
 
-    private HashMap<TKey, TItem> MemoryDb;
+    private final HashMap<TKey, TItem> MemoryDb;
+
+    public InMemoryRepo() {
+         MemoryDb = new HashMap<>();
+    }
+
 
     void EnsureKeyNotExits(TItem item) throws KeyAlreadyExists {
         var key = item.getKey();

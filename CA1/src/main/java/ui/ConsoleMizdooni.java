@@ -1,20 +1,13 @@
 package ui;
 
-import database.Database;
-import exceptions.*;
-import service.Mizdooni;
-
-import java.security.Provider;
-import java.util.Scanner;
-import com.google.gson.Gson;
-import model.*;
-
-import java.util.Map;
-import java.util.regex.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.util.*;
+import com.google.gson.Gson;
+import exceptions.*;
+import model.*;
+import service.Mizdooni;
+
+import java.util.Scanner;
 
 
 public class ConsoleMizdooni {
@@ -22,13 +15,11 @@ public class ConsoleMizdooni {
     Mizdooni Service;
     //private Mizdooni mizdooni;
     //private Scanner input;
-    private static ObjectMapper mapper;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     public ConsoleMizdooni(Mizdooni mizdooni){
 
         Service = mizdooni;
-        //input = new Scanner(System.in);
-        mapper = new ObjectMapper();
     }
 
     public void Start()
@@ -97,13 +88,13 @@ public class ConsoleMizdooni {
             case "addRestaurant":
                 if(!jsonData.isEmpty()) {
                     Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.AddRestaurant(restaurant.getName(), restaurant.getManager(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
+                    Service.AddRestaurant(restaurant.getName(), restaurant.getManager().getUsername(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
                 }
                 break;
             case "addTable":
                 if(!jsonData.isEmpty()) {
                     Table table = new Gson().fromJson(jsonData, Table.class);
-                    Service.AddTable(table.getTableNumber(), table.getRestaurant(), table.getUser(), table.getNumberOfSeats());
+                    Service.AddTable(table.getTableNumber(), table.getRestaurant().getName(), table.getUser().getUsername(), table.getNumberOfSeats());
                 }
                 break;
             case "reserveTable":

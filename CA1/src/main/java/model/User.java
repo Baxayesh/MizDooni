@@ -1,17 +1,17 @@
 package model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import exceptions.InvalidAddress;
+import exceptions.NoUserAdded;
+import exceptions.UserAlreadyExits;
 import lombok.Getter;
 import lombok.Setter;
+import ui.ConsoleMizdooni;
 import utils.UserRole;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import exceptions.*;
-import ui.ConsoleMizdooni;
 @Getter
 @Setter
 public class User extends EntityModel<String> {
@@ -35,16 +35,17 @@ public class User extends EntityModel<String> {
     }
 
     public void addUser(String username, String role, String password, String email, Address address) throws JsonProcessingException {
+
         if (!role.equals("client") && !role.equals("manager")){
             Exception e = new NoUserAdded();
             ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
 
         }
-        if (username.contains(" ") || username.contains(";") || !Pattern.matches("^[a-zA-Z0-9]*$", username)){
+        if (username.contains(" ") || username.contains(";") || !Pattern.matches("^[a-zA-Z0-9_]*$", username)){
             Exception e = new NoUserAdded();
             ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
         }
-        if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", email)){
+        if (!Pattern.matches("^[A-Za-z0-9+_\\.-]+@(.+)$", email)){
             Exception e = new NoUserAdded();
             ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
         }

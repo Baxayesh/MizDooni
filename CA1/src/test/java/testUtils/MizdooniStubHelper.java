@@ -27,6 +27,7 @@ public class MizdooniStubHelper {
     }
 
 
+    @SneakyThrows
     public void AddAnonymousRestaurant(String restaurantName){
         var managerName = "anonymous_manager_of_"+restaurantName;
         AddAnonymousManager(managerName);
@@ -41,6 +42,7 @@ public class MizdooniStubHelper {
         );
     }
 
+    @SneakyThrows
     public void AddAnonymousRestaurant(String restaurantName, int openingHour, int closureHour){
         var managerName = "anonymous_manager_of_"+restaurantName;
         AddAnonymousManager(managerName);
@@ -55,9 +57,10 @@ public class MizdooniStubHelper {
         );
     }
 
+    @SneakyThrows
     public void AddAnonymousCustomer(String username){
         Service.AddUser(
-                "customer",
+                "client",
                 username,
                 "password",
                 username+ "@anon.com",
@@ -65,12 +68,13 @@ public class MizdooniStubHelper {
         );
     }
 
+    @SneakyThrows
     public void AddAnonymousManager(String username){
         Service.AddUser(
                 "manager",
                 username,
                 "password",
-                username+ "@anon.com",
+                username + "@anon.com",
                 new model.User.Address("country","city")
         );
     }
