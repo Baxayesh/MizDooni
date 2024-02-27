@@ -1,0 +1,276 @@
+Index: CA1/src/main/java/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\r\n\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport utils.UserRole;\r\n\r\n\r\n@Getter\r\n@Setter\r\npublic class User extends EntityModel<String> {\r\n\r\n    //fields: username password, email, address, role\r\n    private UserRole Role;\r\n\r\n    static String NormalizeUsername(String username){\r\n        return  username.strip().toUpperCase();\r\n    }\r\n\r\n    public User(String username, UserRole role) {\r\n        super(NormalizeUsername(username));\r\n        Role = role;\r\n    }\r\n\r\n    public String getUsername(){\r\n        return super.getKey();\r\n    }\r\n\r\n    public boolean RoleIs(UserRole desiredRole) {\r\n        return Role == desiredRole;\r\n    }\r\n\r\n    @Override\r\n    public boolean Is(String otherKey) {\r\n        return super.Is(NormalizeUsername(otherKey));\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/User.java b/CA1/src/main/java/model/User.java
+--- a/CA1/src/main/java/model/User.java	(revision 7ede849adfcc5d1df008006e333ba806196ccb88)
++++ b/CA1/src/main/java/model/User.java	(date 1708873965906)
+@@ -16,7 +16,7 @@
+         return  username.strip().toUpperCase();
+     }
+ 
+-    public User(String username, UserRole role) {
++    public User(String username, UserRole role, String password, String email, Address address) {
+         super(NormalizeUsername(username));
+         Role = role;
+     }
+@@ -34,4 +34,5 @@
+         return super.Is(NormalizeUsername(otherKey));
+     }
+ 
+-}
+\ No newline at end of file
++}
++
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1708871378314)
++++ b/.idea/modules.xml	(date 1708871378314)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/MizDooni.iml" filepath="$PROJECT_DIR$/.idea/MizDooni.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1708871378352)
++++ b/.idea/.gitignore	(date 1708871378352)
+@@ -0,0 +1,3 @@
++# Default ignored files
++/shelf/
++/workspace.xml
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1708871378247)
++++ b/.idea/misc.xml	(date 1708871378247)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="MavenProjectsManager">
++    <option name="originalFiles">
++      <list>
++        <option value="$PROJECT_DIR$/CA1/pom.xml" />
++      </list>
++    </option>
++  </component>
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="openjdk-20" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1708871378285)
++++ b/.idea/compiler.xml	(date 1708871378285)
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Maven default annotation processors profile" enabled="true">
++        <sourceOutputDir name="target/generated-sources/annotations" />
++        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
++        <outputRelativeToContentRoot value="true" />
++        <module name="CA1" />
++      </profile>
++    </annotationProcessing>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1708794931941)
++++ b/.idea/jarRepositories.xml	(date 1708794931941)
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Central Repository" />
++      <option name="url" value="https://repo.maven.apache.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/encodings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/encodings.xml b/.idea/encodings.xml
+new file mode 100644
+--- /dev/null	(date 1708871378382)
++++ b/.idea/encodings.xml	(date 1708871378382)
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding">
++    <file url="file://$PROJECT_DIR$/CA1/src/main/java" charset="UTF-8" />
++    <file url="file://$PROJECT_DIR$/CA1/src/main/resources" charset="UTF-8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1708871378421)
++++ b/.idea/vcs.xml	(date 1708871378421)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/MizDooni.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/MizDooni.iml b/.idea/MizDooni.iml
+new file mode 100644
+--- /dev/null	(date 1708871378207)
++++ b/.idea/MizDooni.iml	(date 1708871378207)
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: CA1/src/main/java/model/Address.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/Address.java b/CA1/src/main/java/model/Address.java
+new file mode 100644
+--- /dev/null	(date 1708873981880)
++++ b/CA1/src/main/java/model/Address.java	(date 1708873981880)
+@@ -0,0 +1,13 @@
++package model;
++
++public class Address {
++    private String country;
++    private String city;
++
++    public Address(String country, String city) {
++        this.country = country;
++        this.city = city;
++    }
++
++    // Getters and setters for each field
++}
+\ No newline at end of file
+Index: CA1/src/main/java/model/UserManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/UserManager.java b/CA1/src/main/java/model/UserManager.java
+new file mode 100644
+--- /dev/null	(date 1708874164526)
++++ b/CA1/src/main/java/model/UserManager.java	(date 1708874164526)
+@@ -0,0 +1,48 @@
++package model;
++
++import java.util.ArrayList;
++import java.util.List;
++import java.util.regex.Pattern;
++
++public class UserManager {
++    private List<User> users;
++
++    public UserManager() {
++        this.users = new ArrayList<>();
++    }
++
++    public String addUser(String role, String username, String password, String email, String country, String city) {
++        // Validate role
++        if (!role.equals("client") && !role.equals("manager")) {
++            return "Error: Invalid role. Role must be either 'client' or 'manager'.";
++        }
++
++        // Validate username
++        if (username.contains(" ") || username.contains(";") || !Pattern.matches("^[a-zA-Z0-9]*$", username)) {
++            return "Error: Invalid username. Username cannot contain spaces, semi-spaces, or special characters.";
++        }
++
++        // Validate email
++        if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", email)) {
++            return "Error: Invalid email format.";
++        }
++
++        // Check for duplicate username or email
++        for (User user : users) {
++            if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
++                return "Error: Username or email already exists.";
++            }
++        }
++
++        // Validate address
++        if (country == null || country.isEmpty() || city == null || city.isEmpty()) {
++            return "Error: Invalid address. Address must include country and city.";
++        }
++
++        // Add user to the list
++        users.add(new User(username, password, email, new Address(country, city)));
++
++        return "{\"success\": true, \"data\": \"User added successfully.\"}";
++    }
++}
++

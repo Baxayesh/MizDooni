@@ -1,0 +1,157 @@
+Index: CA1/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n  <modelVersion>4.0.0</modelVersion>\r\n\r\n  <groupId>ir.ac.ut</groupId>\r\n  <artifactId>CA1</artifactId>\r\n  <version>0.1.0</version>\r\n  <packaging>jar</packaging>\r\n\r\n  <properties>\r\n    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n    <java.version>19</java.version>\r\n  </properties>\r\n\r\n  <dependencies>\r\n    <dependency>\r\n      <groupId>org.junit.jupiter</groupId>\r\n      <artifactId>junit-jupiter</artifactId>\r\n      <version>5.10.1</version>\r\n    </dependency>\r\n    <dependency>\r\n        <groupId>org.projectlombok</groupId>\r\n        <artifactId>lombok</artifactId>\r\n        <version>1.18.26</version>\r\n        <scope>compile</scope>\r\n    </dependency>\r\n  </dependencies>\r\n\r\n  <build>\r\n    <plugins>\r\n      <plugin>\r\n        <groupId>org.apache.maven.plugins</groupId>\r\n        <artifactId>maven-compiler-plugin</artifactId>\r\n        <version>3.12.1</version>\r\n        <configuration>\r\n          <source>19</source>\r\n          <target>19</target>\r\n        </configuration>\r\n      </plugin>\r\n    </plugins>\r\n  </build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/pom.xml b/CA1/pom.xml
+--- a/CA1/pom.xml	
++++ b/CA1/pom.xml	
+@@ -1,7 +1,7 @@
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++
+   <modelVersion>4.0.0</modelVersion>
+-
+   <groupId>ir.ac.ut</groupId>
+   <artifactId>CA1</artifactId>
+   <version>0.1.0</version>
+@@ -24,6 +24,11 @@
+         <version>1.18.26</version>
+         <scope>compile</scope>
+     </dependency>
++    <dependency>
++      <groupId>com.fasterxml.jackson.core</groupId>
++      <artifactId>jackson-databind</artifactId>
++      <version>2.15.1</version>
++    </dependency>
+   </dependencies>
+ 
+   <build>
+Index: CA1/src/main/java/ui/ConsoleMizdooni.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\r\n\r\nimport service.Mizdooni;\r\n\r\nimport java.util.Scanner;\r\n\r\npublic class ConsoleMizdooni {\r\n\r\n    Mizdooni Service;\r\n\r\n    public ConsoleMizdooni(Mizdooni mizdooni){\r\n        Service = mizdooni;\r\n    }\r\n\r\n    public void Start(){\r\n        System.out.println(\"Mizdooni Is Up!\");\r\n\r\n        Scanner inputScanner = new Scanner(System.in);\r\n\r\n        while (true){\r\n            var command = inputScanner.next();\r\n\r\n            if(command.equals(\"exit\")){\r\n                return;\r\n            }\r\n\r\n            var jsonData = inputScanner.nextLine();\r\n            ProcessCommand(command, jsonData);\r\n        }\r\n    }\r\n\r\n    void ProcessCommand(String command, String jsonData){\r\n        System.out.printf(\"your command : %s your data: %s\\n\", command, jsonData);\r\n        //TODO: Implement\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/ui/ConsoleMizdooni.java b/CA1/src/main/java/ui/ConsoleMizdooni.java
+--- a/CA1/src/main/java/ui/ConsoleMizdooni.java	
++++ b/CA1/src/main/java/ui/ConsoleMizdooni.java	
+@@ -1,9 +1,17 @@
+ package ui;
+ 
++import model.Reserve;
++import model.Restaurant;
++import model.Table;
++import model.User;
+ import service.Mizdooni;
+ 
+ import java.util.Scanner;
+ 
++
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.databind.node.ObjectNode;
+ public class ConsoleMizdooni {
+ 
+     Mizdooni Service;
+@@ -32,5 +40,49 @@
+     void ProcessCommand(String command, String jsonData){
+         System.out.printf("your command : %s your data: %s\n", command, jsonData);
+         //TODO: Implement
++        ObjectMapper mapper = new ObjectMapper();
++        switch (command){
++            case "addUser":
++                if(!jsonData.isEmpty()){
++                    User user = mapper.readValue(jsonData, User.class);
++                    return Mizdooni.addUser(user);
++                }
++                break;
++            case "addRestaurant":
++                if(!jsonData.isEmpty()){
++                    Restaurant restaurant = mapper.readValue(jsonData, Restaurant.class);
++                    return Mizdooni.addRestaurant(restaurant);
++                }
++                break;
++            case "addTable":
++                if(!jsonData.isEmpty()){
++                    Table table = mapper.readValue(jsonData, Table.class);
++                    return Mizdooni.addTable(table);
++                }
++                break;
++            case "reserveTable":
++                if(!jsonData.isEmpty()) {
++                    Mizdooni reserve = mapper.readValue(jsonData, Mizdooni.class);
++                    return  Reserve.ReserveATable(reserve);
++                }
++                break;
++            case "cancelReservation":
++                if(!jsonData.isEmpty()) {
++                    Reserve cancelRes = mapper.readValue(jsonData, Reserve.class);
++                    return  Mizdooni.CancelReserve(cancelRes);
++                }
++                break;
++            case "showReservationHistory":
++                if(!jsonData.isEmpty()) {
++                    Map inputDataMap;
++                    inputDataMap = mapper.readValue(jsonData, Map.class);
++                    String username = String.valueOf(inputDataMap.get("username"));
++                    return  Mizdooni.showReservationHistory(username);
++                }
++                break;
++        }
++
++
++
+     }
+ }
+Index: CA1/src/main/java/service/Mizdooni.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package service;\r\n\r\nimport database.Database;\r\nimport exceptions.*;\r\nimport model.*;\r\nimport utils.AvailableTable;\r\nimport utils.PairType;\r\nimport utils.UserRole;\r\n\r\nimport java.time.LocalDateTime;\r\n\r\npublic class Mizdooni {\r\n\r\n    Database Database;\r\n\r\n    public Mizdooni(Database database){\r\n        Database = database;\r\n    }\r\n\r\n\r\n    public Reserve ReserveATable(String reserveeUsername, String restaurantName, int tableNumber, LocalDateTime reserveTime)\r\n            throws\r\n            NotExistentUser,\r\n            NotExpectedUserRole,\r\n            NotExistentRestaurant,\r\n            TimeBelongsToPast,\r\n            TableIsReserved,\r\n            TimeIsNotRound,\r\n            NotInWorkHour,\r\n            NotExistentTable\r\n    {\r\n\r\n        var reservee = FindUser(reserveeUsername);\r\n        EnsureUserIs(reservee, UserRole.Costumer);\r\n        var restaurant = FindRestaurant(restaurantName);\r\n        var reserveNumber = Database.ReserveIdGenerator.GetNext();\r\n        var reserve = restaurant.MakeReserve(reserveNumber, reservee, tableNumber, reserveTime);\r\n\r\n        try{\r\n            Database.Reserves.Add(reserve);\r\n        } catch (KeyAlreadyExists ex){\r\n            throw new RuntimeException(ex);\r\n        }\r\n\r\n        return reserve;\r\n    }\r\n\r\n    public void CancelReserve(String username, int reserveNumber)\r\n            throws\r\n            NotExistentUser,\r\n            NotExistentReserve,\r\n            CancelingExpiredReserve,\r\n            CancelingCanceledReserve\r\n    {\r\n\r\n        var reserve = FindReserve(username, reserveNumber);\r\n        reserve.Cancel();\r\n    }\r\n\r\n    public Reserve[] GetActiveReserves(String username) throws NotExistentUser, NotExpectedUserRole {\r\n\r\n        var user = FindUser(username);\r\n        EnsureUserIs(user, UserRole.Costumer);\r\n\r\n        return Database\r\n                .Reserves\r\n                .Search(reserve -> reserve.IsActive() && user.Is(reserve.getReserveeUsername()))\r\n                .toArray(Reserve[]::new);\r\n\r\n    }\r\n\r\n    public AvailableTable[] GetAvailableTables(String restaurantName)\r\n        throws NotExistentRestaurant {\r\n\r\n        var restaurant = FindRestaurant(restaurantName);\r\n        return restaurant.GetAvailableTables();\r\n    }\r\n\r\n    public void AddReview(String issuerUsername, String restaurantName, Review review)\r\n            throws\r\n            NotExistentUser,\r\n            NotExistentRestaurant,\r\n            NotExpectedUserRole\r\n    {\r\n\r\n        var issuer = FindUser(issuerUsername);\r\n        EnsureUserIs(issuer, UserRole.Costumer);\r\n\r\n        var restaurant = FindRestaurant(restaurantName);\r\n\r\n        restaurant.addReview(issuerUsername, review);\r\n    }\r\n\r\n    User FindUser(String username) throws NotExistentUser {\r\n        try {\r\n            return Database.Users.Get(username);\r\n        } catch (KeyNotFound ex) {\r\n            throw new NotExistentUser();\r\n        }\r\n    }\r\n\r\n    Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {\r\n\r\n        if(Database.Users.Exists(username)){\r\n            throw new NotExistentUser();\r\n        }\r\n\r\n        try{\r\n            return Database.Reserves.Get(new PairType<>(username, reserveNumber));\r\n        } catch (KeyNotFound e) {\r\n            throw new NotExistentReserve();\r\n        }\r\n    }\r\n\r\n    Restaurant FindRestaurant(String restaurantName) throws NotExistentRestaurant {\r\n        try {\r\n            return Database.Restaurants.Get(restaurantName);\r\n        } catch (KeyNotFound ex) {\r\n            throw new NotExistentRestaurant();\r\n        }\r\n    }\r\n\r\n    void EnsureUserIs(User user, UserRole desiredRole) throws NotExpectedUserRole {\r\n        if(!user.RoleIs(desiredRole)){\r\n            throw new NotExpectedUserRole(desiredRole);\r\n        }\r\n    }\r\n\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/service/Mizdooni.java b/CA1/src/main/java/service/Mizdooni.java
+--- a/CA1/src/main/java/service/Mizdooni.java	
++++ b/CA1/src/main/java/service/Mizdooni.java	
+@@ -9,12 +9,17 @@
+ 
+ import java.time.LocalDateTime;
+ 
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.databind.node.ObjectNode;
++
+ public class Mizdooni {
+ 
+     Database Database;
+ 
+     public Mizdooni(Database database){
+         Database = database;
++        mapper = new ObjectMapper();
+     }
+ 
+ 
+Index: CA1/src/main/java/model/Table.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\r\n\r\nimport exceptions.TableIsReserved;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport utils.AvailableTable;\r\nimport utils.PairType;\r\n\r\nimport java.time.LocalDateTime;\r\nimport java.util.ArrayList;\r\n\r\n\r\n@Getter\r\n@Setter\r\npublic class Table extends EntityModel<PairType<String, Integer>> {\r\n\r\n    private int TableNumber;\r\n    private int NumberOfSeats;\r\n    private Restaurant Restaurant;\r\n    private User User;\r\n    private ArrayList<Reserve> Reserves;\r\n\r\n    static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){\r\n        return new PairType<>(restaurant.getKey(), tableNumber);\r\n    }\r\n\r\n    public Table(int tableNumber, Restaurant restaurant, User managerUsername , int numOfSeats){\r\n        super(CreateTableKey(restaurant, tableNumber));\r\n        TableNumber = tableNumber;\r\n        NumberOfSeats = numOfSeats;\r\n        Restaurant = restaurant;\r\n        User = managerUsername;\r\n    }\r\n\r\n\r\n    void EnsureTableIsFreeIn(LocalDateTime reserveTime) throws TableIsReserved {\r\n        for(var reserve : Reserves){\r\n            if(reserve.GetReserveTime().equals(reserveTime) && reserve.IsActive()){\r\n                throw new TableIsReserved();\r\n            }\r\n        }\r\n    }\r\n\r\n    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime) throws TableIsReserved {\r\n        EnsureTableIsFreeIn(reserveTime);\r\n        var reserve = new Reserve(reserveNumber, this, reservee, reserveTime);\r\n        Reserves.add(reserve);\r\n        return reserve;\r\n    }\r\n\r\n    public boolean Is(int tableNumber) {\r\n        return getTableNumber() == tableNumber;\r\n    }\r\n\r\n    public AvailableTable GetAvailableTimes(){\r\n\r\n        var now = LocalDateTime.now();\r\n\r\n        var availableTimes = new AvailableTable(this);\r\n\r\n        Reserves\r\n            .stream()\r\n            .filter(Reserve::IsActive)\r\n            .map(Reserve::GetReserveTime)\r\n            .sorted()\r\n            .dropWhile(time -> time.isAfter(now))\r\n            .distinct()\r\n            .forEach(availableTimes::ConsiderNextReservation);\r\n\r\n        return availableTimes;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/Table.java b/CA1/src/main/java/model/Table.java
+--- a/CA1/src/main/java/model/Table.java	
++++ b/CA1/src/main/java/model/Table.java	
+@@ -32,6 +32,9 @@
+         User = managerUsername;
+     }
+ 
++    public int getTableNumber() {
++        return TableNumber;
++    }
+ 
+     void EnsureTableIsFreeIn(LocalDateTime reserveTime) throws TableIsReserved {
+         for(var reserve : Reserves){

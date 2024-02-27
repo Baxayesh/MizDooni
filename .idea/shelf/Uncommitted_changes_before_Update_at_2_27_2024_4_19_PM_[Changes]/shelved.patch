@@ -1,0 +1,321 @@
+Index: CA1/src/main/java/model/Restaurant.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\r\n\r\nimport exceptions.*;\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport utils.AvailableTable;\r\n\r\nimport java.time.LocalDateTime;\r\nimport java.time.LocalTime;\r\nimport java.util.ArrayList;\r\nimport java.util.Dictionary;\r\nimport java.util.List;\r\nimport java.util.regex.Pattern;\r\n\r\n@Getter\r\n@Setter\r\npublic class Restaurant extends EntityModel<String> {\r\n\r\n    private LocalTime OpenTime;\r\n    private LocalTime CloseTime;\r\n    private User Manager;\r\n    private String Type;\r\n    private String Description;\r\n    private ArrayList<Table> Tables;\r\n    private Dictionary<String, Review> Reviews;\r\n\r\n    //address\r\n    private Address restaurantAddress;\r\n\r\n    private List<Restaurant> restaurants;\r\n    private List<User> users;\r\n\r\n    public String getName(){\r\n        return super.getKey();\r\n    }\r\n\r\n    public Restaurant(String name, LocalTime openTime, LocalTime closeTime, User manager, String type, String description, Address address) {\r\n        super(name);\r\n        OpenTime = openTime;\r\n        CloseTime = closeTime;\r\n        Manager = manager;\r\n        Type = type;\r\n        Description = description;\r\n        Tables = new ArrayList<>();\r\n        restaurantAddress = address;\r\n        this.restaurants = new ArrayList<>();\r\n        this.users = new ArrayList<>();\r\n    }\r\n\r\n    public String addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) {\r\n        // Validate restaurant name\r\n        for (Restaurant restaurant : restaurants) {\r\n            if (restaurant.getName().equals(name)) {\r\n                return \"Error: Restaurant name already exists.\";\r\n            }\r\n        }\r\n        /*\r\n        // Validate manager username\r\n        boolean managerExists = false;\r\n        for (User user : users) {\r\n            if (user.getUsername().equals(managerUsername) && user.getRole() =) {\r\n                managerExists = true;\r\n                break;\r\n            }\r\n        }*/\r\n        /*\r\n        if (!managerExists) {\r\n            return \"Error: Manager username does not exist or is not a manager.\";\r\n        }*/\r\n\r\n        // Validate start and end times\r\n        if (!Pattern.matches(\"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\", startTime.toString()) || !Pattern.matches(\"^([01]?[0-9]|2[0-3]):[0-5][0-9]$\", endTime.toString())) {\r\n            return \"Error: Invalid start or end time format.\";\r\n        }\r\n\r\n        // Validate address\r\n        if (country == null || country.isEmpty() || city == null || city.isEmpty() || street == null || street.isEmpty()) {\r\n            return \"Error: Invalid address. Address must include country, city, and street.\";\r\n        }\r\n\r\n        // Add restaurant to the list\r\n        restaurants.add(new Restaurant(name, startTime, endTime, managerUsername, type, description, new Address(country, city, street)));\r\n\r\n        return \"{\\\"success\\\": true, \\\"data\\\": \\\"Restaurant added successfully.\\\"}\";\r\n    }\r\n\r\n    public String addTable(int tableNumber, Restaurant restaurantName, User managerUsername, int seatsNumber) {\r\n        // Check if the table number is unique\r\n        for (Table existingTable : Tables) {\r\n            if (existingTable.getTableNumber() == tableNumber) {\r\n                return \"Error: Table with the same number already exists.\";\r\n            }\r\n        }\r\n\r\n        // Check if the manager username exists (you'll need a method to verify this)\r\n        if (!managerExists(managerUsername)) {\r\n            return \"Error: Restaurant manager username does not exist.\";\r\n        }\r\n\r\n        // Check if the restaurant name exists (you'll need a method to verify this)\r\n        if (!restaurantExists(restaurantName.getName())) {\r\n            return \"Error: Restaurant name does not exist.\";\r\n        }\r\n\r\n        // Check if seatsNumber is a natural number\r\n        if (seatsNumber <= 0) {\r\n            return \"Error: Seats number must be a positive integer.\";\r\n        }\r\n\r\n        // Create a new table and add it to the list\r\n        Table newTable = new Table(tableNumber, restaurantName, managerUsername, seatsNumber);\r\n        Tables.add(newTable);\r\n\r\n        return \"Table added successfully.\";\r\n    }\r\n    private boolean managerExists(User managerUsername) {\r\n        return true;\r\n    }\r\n\r\n    private boolean restaurantExists(String restaurantName) {\r\n\r\n        return true;\r\n    }\r\n\r\n\r\n\r\n\r\n    void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {\r\n        var roundTime = LocalTime.of(time.getHour(), 0);\r\n\r\n        if(! time.equals(roundTime)){\r\n            throw new TimeIsNotRound();\r\n        }\r\n    }\r\n\r\n    void EnsureTimeBelongsToFuture(LocalDateTime time) throws TimeBelongsToPast {\r\n        if(time.isBefore(LocalDateTime.now())){\r\n            throw new TimeBelongsToPast();\r\n        }\r\n    }\r\n\r\n    void EnsureTimeIsInWorkHours(LocalTime time) throws NotInWorkHour {\r\n        if(time.isBefore(OpenTime) || time.isAfter(CloseTime))\r\n            throw new NotInWorkHour();\r\n    }\r\n\r\n    Table FindTable(int tableNumber) throws NotExistentTable {\r\n        for(var table : Tables){\r\n            if(table.Is(tableNumber)){\r\n                return table;\r\n            }\r\n        }\r\n\r\n        throw new NotExistentTable();\r\n    }\r\n\r\n    public Reserve MakeReserve(int reserveNumber, User reservee, int tableNumber, LocalDateTime reserveTime)\r\n            throws TableIsReserved, TimeIsNotRound, TimeBelongsToPast, NotInWorkHour, NotExistentTable {\r\n\r\n        EnsureTimeIsRound(reserveTime.toLocalTime());\r\n        EnsureTimeBelongsToFuture(reserveTime);\r\n        EnsureTimeIsInWorkHours(reserveTime.toLocalTime());\r\n        var table = FindTable(tableNumber);\r\n        return table.MakeReserve(reserveNumber, reservee, reserveTime); // store history\r\n    }\r\n\r\n    public AvailableTable[] GetAvailableTables() {\r\n        return\r\n            Tables\r\n            .stream()\r\n            .map(Table::GetAvailableTimes)\r\n            .filter(AvailableTable::HasAnyAvailableTime)\r\n            .toArray(AvailableTable[]::new);\r\n    }\r\n\r\n    public void addReview(String issuer, Review review) {\r\n        Reviews.put(issuer, review);\r\n    }\r\n    public static class Address {\r\n        private String country;\r\n        private String city;\r\n        private String street;\r\n\r\n        public Address(String country, String city, String street) {\r\n            this.country = country;\r\n            this.city = city;\r\n            this.street = street;\r\n        }\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/Restaurant.java b/CA1/src/main/java/model/Restaurant.java
+--- a/CA1/src/main/java/model/Restaurant.java	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/src/main/java/model/Restaurant.java	(date 1709038073144)
+@@ -3,6 +3,7 @@
+ import exceptions.*;
+ import lombok.Getter;
+ import lombok.Setter;
++import ui.ConsoleMizdooni;
+ import utils.AvailableTable;
+ 
+ import java.time.LocalDateTime;
+@@ -11,6 +12,9 @@
+ import java.util.Dictionary;
+ import java.util.List;
+ import java.util.regex.Pattern;
++import com.fasterxml.jackson.core.JsonProcessingException;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import java.io.IOException;
+ 
+ @Getter
+ @Setter
+@@ -47,11 +51,12 @@
+         this.users = new ArrayList<>();
+     }
+ 
+-    public String addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) {
++    public void addRestaurant(String name, User managerUsername, String type, LocalTime startTime, LocalTime endTime, String description, String country, String city, String street) throws IOException {
+         // Validate restaurant name
+         for (Restaurant restaurant : restaurants) {
+             if (restaurant.getName().equals(name)) {
+-                return "Error: Restaurant name already exists.";
++                //return "Error: Restaurant name already exists.";
++                Exception e = new RestaurantAlreadyExists();
+             }
+         }
+         /*
+@@ -70,18 +75,21 @@
+ 
+         // Validate start and end times
+         if (!Pattern.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$", startTime.toString()) || !Pattern.matches("^([01]?[0-9]|2[0-3]):[0-5][0-9]$", endTime.toString())) {
+-            return "Error: Invalid start or end time format.";
++            //return "Error: Invalid start or end time format.";
++            Exception e = new NotInWorkHour();
+         }
+ 
+         // Validate address
+         if (country == null || country.isEmpty() || city == null || city.isEmpty() || street == null || street.isEmpty()) {
+-            return "Error: Invalid address. Address must include country, city, and street.";
++            //return "Error: Invalid address. Address must include country, city, and street.";
++            Exception e = new InvalidAddress();
+         }
+ 
+         // Add restaurant to the list
+         restaurants.add(new Restaurant(name, startTime, endTime, managerUsername, type, description, new Address(country, city, street)));
+ 
+-        return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
++        //return "{\"success\": true, \"data\": \"Restaurant added successfully.\"}";
++        ConsoleMizdooni.printOutput(new Output(true,"Restaurant added successfully"));
+     }
+ 
+     public String addTable(int tableNumber, Restaurant restaurantName, User managerUsername, int seatsNumber) {
+@@ -113,14 +121,9 @@
+ 
+         return "Table added successfully.";
+     }
+-    private boolean managerExists(User managerUsername) {
+-        return true;
+-    }
++    private boolean managerExists(User managerUsername) {return true;}
+ 
+-    private boolean restaurantExists(String restaurantName) {
+-
+-        return true;
+-    }
++    private boolean restaurantExists(String restaurantName) {return true;}
+ 
+ 
+ 
+Index: CA1/src/main/java/ui/ConsoleMizdooni.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui;\r\n\r\nimport database.Database;\r\nimport service.Mizdooni;\r\n\r\nimport java.util.Scanner;\r\nimport com.google.gson.Gson;\r\nimport model.*;\r\nimport database.Database.*;\r\n\r\n\r\npublic class ConsoleMizdooni {\r\n\r\n    Mizdooni Service;\r\n\r\n    public ConsoleMizdooni(Mizdooni mizdooni){\r\n        Service = mizdooni;\r\n    }\r\n\r\n    public void Start(){\r\n        System.out.println(\"Mizdooni Is Up!\");\r\n\r\n        Scanner inputScanner = new Scanner(System.in);\r\n\r\n        while (true){\r\n            var command = inputScanner.next();\r\n\r\n            if(command.equals(\"exit\")){\r\n                return;\r\n            }\r\n\r\n            var jsonData = inputScanner.nextLine();\r\n            ProcessCommand(command, jsonData);\r\n        }\r\n    }\r\n\r\n    void ProcessCommand(String command, String jsonData){\r\n        System.out.printf(\"your command : %s your data: %s\\n\", command, jsonData);\r\n        //TODO: Implement\r\n//        Database myDatabase = new Database();\r\n//        Mizdooni mizdooni = new Mizdooni(myDatabase);\r\n        switch (command){\r\n            case \"addUser\":\r\n                if(!jsonData.isEmpty()) {\r\n                    User user = new Gson().fromJson(jsonData, User.class);\r\n                    return Service.AddUser(user);\r\n                }\r\n                break;\r\n            case \"addRestaurant\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);\r\n                    return Service.AddRestaurant(restaurant);\r\n                }\r\n                break;\r\n            case \"addTable\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Table table = new Gson().fromJson(jsonData, Table.class);\r\n                    return Service.AddTable(table);\r\n                }\r\n                break;\r\n            case \"reserveTable\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);\r\n                    return Service.ReserveATable(reserve);\r\n                }\r\n                break;\r\n            case \"cancelReservation\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);\r\n                    return Service.CancelReserve(reserve);\r\n                }\r\n                break;\r\n            case \"showReservationHistory\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);\r\n                    return Service.GetActiveReserves(reserve);\r\n                }\r\n                break;\r\n            case \"searchRestaurantsByName\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);\r\n                    return Service.SearchRestaurantByName(restaurant);\r\n                }\r\n                break;\r\n            case \"searchRestaurantsByType\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);\r\n                    return Service.SearchRestaurantByType(restaurant);\r\n                }\r\n                break;\r\n            case \"showAvailableTables\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Table table = new Gson().fromJson(jsonData, Table.class);\r\n                    return Service.GetAvailableTables(table);\r\n                }\r\n                break;\r\n            case \"addReview\":\r\n                if(!jsonData.isEmpty()) {\r\n                    Review review = new Gson().fromJson(jsonData, Review.class);\r\n                    return Service.AddReview(review);\r\n                }\r\n                break;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/ui/ConsoleMizdooni.java b/CA1/src/main/java/ui/ConsoleMizdooni.java
+--- a/CA1/src/main/java/ui/ConsoleMizdooni.java	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/src/main/java/ui/ConsoleMizdooni.java	(date 1709037542951)
+@@ -3,18 +3,31 @@
+ import database.Database;
+ import service.Mizdooni;
+ 
++import java.security.Provider;
+ import java.util.Scanner;
+ import com.google.gson.Gson;
+ import model.*;
+ import database.Database.*;
++import java.util.Map;
++import java.util.regex.*;
++import com.fasterxml.jackson.core.JsonProcessingException;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import java.io.IOException;
++import java.util.*;
+ 
+ 
+ public class ConsoleMizdooni {
+ 
+     Mizdooni Service;
++    //private Mizdooni mizdooni;
++    //private Scanner input;
++    private static ObjectMapper mapper;
+ 
+     public ConsoleMizdooni(Mizdooni mizdooni){
++
+         Service = mizdooni;
++        //input = new Scanner(System.in);
++        mapper = new ObjectMapper();
+     }
+ 
+     public void Start(){
+@@ -34,22 +47,20 @@
+         }
+     }
+ 
+-    void ProcessCommand(String command, String jsonData){
++    void ProcessCommand(String command, String jsonData) throws IOException{
+         System.out.printf("your command : %s your data: %s\n", command, jsonData);
+         //TODO: Implement
+-//        Database myDatabase = new Database();
+-//        Mizdooni mizdooni = new Mizdooni(myDatabase);
+         switch (command){
+             case "addUser":
+                 if(!jsonData.isEmpty()) {
+-                    User user = new Gson().fromJson(jsonData, User.class);
++                    User user = mapper.readValue(jsonData, User.class);
+                     return Service.AddUser(user);
+                 }
+                 break;
+             case "addRestaurant":
+                 if(!jsonData.isEmpty()) {
+                     Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+-                    return Service.AddRestaurant(restaurant);
++                    return Service.AddRestaurant(jsonData);
+                 }
+                 break;
+             case "addTable":
+@@ -97,9 +108,14 @@
+             case "addReview":
+                 if(!jsonData.isEmpty()) {
+                     Review review = new Gson().fromJson(jsonData, Review.class);
+-                    return Service.AddReview(review);
++                    return Service.AddReview(new Gson().fromJson(jsonData, Review.class));
+                 }
+                 break;
+         }
+     }
++    public static void printOutput(Output output) throws JsonProcessingException {
++        String print = mapper.writeValueAsString(output);
++        print = print.replace("\\", "");
++        System.out.println(print);
++    }
+ }
+Index: CA1/src/main/java/defines/Errors.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package defines;\r\n\r\npublic class Errors {\r\n\r\n    public static final String NOT_EXISTENT_USER = \"User Does Not Exists\";\r\n\r\n    public static  final  String NOT_EXISTENT_RESTAURANT = \"Restaurant Does Not Exists\";\r\n\r\n    public static final String NOT_EXISTENT_TABLE = \"Table Does Not Exists\";\r\n\r\n    public static final String NOT_EXISTENT_RESERVE = \"Reserve Not Found\";\r\n\r\n    public static final  String TABLE_IS_ALREADY_RESERVED = \"There Is An Active Reserve On Chosen Table/Time\";\r\n\r\n    public static final String TIME_IS_NOT_ROUND = \"Input Time Is Not Round (Time Should Just Contain Hour)\";\r\n\r\n    public static final String TIME_BELONGS_TO_PAST = \"Input Time Belongs To Past\";\r\n\r\n    public static final String NOT_IN_WORK_HOUR = \"Input Time Is Not In Restaurant Work Hours\";\r\n\r\n    public static final String CANCELING_EXPIRED_RESERVE = \"Cannot Cancel A Reserve From Past\";\r\n\r\n    public static final String CANCELING_CANCELED_RESERVE  = \"Reserve Is Already Canceled\";\r\n\r\n    public static final String SCORE_OUT_OF_RANGE = \"Score Is Not In Valid Score Range\";\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/defines/Errors.java b/CA1/src/main/java/defines/Errors.java
+--- a/CA1/src/main/java/defines/Errors.java	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/src/main/java/defines/Errors.java	(date 1709031793046)
+@@ -6,6 +6,9 @@
+ 
+     public static  final  String NOT_EXISTENT_RESTAURANT = "Restaurant Does Not Exists";
+ 
++    public static final String ALREADY_EXISTENT_RESTAURANT = "Restaurant name already exists";
++    public static final String INVALID_ADDRESS = "Address must be Valid";
++
+     public static final String NOT_EXISTENT_TABLE = "Table Does Not Exists";
+ 
+     public static final String NOT_EXISTENT_RESERVE = "Reserve Not Found";
+Index: CA1/src/main/java/service/Mizdooni.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package service;\r\n\r\nimport database.Database;\r\nimport exceptions.*;\r\nimport model.Reserve;\r\nimport model.Restaurant;\r\nimport model.Review;\r\nimport model.User;\r\nimport utils.AvailableTable;\r\nimport utils.PairType;\r\nimport utils.UserRole;\r\n\r\nimport java.time.LocalDateTime;\r\nimport java.time.LocalTime;\r\n\r\npublic class Mizdooni {\r\n\r\n    Database Database;\r\n\r\n    public Mizdooni(Database database){\r\n        Database = database;\r\n    }\r\n\r\n\r\n    public void AddUser(\r\n            String role,\r\n            String username,\r\n            String password,\r\n            String email,\r\n            User.Address address\r\n    ) {\r\n\r\n        throw new RuntimeException(\"Not Implemented Yet\");\r\n    }\r\n\r\n    public void AddRestaurant(\r\n            String name,\r\n            String manager,\r\n            String type,\r\n            LocalTime openTime,\r\n            LocalTime closeTime,\r\n            String description,\r\n            Restaurant.Address address\r\n    ){\r\n        throw new RuntimeException(\"Not Implemented Yet\");\r\n    }\r\n\r\n    public void AddTable(\r\n            int tableNumber,\r\n            String restaurantName,\r\n            String manager,\r\n            int seatNumber\r\n    ){\r\n        throw new RuntimeException(\"Not Implemented Yet\");\r\n    }\r\n\r\n    public Reserve ReserveATable(\r\n            String reserveeUsername,\r\n            String restaurantName,\r\n            int tableNumber,\r\n            LocalDateTime reserveTime\r\n    )\r\n            throws\r\n            NotExistentUser,\r\n            NotExpectedUserRole,\r\n            NotExistentRestaurant,\r\n            TimeBelongsToPast,\r\n            TableIsReserved,\r\n            TimeIsNotRound,\r\n            NotInWorkHour,\r\n            NotExistentTable\r\n    {\r\n\r\n        var reservee = FindUser(reserveeUsername);\r\n        EnsureUserIs(reservee, UserRole.Costumer);\r\n        var restaurant = FindRestaurant(restaurantName);\r\n        var reserveNumber = Database.ReserveIdGenerator.GetNext();\r\n        var reserve = restaurant.MakeReserve(reserveNumber, reservee, tableNumber, reserveTime);\r\n\r\n        try{\r\n            Database.Reserves.Add(reserve);\r\n        } catch (KeyAlreadyExists ex){\r\n            throw new RuntimeException(ex);\r\n        }\r\n\r\n        return reserve;\r\n    }\r\n\r\n    public void CancelReserve(String username, int reserveNumber)\r\n            throws\r\n            NotExistentUser,\r\n            NotExistentReserve,\r\n            CancelingExpiredReserve,\r\n            CancelingCanceledReserve\r\n    {\r\n\r\n        var reserve = FindReserve(username, reserveNumber);\r\n        reserve.Cancel();\r\n    }\r\n\r\n    public Reserve[] GetActiveReserves(String username) throws NotExistentUser, NotExpectedUserRole {\r\n\r\n        var user = FindUser(username);\r\n        EnsureUserIs(user, UserRole.Costumer);\r\n\r\n        return Database\r\n                .Reserves\r\n                .Search(reserve -> reserve.IsActive() && user.Is(reserve.getReserveeUsername()))\r\n                .toArray(Reserve[]::new);\r\n\r\n    }\r\n\r\n    public AvailableTable[] GetAvailableTables(String restaurantName)\r\n        throws NotExistentRestaurant {\r\n\r\n        var restaurant = FindRestaurant(restaurantName);\r\n        return restaurant.GetAvailableTables();\r\n    }\r\n\r\n    public Restaurant[] SearchRestaurantByName(String restaurantName) {\r\n        return Database\r\n            .Restaurants\r\n            .Search(restaurant -> restaurant.getName().toLowerCase().contains(restaurantName.toLowerCase()))\r\n            .toArray(Restaurant[]::new);\r\n    }\r\n\r\n    public Restaurant[] SearchRestaurantByType(String type){\r\n        return Database\r\n            .Restaurants\r\n            .Search(restaurant -> restaurant.getType().equalsIgnoreCase(type))\r\n            .toArray(Restaurant[]::new);\r\n    }\r\n\r\n    public void AddReview(\r\n            String issuerUsername,\r\n            String restaurantName,\r\n            double foodScore,\r\n            double serviceScore,\r\n            double ambianceScore,\r\n            double overallScore,\r\n            String comment\r\n    )\r\n            throws\r\n            NotExistentUser,\r\n            NotExistentRestaurant,\r\n            NotExpectedUserRole,\r\n            ScoreOutOfRange\r\n    {\r\n        var review = new Review(foodScore, serviceScore, ambianceScore, overallScore, comment);\r\n\r\n        var issuer = FindUser(issuerUsername);\r\n        EnsureUserIs(issuer, UserRole.Costumer);\r\n\r\n        var restaurant = FindRestaurant(restaurantName);\r\n\r\n        restaurant.addReview(issuerUsername, review);\r\n    }\r\n\r\n    User FindUser(String username) throws NotExistentUser {\r\n        try {\r\n            return Database.Users.Get(username);\r\n        } catch (KeyNotFound ex) {\r\n            throw new NotExistentUser();\r\n        }\r\n    }\r\n\r\n    Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {\r\n\r\n        if(Database.Users.Exists(username)){\r\n            throw new NotExistentUser();\r\n        }\r\n\r\n        try{\r\n            return Database.Reserves.Get(new PairType<>(username, reserveNumber));\r\n        } catch (KeyNotFound e) {\r\n            throw new NotExistentReserve();\r\n        }\r\n    }\r\n\r\n    Restaurant FindRestaurant(String restaurantName) throws NotExistentRestaurant {\r\n        try {\r\n            return Database.Restaurants.Get(restaurantName);\r\n        } catch (KeyNotFound ex) {\r\n            throw new NotExistentRestaurant();\r\n        }\r\n    }\r\n\r\n    void EnsureUserIs(User user, UserRole desiredRole) throws NotExpectedUserRole {\r\n        if(!user.RoleIs(desiredRole)){\r\n            throw new NotExpectedUserRole(desiredRole);\r\n        }\r\n    }\r\n\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/service/Mizdooni.java b/CA1/src/main/java/service/Mizdooni.java
+--- a/CA1/src/main/java/service/Mizdooni.java	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/src/main/java/service/Mizdooni.java	(date 1709038172782)
+@@ -31,6 +31,7 @@
+     ) {
+ 
+         throw new RuntimeException("Not Implemented Yet");
++
+     }
+ 
+     public void AddRestaurant(
+@@ -191,6 +192,4 @@
+         }
+     }
+ 
+-
+-
+ }
+\ No newline at end of file
+Index: CA1/src/main/java/model/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\r\n\r\nimport lombok.Getter;\r\nimport lombok.Setter;\r\nimport utils.UserRole;\r\n\r\n@Getter\r\n@Setter\r\npublic class User extends EntityModel<String> {\r\n\r\n    private String role;\r\n    private String username;\r\n    private String password;\r\n    private String email;\r\n    private Address userAddress;\r\n\r\n    public User(String username, String role, String password, String email, Address address) {\r\n        super(username);\r\n        //Role = role;\r\n        this.role = role;\r\n        this.username = username;\r\n        this.password = password;\r\n        this.email = email;\r\n        userAddress = address;\r\n    }\r\n\r\n    public boolean RoleIs(UserRole desiredRole) {\r\n        return role.equalsIgnoreCase(desiredRole.toString());\r\n    }\r\n\r\n    public static class Address {\r\n        private String country;\r\n        private String city;\r\n\r\n        public Address(String country, String city) {\r\n            this.country = country;\r\n            this.city = city;\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/User.java b/CA1/src/main/java/model/User.java
+--- a/CA1/src/main/java/model/User.java	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/src/main/java/model/User.java	(date 1709018418646)
+@@ -3,6 +3,9 @@
+ import lombok.Getter;
+ import lombok.Setter;
+ import utils.UserRole;
++import com.fasterxml.jackson.annotation.JsonFormat;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.databind.node.ObjectNode;
+ 
+ @Getter
+ @Setter
+Index: CA1/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n  <modelVersion>4.0.0</modelVersion>\r\n\r\n  <groupId>ir.ac.ut</groupId>\r\n  <artifactId>CA1</artifactId>\r\n  <version>0.1.0</version>\r\n  <packaging>jar</packaging>\r\n\r\n  <properties>\r\n    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\r\n    <java.version>19</java.version>\r\n  </properties>\r\n\r\n  <dependencies>\r\n    <dependency>\r\n      <groupId>org.junit.jupiter</groupId>\r\n      <artifactId>junit-jupiter</artifactId>\r\n      <version>5.10.1</version>\r\n    </dependency>\r\n    <dependency>\r\n        <groupId>org.projectlombok</groupId>\r\n        <artifactId>lombok</artifactId>\r\n        <version>1.18.26</version>\r\n        <scope>compile</scope>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>com.fasterxml.jackson.core</groupId>\r\n      <artifactId>jackson-core</artifactId>\r\n      <version>2.16.1</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>com.fasterxml.jackson.core</groupId>\r\n      <artifactId>jackson-annotations</artifactId>\r\n      <version>2.16.1</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>com.fasterxml.jackson.core</groupId>\r\n      <artifactId>jackson-databind</artifactId>\r\n      <version>2.16.1</version>\r\n    </dependency>\r\n    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->\r\n    <dependency>\r\n      <groupId>com.google.code.gson</groupId>\r\n      <artifactId>gson</artifactId>\r\n      <version>2.10.1</version>\r\n    </dependency>\r\n\r\n  </dependencies>\r\n\r\n  <build>\r\n    <plugins>\r\n      <plugin>\r\n        <groupId>org.apache.maven.plugins</groupId>\r\n        <artifactId>maven-compiler-plugin</artifactId>\r\n        <version>3.12.1</version>\r\n        <configuration>\r\n          <source>19</source>\r\n          <target>19</target>\r\n        </configuration>\r\n      </plugin>\r\n    </plugins>\r\n  </build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/pom.xml b/CA1/pom.xml
+--- a/CA1/pom.xml	(revision d95318c25ab176ea00dd9a1202813c1e110fb081)
++++ b/CA1/pom.xml	(date 1709018183268)
+@@ -45,7 +45,11 @@
+       <artifactId>gson</artifactId>
+       <version>2.10.1</version>
+     </dependency>
+-
++    <dependency>
++      <groupId>com.fasterxml.jackson.core</groupId>
++      <artifactId>jackson-databind</artifactId>
++      <version>2.16.1</version>
++    </dependency>
+   </dependencies>
+ 
+   <build>
+Index: CA1/src/main/java/exceptions/InvalidAddress.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/exceptions/InvalidAddress.java b/CA1/src/main/java/exceptions/InvalidAddress.java
+new file mode 100644
+--- /dev/null	(date 1709031916159)
++++ b/CA1/src/main/java/exceptions/InvalidAddress.java	(date 1709031916159)
+@@ -0,0 +1,7 @@
++package exceptions;
++import static defines.Errors.INVALID_ADDRESS;
++public class InvalidAddress extends Exception {
++    public InvalidAddress(){
++        super(INVALID_ADDRESS);
++    }
++}
+Index: CA1/src/main/java/model/Output.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/model/Output.java b/CA1/src/main/java/model/Output.java
+new file mode 100644
+--- /dev/null	(date 1709034975757)
++++ b/CA1/src/main/java/model/Output.java	(date 1709034975757)
+@@ -0,0 +1,18 @@
++package model;
++
++public class Output {
++    private boolean success;
++    private String data;
++
++    public Output(boolean success, String data) {
++        this.success = success;
++        this.data = data;
++    }
++
++    public boolean isSuccess() {
++        return success;
++    }
++    public String getData() {
++        return data;
++    }
++}
+Index: CA1/src/main/java/exceptions/RestaurantAlreadyExists.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CA1/src/main/java/exceptions/RestaurantAlreadyExists.java b/CA1/src/main/java/exceptions/RestaurantAlreadyExists.java
+new file mode 100644
+--- /dev/null	(date 1709031026571)
++++ b/CA1/src/main/java/exceptions/RestaurantAlreadyExists.java	(date 1709031026571)
+@@ -0,0 +1,8 @@
++package exceptions;
++
++import static defines.Errors.ALREADY_EXISTENT_RESTAURANT;
++public class RestaurantAlreadyExists extends Exception{
++    public RestaurantAlreadyExists() {
++        super(ALREADY_EXISTENT_RESTAURANT);
++    }
++}
