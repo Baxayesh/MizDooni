@@ -52,97 +52,64 @@ public class ConsoleMizdooni {
             }
 
             var jsonData = inputScanner.nextLine();
-            ProcessCommand(command, jsonData);
+            try {
+                var data = ProcessCommand(command, jsonData);
+                printOutput(new Output(true, data.toString()));
+            } catch (MizdooniUserException ex){
+                printOutput(new Output(false, ex.getMessage()));
+            }
+
         }
     }
 
-    void ProcessCommand(String command, String jsonData)
-            throws JsonProcessingException,
-            NotExistentUser,
-            NotExpectedUserRole,
-            NotExistentRestaurant,
-            TimeBelongsToPast,
-            TableIsReserved,
-            TimeIsNotRound,
-            NotInWorkHour,
-            NotExistentTable,
-            NotExistentUser,
-            NotExistentReserve,
-            CancelingExpiredReserve,
-            CancelingCanceledReserve,
-            NotExistentUser,
-            NotExistentRestaurant,
-            NotExpectedUserRole,
-            ScoreOutOfRange
+    Object ProcessCommand(String command, String jsonData) throws MizdooniUserException, JsonProcessingException {
+        Reserve reserve;
+        Restaurant restaurant;
+        User user;
 
-            {
-        System.out.printf("your command : %s your data: %s\n", command, jsonData);
-        //TODO: Implement
         switch (command){
             case "addUser":
-                if(!jsonData.isEmpty()) {
-                    User user = new Gson().fromJson(jsonData, User.class);
-                    Service.AddUser(user.getRole(), user.getUsername(), user.getPassword(), user.getEmail(), user.getUserAddress());
-                }
-                break;
+                user = new Gson().fromJson(jsonData, User.class);
+                Service.AddUser(user.getRole(), user.getUsername(), user.getPassword(), user.getEmail(), user.getUserAddress());
+                return "user added successfully";
             case "addRestaurant":
-                if(!jsonData.isEmpty()) {
-                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.AddRestaurant(restaurant.getName(), restaurant.getManagerUsername(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
-                }
-                break;
+                restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+                Service.AddRestaurant(restaurant.getName(), restaurant.getManagerUsername(), restaurant.getType(), restaurant.getOpenTime(), restaurant.getCloseTime(), restaurant.getDescription(), restaurant.getRestaurantAddress());
+                return "user added successfully";
             case "addTable":
-                if(!jsonData.isEmpty()) {
-                    Table table = new Gson().fromJson(jsonData, Table.class);
-                    Service.AddTable(table.getTableNumber(), table.getRestaurant().getName(), table.getUser().getUsername(), table.getNumberOfSeats());
-                }
-                break;
+                Table table = new Gson().fromJson(jsonData, Table.class);
+                Service.AddTable(table.getTableNumber(), table.getRestaurant().getName(), table.getUser().getUsername(), table.getNumberOfSeats());
+                return "user added successfully";
             case "reserveTable":
-                if(!jsonData.isEmpty()) {
-                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);
-                    Service.ReserveATable(reserve.getReserveeUsername(), reserve.getReserveeUsername(), reserve.getReserveNumber(), reserve.GetReserveTime());
-                }
-                break;
+                reserve = new Gson().fromJson(jsonData, Reserve.class);
+                var id =Service.ReserveATable(reserve.getReserveeUsername(), reserve.getReserveeUsername(), reserve.getReserveNumber(), reserve.GetReserveTime());
+                return id;
             case "cancelReservation":
-                if(!jsonData.isEmpty()) {
-                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);
-                    Service.CancelReserve(reserve.getReserveeUsername(),reserve.getReserveNumber());
-                }
-                break;
+                reserve = new Gson().fromJson(jsonData, Reserve.class);
+                Service.CancelReserve(reserve.getReserveeUsername(),reserve.getReserveNumber());
+                return "operation done successfully";
             case "showReservationHistory":
-                if(!jsonData.isEmpty()) {
-                    Reserve reserve = new Gson().fromJson(jsonData, Reserve.class);
-                    Service.GetActiveReserves(reserve.getReserveeUsername());
-                }
-                break;
+                reserve = new Gson().fromJson(jsonData, Reserve.class);
+                return Service.GetActiveReserves(reserve.getReserveeUsername());
             case "searchRestaurantsByName":
-                if(!jsonData.isEmpty()) {
-                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.SearchRestaurantByName(restaurant.getName());
-                }
-                break;
+                restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+                return Service.SearchRestaurantByName(restaurant.getName());
             case "searchRestaurantsByType":
-                if(!jsonData.isEmpty()) {
-                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.SearchRestaurantByType(restaurant.getType());
-                }
-                break;
+                restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+                return Service.SearchRestaurantByType(restaurant.getType());
             case "showAvailableTables":
-                if(!jsonData.isEmpty()) {
-                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    Service.GetAvailableTables(restaurant.getName());
-                }
-                break;
+                restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+                return Service.GetAvailableTables(restaurant.getName());
             case "addReview":
-                if(!jsonData.isEmpty()) {
-                    Review review = new Gson().fromJson(jsonData, Review.class);
-                    Restaurant restaurant = new Gson().fromJson(jsonData, Restaurant.class);
-                    User user = new Gson().fromJson(jsonData, User.class);
-                    Service.AddReview(user.getUsername(), restaurant.getName(), review.getFoodScore(), review.getServiceScore(), review.getAmbianceScore(), review.getOverallScore(), review.getComment());
-                }
-                break;
+                Review review = new Gson().fromJson(jsonData, Review.class);
+                restaurant = new Gson().fromJson(jsonData, Restaurant.class);
+                user = new Gson().fromJson(jsonData, User.class);
+                Service.AddReview(user.getUsername(), restaurant.getName(), review.getFoodScore(), review.getServiceScore(), review.getAmbianceScore(), review.getOverallScore(), review.getComment());
+                return "operation done successfully";
         }
+        return "command not Found";
     }
+
     public static void printOutput(Output output) throws JsonProcessingException {
         String print = mapper.writeValueAsString(output);
         print = print.replace("\\", "");

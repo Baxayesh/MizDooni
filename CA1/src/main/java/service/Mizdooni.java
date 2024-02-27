@@ -26,16 +26,16 @@ public class Mizdooni {
             String password,
             String email,
             User.Address address
-    ) throws JsonProcessingException{
-        var user = new User(username, role, password, email, address);
-        user.addUser(username, role, password, email, address);
+    ) throws JsonProcessingException, UserAlreadyExits, InvalidAddress, InvalidUser {
 
+        var user = new User(username, role, password, email, address);
+        User.ValidateUser(username, role, password, email, address);
         try{
             Database.Users.Add(user);
         }
         catch (KeyAlreadyExists ex){
-
-        throw new RuntimeException(ex);}
+            throw new UserAlreadyExits();
+        }
 
     }
 
@@ -83,7 +83,7 @@ public class Mizdooni {
         }
     }
 
-    public Reserve ReserveATable(
+    public int ReserveATable(
             String reserveeUsername,
             String restaurantName,
             int tableNumber,
@@ -114,7 +114,7 @@ public class Mizdooni {
             throw new RuntimeException(ex);
         }
 
-        return reserve;
+        return reserve.getReserveNumber();
     }
 
     public void CancelReserve(String username, int reserveNumber)

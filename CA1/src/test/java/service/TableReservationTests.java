@@ -250,7 +250,7 @@ public class TableReservationTests {
                 );
 
         stub.AssertReserveRegistered(
-                reserve.getReserveNumber(),
+                reserve,
                 username,
                 restaurant,
                 table,

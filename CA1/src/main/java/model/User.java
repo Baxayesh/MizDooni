@@ -2,15 +2,11 @@ package model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import exceptions.InvalidAddress;
-import exceptions.NoUserAdded;
-import exceptions.UserAlreadyExits;
+import exceptions.InvalidUser;
 import lombok.Getter;
 import lombok.Setter;
-import ui.ConsoleMizdooni;
 import utils.UserRole;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 @Getter
 @Setter
@@ -21,7 +17,6 @@ public class User extends EntityModel<String> {
     private String password;
     private String email;
     private Address userAddress;
-    private List<User> users;
 
     public User(String username, String role, String password, String email, Address address) {
         super(username);
@@ -31,53 +26,29 @@ public class User extends EntityModel<String> {
         this.password = password;
         this.email = email;
         userAddress = address;
-        this.users = new ArrayList<>();
     }
 
-    public void addUser(String username, String role, String password, String email, Address address) throws JsonProcessingException {
+    public static void ValidateUser(String username, String role, String password, String email, Address address) throws JsonProcessingException, InvalidUser, InvalidAddress {
 
         if (!role.equals("client") && !role.equals("manager")){
-            Exception e = new NoUserAdded();
-            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
-
+            throw new InvalidUser();
         }
         if (username.contains(" ") || username.contains(";") || !Pattern.matches("^[a-zA-Z0-9_]*$", username)){
-            Exception e = new NoUserAdded();
-            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
+            throw new InvalidUser();
         }
-        if (!Pattern.matches("^[A-Za-z0-9+_\\.-]+@(.+)$", email)){
-            Exception e = new NoUserAdded();
-            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
-        }
-        for (User user : users) {
-            if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
-                // "Error: Username or email already exists."
-                Exception e = new UserAlreadyExits();
-                ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
-
-            }
+        if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", email)){
+            throw new InvalidUser();
         }
         if (address.country == null || address.country.isEmpty() || address.city == null || address.city.isEmpty()) {
-            // "Error: Invalid address. Address must include country and city.";
-            Exception e = new InvalidAddress();
-            ConsoleMizdooni.printOutput(new Output(false, e.getMessage()));
+            throw new InvalidAddress();
         }
-        ConsoleMizdooni.printOutput(new Output(true, "User added successfully."));
+
     }
 
     public boolean RoleIs(UserRole desiredRole) {
         return role.equalsIgnoreCase(desiredRole.toString());
     }
 
-    public static class Address {
-        private String country;
-        private String city;
 
-        public Address(String country, String city) {
-            this.country = country;
-            this.city = city;
-        }
-
-
-    }
+    public record Address(String country, String city){}
 }
