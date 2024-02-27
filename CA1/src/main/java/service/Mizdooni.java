@@ -1,6 +1,5 @@
 package service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import database.Database;
 import exceptions.*;
 import model.*;
@@ -26,7 +25,7 @@ public class Mizdooni {
             String password,
             String email,
             User.Address address
-    ) throws JsonProcessingException, UserAlreadyExits, InvalidAddress, InvalidUser {
+    ) throws UserAlreadyExits, InvalidAddress, InvalidUser {
 
         var user = new User(username, role, password, email, address);
         User.ValidateUser(username, role, password, email, address);
@@ -47,17 +46,24 @@ public class Mizdooni {
             LocalTime closeTime,
             String description,
             Restaurant.Address address
-    ) throws JsonProcessingException, NotExistentUser, NotExpectedUserRole {
+    )
+            throws
+            NotExistentUser,
+            NotExpectedUserRole,
+            RestaurantAlreadyExists,
+            InvalidAddress
+    {
 
+        address.Validate();
         var managerUser = FindUser(manager);
         EnsureUserIs(managerUser, UserRole.Manager);
 
         var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address);
-        restaurant.addRestaurant(name, managerUser, type, openTime, closeTime, description, address.getCountry(), address.getCity(), address.getStreet());
+
         try{
             Database.Restaurants.Add(restaurant);
-        }catch (KeyAlreadyExists ex){
-        throw new RuntimeException(ex);
+        } catch (KeyAlreadyExists ex){
+            throw new RestaurantAlreadyExists();
         }
 
     }
@@ -67,19 +73,22 @@ public class Mizdooni {
             String restaurantName,
             String managerName,
             int seatNumber
-    ) throws JsonProcessingException, NotExistentRestaurant, NotExpectedUserRole, NotExistentUser {
+    ) throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, TableAlreadyExists, SeatNumNotPos {
+
         var restaurant = FindRestaurant(restaurantName);
 
         var manager = FindUser(managerName);
         EnsureUserIs(manager, UserRole.Manager);
+        if(!manager.Is(restaurant.getManagerUsername())){
+            throw new NotExistentRestaurant(); //TODO: exception correct?
+        }
 
-        var table = new Table(tableNumber, restaurant, manager, seatNumber);
-        table.addTable(tableNumber, restaurant, manager, seatNumber);
+        var table = new Table(tableNumber, restaurant, seatNumber);
 
         try{
             Database.Tables.Add(table);
         }catch (KeyAlreadyExists ex){
-            throw new RuntimeException(ex);
+            throw new TableAlreadyExists();
         }
     }
 
