@@ -23,23 +23,7 @@ public class ConsoleMizdooni {
     }
 
     public void Start()
-            throws JsonProcessingException,
-            NotExistentUser,
-            NotExpectedUserRole,
-            NotExistentRestaurant,
-            TimeBelongsToPast,
-            TableIsReserved,
-            TimeIsNotRound,
-            NotInWorkHour,
-            NotExistentTable,
-            NotExistentUser,
-            NotExistentReserve,
-            CancelingExpiredReserve,
-            CancelingCanceledReserve,
-            NotExistentUser,
-            NotExistentRestaurant,
-            NotExpectedUserRole,
-            ScoreOutOfRange{
+            throws JsonProcessingException {
         System.out.println("Mizdooni Is Up!");
 
         Scanner inputScanner = new Scanner(System.in);
@@ -78,7 +62,8 @@ public class ConsoleMizdooni {
                 return "user added successfully";
             case "addTable":
                 Table table = new Gson().fromJson(jsonData, Table.class);
-                Service.AddTable(table.getTableNumber(), table.getRestaurant().getName(), table.getUser().getUsername(), table.getNumberOfSeats());
+                var managerName = ""; //TODO: fix
+                Service.AddTable(table.getTableNumber(), table.getRestaurant().getName(), managerName, table.getNumberOfSeats());
                 return "user added successfully";
             case "reserveTable":
                 reserve = new Gson().fromJson(jsonData, Reserve.class);

@@ -1,6 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import exceptions.InvalidAddress;
 import exceptions.InvalidUser;
 import lombok.Getter;
@@ -28,7 +27,8 @@ public class User extends EntityModel<String> {
         userAddress = address;
     }
 
-    public static void ValidateUser(String username, String role, String password, String email, Address address) throws JsonProcessingException, InvalidUser, InvalidAddress {
+    public static void ValidateUser(String username, String role, String password, String email, Address address)
+            throws InvalidUser, InvalidAddress {
 
         if (!role.equals("client") && !role.equals("manager")){
             throw new InvalidUser();
