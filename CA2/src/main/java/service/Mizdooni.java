@@ -7,12 +7,13 @@ import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
 
+import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Mizdooni {
 
-    Database Database;
+    private final Database Database;
 
     public Mizdooni(Database database){
         Database = database;
@@ -24,9 +25,11 @@ public class Mizdooni {
             String username,
             String password,
             String email,
-            User.Address address
+            String country,
+            String city
     ) throws UserAlreadyExits, InvalidAddress, InvalidUser {
 
+        var address = new User.Address(country, city);
         var user = new User(username, role, password, email, address);
         User.ValidateUser(username, role, password, email, address);
         try{
@@ -45,7 +48,9 @@ public class Mizdooni {
             LocalTime openTime,
             LocalTime closeTime,
             String description,
-            Restaurant.Address address
+            String country,
+            String city,
+            String street
     )
             throws
             NotExistentUser,
@@ -53,7 +58,7 @@ public class Mizdooni {
             RestaurantAlreadyExists,
             InvalidAddress
     {
-
+        var address = new Restaurant.Address(country, city, street);
         address.Validate();
         var managerUser = FindUser(manager);
         EnsureUserIs(managerUser, UserRole.Manager);

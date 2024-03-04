@@ -38,7 +38,7 @@ public class MizdooniStubHelper {
                 LocalTime.of(8,0),
                 LocalTime.of(18,0),
                 "",
-                new models.Restaurant.Address("country","city","street")
+                "country","city","street"
         );
     }
 
@@ -53,7 +53,7 @@ public class MizdooniStubHelper {
                 LocalTime.of(openingHour,0),
                 LocalTime.of(closureHour,0),
                 "",
-                new models.Restaurant.Address("country","city","street")
+                "country","city","street"
         );
     }
 
@@ -64,7 +64,8 @@ public class MizdooniStubHelper {
                 username,
                 "password",
                 username+ "@anon.com",
-                new models.User.Address("country","city")
+                "country",
+                "city"
         );
     }
 
@@ -75,7 +76,8 @@ public class MizdooniStubHelper {
                 username,
                 "password",
                 username + "@anon.com",
-                new models.User.Address("country","city")
+                "country",
+                "city"
         );
     }
 
