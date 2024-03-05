@@ -5,7 +5,6 @@ import lombok.Getter;
 import utils.PairType;
 
 import java.time.LocalDateTime;
-import java.util.Dictionary;
 
 @Getter
 public class Review extends EntityModel<PairType<String, String>> {

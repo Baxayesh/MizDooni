@@ -37,7 +37,7 @@ public class Reserve extends EntityModel<PairType<String,Integer>> {
         if(IsCanceled)
             throw new CancelingCanceledReserve();
 
-        if(ReserveTime.isBefore(LocalDateTime.now()))
+        if(IsPassed())
             throw new CancelingExpiredReserve();
 
         IsCanceled = true;
@@ -48,6 +48,7 @@ public class Reserve extends EntityModel<PairType<String,Integer>> {
         return ! IsCanceled;
     }
 
+    public boolean IsPassed() { return ReserveTime.isBefore(LocalDateTime.now()); }
     public LocalDateTime GetReserveTime() {
         return ReserveTime;
     }

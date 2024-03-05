@@ -227,15 +227,29 @@ public class Mizdooni {
             ScoreOutOfRange,
             CannotAddReview
     {
-        var review = new Review(issuerUsername, restaurantName, foodScore, serviceScore, ambianceScore,
+        var review = new Review(restaurantName, issuerUsername, foodScore, serviceScore, ambianceScore,
                 overallScore, comment);
 
         var issuer = FindUser(issuerUsername);
         EnsureUserIs(issuer, UserRole.Client);
         var restaurant = FindRestaurant(restaurantName);
+        EnsureUserHaveAnyPassedReserveAt(issuerUsername, restaurantName);
 
         Database.Reviews.Upsert(review);
 
+    }
+
+    void EnsureUserHaveAnyPassedReserveAt(String user, String restaurant) throws CannotAddReview {
+        if(
+            Database.Reserves.Search( reserve ->
+                reserve.getReserveeUsername().equals(user) &&
+                reserve.getTable().getRestaurant().Is(restaurant) &&
+                reserve.IsActive() &&
+                reserve.IsPassed()
+            ).findAny().isEmpty()
+        ){
+            throw new CannotAddReview();
+        }
     }
 
     User FindUser(String username) throws NotExistentUser {
