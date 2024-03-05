@@ -15,10 +15,39 @@ public class Mizdooni {
 
     private final Database Database;
 
+
+    private User LoggedInUser;
+
     public Mizdooni(Database database){
         Database = database;
     }
 
+    public void Login(String username, String password) throws MizdooniNotAuthenticatedException {
+        try {
+            var user = FindUser(username);
+            if (!user.getPassword().equals(password))
+                throw new MizdooniNotAuthenticatedException();
+            LoggedInUser = user;
+        } catch (NotExistentUser ex){
+            throw new MizdooniNotAuthenticatedException();
+        }
+
+    }
+
+    public void Logout() throws MizdooniNotAuthorizedException {
+        EnsureLoggedIn();
+        LoggedInUser = null;
+    }
+
+    public void EnsureLoggedIn() throws MizdooniNotAuthorizedException {
+        if(LoggedInUser == null)
+            throw new MizdooniNotAuthorizedException();
+    }
+
+    public void EnsureLoggedIn(UserRole role) throws MizdooniNotAuthorizedException {
+        EnsureLoggedIn();
+        EnsureUserIs(LoggedInUser, role);
+    }
 
     public void AddUser(
             String role,

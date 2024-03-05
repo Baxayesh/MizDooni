@@ -2,7 +2,11 @@ package exceptions;
 
 public class MizdooniNotAuthorizedException extends MizdooniException {
 
-    public MizdooniNotAuthorizedException(String message) {
+    public MizdooniNotAuthorizedException() {
+        super("Authorization Error: Insufficient Privilege");
+    }
+
+    protected MizdooniNotAuthorizedException(String message){
         super(message);
     }
 
