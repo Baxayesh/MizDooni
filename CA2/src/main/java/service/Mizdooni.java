@@ -7,7 +7,6 @@ import utils.AvailableTable;
 import utils.PairType;
 import utils.UserRole;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -225,16 +224,19 @@ public class Mizdooni {
             NotExistentUser,
             NotExistentRestaurant,
             NotExpectedUserRole,
-            ScoreOutOfRange
+            ScoreOutOfRange,
+            CannotAddReview
     {
-        var review = new Review(foodScore, serviceScore, ambianceScore, overallScore, comment);
+        var review = new Review(issuerUsername, restaurantName, foodScore, serviceScore, ambianceScore,
+                overallScore, comment);
 
         var issuer = FindUser(issuerUsername);
         EnsureUserIs(issuer, UserRole.Client);
 
         var restaurant = FindRestaurant(restaurantName);
 
-        restaurant.addReview(issuerUsername, review);
+        Database.Reviews.Upsert(review);
+
     }
 
     User FindUser(String username) throws NotExistentUser {

@@ -37,6 +37,11 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
     }
 
     @Override
+    public void Upsert(TItem item) {
+        MemoryDb.put(item.getKey(), item);
+    }
+
+    @Override
     public TItem Get(TKey key) throws KeyNotFound {
         EnsureKeyExists(key);
         return MemoryDb.get(key);

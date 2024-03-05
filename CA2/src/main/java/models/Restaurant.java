@@ -24,7 +24,6 @@ public class Restaurant extends EntityModel<String> {
     private String Type;
     private String Description;
     private ArrayList<Integer> TableNumbers;
-    private Dictionary<String, Review> Reviews;
     private Address restaurantAddress;
 
     public String getName(){
@@ -48,7 +47,6 @@ public class Restaurant extends EntityModel<String> {
         Description = description;
         TableNumbers = new ArrayList<>();
         restaurantAddress = address;
-        Reviews = new Hashtable<>();
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {
@@ -80,10 +78,6 @@ public class Restaurant extends EntityModel<String> {
 
     public Stream<Integer> getTableNumbers() {
         return TableNumbers.stream();
-    }
-
-    public void addReview(String issuer, Review review) {
-        Reviews.put(issuer, review);
     }
 
     public record Address(String country, String city, String street) {

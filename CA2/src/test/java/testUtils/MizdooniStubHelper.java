@@ -94,10 +94,9 @@ public class MizdooniStubHelper {
             LocalDateTime creationTime
     ){
         var review = Database
-                .Restaurants
-                .Get(restaurantName)
-                .getReviews()
-                .get(issuerUsername);
+                .Reviews
+                .Get(new PairType<>(restaurantName, issuerUsername))
+                ;
 
         assertEquals(foodScore, review.getFoodScore());
         assertEquals(ambianceScore, review.getAmbianceScore());
