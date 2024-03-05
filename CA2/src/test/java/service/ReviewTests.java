@@ -96,9 +96,10 @@ public class ReviewTests {
 
     }
 
+
     @Test
-    void GIVEN_normalMizdooni_WHEN_addAValidReview_THEN_reviewShouldBeRegisteredInRestaurant()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange {
+    void GIVEN_userDoesNotHaveAnyPreviousPassedReserve_WHEN_addAValidReview_THEN_CannotAddReviewShouldBeThrown()
+            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange, CannotAddReview {
 
         var restaurant = "restaurant";
         var username = "user";
@@ -106,6 +107,31 @@ public class ReviewTests {
 
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousCustomer(username);
+
+        assertThrows(
+                CannotAddReview.class,
+                () ->
+                    stub.Mizdooni().AddReview(
+                            username,
+                            restaurant,
+                            5,5,5,5,comment
+                    )
+        );
+    }
+
+    @Test
+    void GIVEN_userHaveAPreviousPassedReserve_WHEN_addAValidReview_THEN_ReviewShouldBeAdded()
+            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange, CannotAddReview {
+
+        var restaurant = "restaurant";
+        var username = "user";
+        var comment  = "comment";
+        var table = 1;
+
+        stub.AddAnonymousRestaurant(restaurant);
+        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousTable(restaurant, table);
+        stub.AddPassedReserve(username, restaurant, table);
 
         var callTime = LocalDateTime.now();
 

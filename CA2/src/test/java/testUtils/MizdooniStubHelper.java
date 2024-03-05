@@ -2,6 +2,7 @@ package testUtils;
 
 import database.Database;
 import lombok.SneakyThrows;
+import models.Reserve;
 import service.Mizdooni;
 import utils.PairType;
 
@@ -131,7 +132,23 @@ public class MizdooniStubHelper {
                 table,
                 reserveTime
         );
+
     }
+
+    @SneakyThrows
+    public void AddPassedReserve(String reservee, String restaurant, int table) {
+
+        Database.Reserves.Add(
+                new Reserve(
+                        Database.ReserveIdGenerator.GetNext(),
+                        Database.Tables.Get(new PairType<>(restaurant, table)),
+                        Database.Users.Get(reservee),
+                        LocalDateTime.now().minusDays(1)
+                )
+        );
+
+    }
+
 
     @SneakyThrows
     public void AssertReserveRegistered(

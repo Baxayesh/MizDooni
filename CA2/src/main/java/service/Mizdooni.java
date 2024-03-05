@@ -232,7 +232,6 @@ public class Mizdooni {
 
         var issuer = FindUser(issuerUsername);
         EnsureUserIs(issuer, UserRole.Client);
-
         var restaurant = FindRestaurant(restaurantName);
 
         Database.Reviews.Upsert(review);

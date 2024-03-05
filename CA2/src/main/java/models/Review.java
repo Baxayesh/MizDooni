@@ -2,11 +2,13 @@ package models;
 
 import exceptions.ScoreOutOfRange;
 import lombok.Getter;
+import utils.PairType;
 
 import java.time.LocalDateTime;
+import java.util.Dictionary;
 
 @Getter
-public class Review {
+public class Review extends EntityModel<PairType<String, String>> {
 
     private final double FoodScore;
     private final double ServiceScore;
@@ -22,14 +24,24 @@ public class Review {
         }
     }
 
+    public String getIssuerUsername(){
+        return super.getKey().getSecond();
+    }
+
+    public String getRestaurantName(){
+        return super.getKey().getFirst();
+    }
+
     public Review(
+            String restaurant,
+            String user,
             double food,
             double service,
             double ambiance,
             double overall,
             String comment
     ) throws ScoreOutOfRange {
-
+        super(new PairType<>(restaurant, user));
         EnsureScoreIsInValidRange(food);
         EnsureScoreIsInValidRange(service);
         EnsureScoreIsInValidRange(ambiance);
