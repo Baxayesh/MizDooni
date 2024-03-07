@@ -3,9 +3,7 @@ package service;
 import database.Database;
 import exceptions.*;
 import models.*;
-import utils.AvailableTable;
-import utils.PairType;
-import utils.UserRole;
+import utils.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -41,6 +39,17 @@ public class Mizdooni {
     public void EnsureLoggedIn() throws MizdooniNotAuthorizedException {
         if(LoggedInUser == null)
             throw new MizdooniNotAuthorizedException();
+    }
+
+    public Rating GetRatingFor(String restaurant) throws NotExistentRestaurant {
+        EnsureRestaurantExists(restaurant);
+        return Database
+            .Reviews.Search(review -> review.getRestaurantName().equals(restaurant))
+            .reduce(
+                new Rating(),
+                Rating::ConsiderReview,
+                Rating::Combine
+            );
     }
 
     public void EnsureLoggedIn(UserRole role) throws MizdooniNotAuthorizedException {
@@ -270,6 +279,12 @@ public class Mizdooni {
             return Database.Reserves.Get(new PairType<>(username, reserveNumber));
         } catch (KeyNotFound e) {
             throw new NotExistentReserve();
+        }
+    }
+
+    void EnsureRestaurantExists(String restaurantName) throws NotExistentRestaurant {
+        if(!Database.Restaurants.Exists(restaurantName)){
+            throw new NotExistentRestaurant();
         }
     }
 
