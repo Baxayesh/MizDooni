@@ -8,7 +8,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Restaurant" %>
 <%@ page import="models.Review" %>
-<%@ page import="service.Mizdooni" %>
 <%@ page import="java.util.ArrayList" %>
 <html lang="en">
 <head>
@@ -49,6 +48,7 @@
   </tr>
   <%
     ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) request.getAttribute("restaurants");
+    if (restaurants != null) {
     for (Restaurant restaurant : restaurants) {
   %>
   <tr>
@@ -71,6 +71,7 @@
     <td><%= review.getAmbianceScore()%></td>
     <td><%= review.getOverallScore()%></td>
     <%
+      }
       }
     %>
   </tr>

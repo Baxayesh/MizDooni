@@ -52,6 +52,8 @@ public class Review extends EntityModel<PairType<String, String>> {
         OverallScore = overall;
         Comment = comment;
     }
-
+public static String getComment(){
+        return Review.getComment();
+}
 
 }

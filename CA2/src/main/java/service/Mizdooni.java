@@ -251,6 +251,12 @@ public class Mizdooni {
                 .Search(review -> true)
                 .toArray(Review[]::new);
     }
+    public Reserve[] getReserves(){
+        return Database
+                .Reserves
+                .Search(review -> true)
+                .toArray(Reserve[]::new);
+    }
 
     public void AddReview(
             String issuerUsername,
