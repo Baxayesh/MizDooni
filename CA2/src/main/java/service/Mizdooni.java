@@ -245,6 +245,12 @@ public class Mizdooni {
                 .Search(restaurant -> true )
                 .toArray(Restaurant[]::new);
     }
+    public Review[] getReviews(){
+        return Database
+                .Reviews
+                .Search(review -> true)
+                .toArray(Review[]::new);
+    }
 
     public void AddReview(
             String issuerUsername,
