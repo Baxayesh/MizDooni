@@ -33,4 +33,5 @@ public class Errors {
     public static final String SCORE_OUT_OF_RANGE = "Score Is Not In Valid Score Range";
 
     public static final String CANNOT_ADD_REVIEW = "User Is Not Allowed To Add Review To This Restaurant (Probably Due to Not Having A Passed Reserve)";
+    public static final String INCORRECT_PASSWORD = "Incorrect password.";
 }

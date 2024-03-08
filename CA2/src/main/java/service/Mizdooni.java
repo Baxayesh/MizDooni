@@ -11,12 +11,26 @@ import java.time.LocalTime;
 public class Mizdooni {
 
     private final Database Database;
-
-
     private User LoggedInUser;
+
 
     public Mizdooni(Database database){
         Database = database;
+    }
+
+    public String getUserRole(String username) throws MizdooniNotAuthenticatedException{
+        try {
+            var user = FindUser(username);
+            if(user.getRole().equals("client")){
+                return "client";
+            } else if (user.getRole().equals("manager")) {
+                return "manager";
+            } else {
+                throw new NotExistentUser();
+            }
+        }catch (NotExistentUser ex){
+            throw new MizdooniNotAuthenticatedException();
+        }
     }
 
     public void Login(String username, String password) throws MizdooniNotAuthenticatedException {
@@ -218,6 +232,18 @@ public class Mizdooni {
             .Restaurants
             .Search(restaurant -> restaurant.getType().equalsIgnoreCase(type))
             .toArray(Restaurant[]::new);
+    }
+    public Restaurant[] SearchRestaurantByCity(String city){
+        return Database
+                .Restaurants
+                .Search(restaurant -> restaurant.getRestaurantAddress().city().equalsIgnoreCase(city))
+                .toArray(Restaurant[]::new);
+    }
+    public Restaurant[] getRestaurants(){
+        return Database
+                .Restaurants
+                .Search(restaurant -> true )
+                .toArray(Restaurant[]::new);
     }
 
     public void AddReview(
