@@ -14,51 +14,53 @@ import java.util.Date;
 import service.*;
 import models.*;
 import exceptions.*;
+import utils.UserRole;
 
-@WebServlet(name = "Restaurant Page", value = "/restaurant")
+@WebServlet(name = "Restaurant Page", value = "/restaurant/*")
 public class RestaurantController extends HttpServlet {
-    private void loadPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
-        try {
-            Mizdooni mizdooni = MizdooniProvider.GetInstance();
 
-            String restaurant = mizdooni.getRestaurants().toString();
-            Review[] feedback = mizdooni.getReviews();
+    Mizdooni service = MizdooniProvider.GetInstance();
 
-            request.setAttribute("restaurant", restaurant);
-            //request.setAttribute("comment",Review.getComment());
-            request.setAttribute("rate", mizdooni.GetRatingFor(restaurant));
-            request.setAttribute("feedback", feedback);
 
-            request.getRequestDispatcher("restaurant.jsp").forward(request, response);
-        } catch (NotExistentRestaurant e) {
-            session.setAttribute("errorMessage", e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/error");
-        }
+    Restaurant getRestaurant(HttpServletRequest request) throws NotExistentRestaurant{
+
+        String pathInfo = request.getPathInfo();
+        String[] pathParts = pathInfo.split("/");
+        String restaurantName = pathParts[1];
+        return service.FindRestaurant(restaurantName);
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        // changed if condition
-        if (session.getAttribute("username") != null) response.sendRedirect(request.getContextPath() + "/login");
-        else {
-            //String[] split_url = request.getRequestURI().split("/");
-            loadPage(request, response, session);
+
+        try {
+            service.EnsureLoggedIn(UserRole.Client);
+            var client = service.getLoggedIn();
+            var restaurant = getRestaurant(request);
+            var rating = service.GetRatingFor(restaurant.getName());
+            var reviews = service.getReviews(restaurant.getName());
+            var availableTables = service.GetAvailableTables(restaurant.getName());
+
+            request.setAttribute("username", client.getUsername());
+            request.setAttribute("restaurant", restaurant);
+            request.setAttribute("rating", rating);
+            request.setAttribute("reviews", reviews);
+            request.setAttribute("availableTables", availableTables);
+
+            request.getRequestDispatcher("/restaurant_page.jsp").forward(request, response);
+
         }
+        catch (MizdooniException e) {
+            throw new ServletException(e);
+        }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-//        if(request.getParameter("comment")!= null){
-//            String username = (String) session.getAttribute("username");
-//            String commentText = request.getParameter("comment");
-//        }
-//        if (request.getParameter("date_time")!= null){
-//            Date currentDate = new Date();
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            String dateString = dateFormat.format(currentDate);
-//        }
-        loadPage(request, response, session);
+
+        response.sendRedirect(request.getPathInfo());
     }
 }

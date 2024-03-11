@@ -14,5 +14,6 @@
 </head>
 <body style="text-align:center">
 <h1>200<br>Successful</h1>
+<footer><a href="/">Back to Home</footer>
 </body>
 </html>

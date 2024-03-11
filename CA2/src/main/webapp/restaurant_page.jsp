@@ -8,47 +8,54 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Restaurant" %>
 <%@ page import="models.Review" %>
+<%@ page import="utils.*" %>
+<%
+    String username = (String) request.getAttribute("username");
+    Restaurant restaurant = (Restaurant) request.getAttribute("restaurant");
+    Rating rating = (Rating) request.getAttribute("rating");
+    Review[] reviews = (Review[]) request.getAttribute("reviews");
+%>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <title>Restaurant</title>
 </head>
 <body>
-<p id="username">username: <%= session.getAttribute("username") %>
+<p id="username">username: <%= request.getAttribute("username") %>
     <a href="/">Home</a>
     <a href="/logout" style="color: red">Log Out</a>
 </p>
 <br>
-<% Restaurant restaurant = (Restaurant) request.getAttribute("restaurant"); %>
-<% Review review = (Review) request.getAttribute("review"); %>
 <h2>Restaurant Info:</h2>
 <ul>
-    <li id="id">Id: <%= restaurant.getKey()%></li>
+    <li id="id">Id: 3</li>
     <li id="name">Name: <%=restaurant.getName()%></li>
     <li id="type">Type: <%=restaurant.getType()%></li>
     <li id="time">Time: <%=restaurant.getOpenTime()%> - <%=restaurant.getCloseTime()%></li>
     <li id="rate">Scores:</li>
     <ul>
-        <li>Food: <%= review.getFoodScore()%></li>
-        <li>Service: <%= review.getServiceScore()%></li>
-        <li>Ambiance: <%= review.getAmbianceScore()%></li>
-        <li>Overall: <%= review.getOverallScore()%></li>
+        <li>Food: <%= rating.getAverageFoodScore()%></li>
+        <li>Service: <%= rating.getAverageServiceScore()%></li>
+        <li>Ambiance: <%= rating.getAverageAmbianceScore()%></li>
+        <li>Overall: <%= rating.getAverageOverallScore()%></li>
     </ul>
     <li id="address">Address: <%= restaurant.getRestaurantAddress()%></li>
     <li id="description">Description: <%= restaurant.getDescription()%></li>
 </ul>
 
-
 <table border="1" cellpadding="10">
     <tr>
         <td>
             <label>Reserve Table:</label>
-            <form action="" method="post">
+            <form action="reserve" method="post">
                 <label>Table:</label>
                 <select id="table_number" name="table_number">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    <%
+                        for(Integer table: restaurant.getTableNumbers().toArray(Integer[]::new)){
+                    %>
+                    <option value="<%=table%>"><%=table%></option>
+                    <%}%>
                 </select>
                 <label>Date & Time:</label>
                 <input type="datetime-local" id="date_time" name="date_time">
@@ -63,7 +70,7 @@
     <tr>
         <td>
             <label>Feedback:</label>
-            <form action="" method="post">
+            <form action="feedBack" method="post">
                 <label>Food Rate:</label>
                 <input type="number" id="food_rate" name="food_rate" step="0.1" min="0" max="5">
                 <label>Service Rate:</label>
@@ -95,8 +102,8 @@
         <th>Ambiance Rate</th>
         <th>Overall Rate</th>
     </tr>
-    <% if (review != null) {
-        for (Review feedback : (Review[]) request.getAttribute("feedback")) {
+    <% if (reviews != null) {
+        for (Review feedback : reviews) {
     %>
     <tr>
         <td><%=feedback.getIssuerUsername()%></td>

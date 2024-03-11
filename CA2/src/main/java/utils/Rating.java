@@ -13,7 +13,11 @@ public class Rating {
     private int ReviewCount;
 
     public Rating(){
-
+        TotalFoodScore = 0;
+        TotalServiceScore = 0;
+        TotalAmbianceScore = 0;
+        TotalOverallScore = 0;
+        ReviewCount = 0;
     }
 
 
@@ -32,19 +36,19 @@ public class Rating {
     }
 
     public double getAverageFoodScore() {
-        return TotalFoodScore / ReviewCount;
+        return ReviewCount == 0 ? 0 : TotalFoodScore / ReviewCount;
     }
 
     public double getAverageServiceScore() {
-        return TotalServiceScore / ReviewCount;
+        return  ReviewCount == 0 ? 0 : TotalServiceScore / ReviewCount;
     }
 
     public double getAverageAmbianceScore() {
-        return TotalAmbianceScore / ReviewCount;
+        return  ReviewCount == 0 ? 0 : TotalAmbianceScore / ReviewCount;
     }
 
     public double getAverageOverallScore() {
-        return TotalOverallScore / ReviewCount;
+        return  ReviewCount == 0 ? 0 : TotalOverallScore / ReviewCount;
     }
 
     public Rating ConsiderReview(Review newReview) {

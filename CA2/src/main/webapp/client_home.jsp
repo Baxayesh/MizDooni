@@ -5,7 +5,7 @@
     <title>Client Home</title>
 </head>
 <body>
-<h1>Welcome <%= session.getAttribute("username") %> <a href="${pageContext.request.contextPath}/logout" style="color: red">Log Out</a></h1>
+<h1>Welcome <%= request.getAttribute("username") %> <a href="${pageContext.request.contextPath}/logout" style="color: red">Log Out</a></h1>
 
 <ul type="square">
     <li>

@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
 @Getter
@@ -78,6 +79,10 @@ public class Restaurant extends EntityModel<String> {
         return TableNumbers.stream();
     }
 
+    public void addTable(int tableNumber) {
+        TableNumbers.add(tableNumber);
+    }
+
     public record Address(String country, String city, String street) {
 
         public void Validate() throws InvalidAddress {
@@ -91,6 +96,11 @@ public class Restaurant extends EntityModel<String> {
             ) {
                 throw new InvalidAddress();
             }
+        }
+
+        @Override
+        public String toString() {
+            return "%s, %s, %s".formatted(street, city, country);
         }
     }
 

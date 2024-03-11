@@ -16,39 +16,26 @@
     <title>Manager Home</title>
 </head>
 <body>
-<h1>Welcome <%= session.getAttribute("username") %> <a href="/logout" style="color: red">Log Out</a></h1>
+<h1>Welcome <%= request.getAttribute("username") %> <a href="/logout" style="color: red">Log Out</a></h1>
 
 <h2>Your Restaurant Information:</h2>
-<% Restaurant restaurant = (Restaurant) request.getAttribute("restaurants"); %>
-<% Table[] tables = (Table[]) request.getAttribute("tables"); %>
-<%--<%--%>
-<%--    Restaurant[] restaurants = (Restaurant[]) request.getAttribute("restaurants");--%>
-<%--%>--%>
-<%-- <% List<Table> tables  = new ArrayList<>(); %>
---%>
+<% Restaurant restaurant = (Restaurant) request.getAttribute("restaurant"); %>
 
 <ul>
-    <%
-        if(restaurant != null){
-    %>
-    <li id="id">Id: 1</li>
+    <li id="id">Id: 3</li>
     <li id="name">Name: <%=restaurant.getName()%></li>
     <li id="type">Type: <%=restaurant.getType()%></li>
     <li id="time">Time: <%=restaurant.getOpenTime()%> - <%=restaurant.getCloseTime()%></li>
     <li id="description">Description: <%=restaurant.getDescription()%></li>
     <li id="address">Address: <%=restaurant.getRestaurantAddress()%></li>
-    <%}%>
     <li id="tables">Tables:</li>
     <ul>
-        <% if(tables != null){
-            for (Table table : tables )
+        <%
+            for (Integer table : restaurant.getTableNumbers().toArray(Integer[]::new))
             {
         %>
-        <li>Table <%= table.getTableNumber() %>, Seats: <%= table.getNumberOfSeats() %></li>
-        <%
-            }
-            }
-        %>
+        <li>Table <%= table %></li>
+        <% } %>
     </ul>
 </ul>
 

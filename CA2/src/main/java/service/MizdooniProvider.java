@@ -30,6 +30,7 @@ public class MizdooniProvider {
         return instance;
     }
 
+    @SneakyThrows
     static Mizdooni CreateInstance(){
         var db = Database.CreateInMemoryDatabase();
         var instance = new Mizdooni(db);
@@ -37,6 +38,7 @@ public class MizdooniProvider {
         addRestaurants(instance);
         addTables(instance);
         addReserves(instance);
+        instance.Login("ali", "ali");
         return instance;
     }
 
@@ -47,13 +49,15 @@ public class MizdooniProvider {
         mizdooni.AddUser("client", "mirza", "mirza", "mirza@gmail.com", "Shenzel-Penzel", "Victoria");
         mizdooni.AddUser("manager", "mamad", "mamad", "mamad@gmail.com", "Iran", "Kerman");
         mizdooni.AddUser("manager", "amirali", "amirali", "amirali@gmail.com", "Iran", "mashhad");
+        mizdooni.AddUser("manager", "goly", "goly", "goly@gmail.com", "Iran", "mashhad");
+
     }
 
     @SneakyThrows
     static void addRestaurants(Mizdooni mizdooni){
         mizdooni.AddRestaurant("mamoly","mamad", "fastfood", LocalTime.of(8,0),
                 LocalTime.of(18,0), "", "Iran", "Tehran", "Kargar");
-        mizdooni.AddRestaurant("makhsos","mamad", "sonaty", LocalTime.of(5,0),
+        mizdooni.AddRestaurant("makhsos","goly", "sonaty", LocalTime.of(5,0),
                 LocalTime.of(19,0), "", "Iran", "Tehran", "Golro");
         mizdooni.AddRestaurant("regimi","amirali", "vegetran", LocalTime.of(15,0),
                 LocalTime.of(23,0), "", "Iran", "Rasht", "Kargar");
@@ -66,9 +70,9 @@ public class MizdooniProvider {
         mizdooni.AddTable(3, "mamoly", "mamad", 4);
         mizdooni.AddTable(4, "mamoly", "mamad", 4);
 
-        mizdooni.AddTable(1, "makhsos", "mamad", 6);
-        mizdooni.AddTable(2, "makhsos", "mamad", 4);
-        mizdooni.AddTable(3, "makhsos", "mamad", 2);
+        mizdooni.AddTable(1, "makhsos", "goly", 6);
+        mizdooni.AddTable(2, "makhsos", "goly", 4);
+        mizdooni.AddTable(3, "makhsos", "goly", 2);
 
         mizdooni.AddTable(1, "regimi", "amirali", 6);
         mizdooni.AddTable(2, "regimi", "amirali", 6);

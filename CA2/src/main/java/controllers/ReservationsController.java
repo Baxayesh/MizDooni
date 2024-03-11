@@ -9,43 +9,51 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import exceptions.CancelingCanceledReserve;
-import exceptions.CancelingExpiredReserve;
-import exceptions.NotExistentReserve;
-import exceptions.NotExistentUser;
+import exceptions.*;
 import models.*;
 import service.*;
+import utils.UserRole;
 
 @WebServlet("/reservations")
 public class ReservationsController extends HttpServlet {
 
+    Mizdooni service = MizdooniProvider.GetInstance();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        Mizdooni mizdooni = MizdooniProvider.GetInstance();
-        Reserve[] reserves = mizdooni.getReserves();
+        try{
 
-        request.setAttribute("reserves", reserves);
-        request.getRequestDispatcher("reservations.jsp").forward(request, response);
+            service.EnsureLoggedIn(UserRole.Client);
+            var client = service.getLoggedIn();
+            var reserves = service.GetActiveReserves(client.getUsername());
+
+            request.setAttribute("username", client.getUsername());
+            request.setAttribute("reserves", reserves);
+            request.getRequestDispatcher("reservations.jsp").forward(request, response);
+
+        }catch (MizdooniException ex){
+            throw new ServletException(ex);
+        }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String action = request.getParameter("action");
-        Mizdooni mizdooni = MizdooniProvider.GetInstance();
-        Reserve reserve = (Reserve) request.getAttribute("reserve");
-        if (action != null && action.equals("cancel")) {
-           try{
-               mizdooni.CancelReserve(reserve.getReserveeUsername(), reserve.getReserveNumber());
-           }catch(NotExistentUser | NotExistentReserve | CancelingExpiredReserve | CancelingCanceledReserve ex){
-               session.setAttribute("errorMessage", ex.getMessage());
-               response.sendRedirect(request.getContextPath() + "/error");
-               return;
-           }
 
+        try {
+            var client = service.getLoggedIn();
+            var reserveNumber = Integer.parseInt(request.getParameter("reserveNumber"));
 
+            service.CancelReserve(client.getUsername(), reserveNumber);
+
+            response.sendRedirect("/reservations");
         }
-        response.sendRedirect(request.getContextPath() + "/reservations");
+        catch (NumberFormatException ex){
+            throw new ServletException(new MizdooniUserException("Invalid Number"));
+        }
+        catch (MizdooniException ex) {
+            throw new ServletException(ex);
+        }
     }
 }

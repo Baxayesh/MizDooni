@@ -12,24 +12,17 @@ import exceptions.MizdooniNotAuthorizedException;
 import  service.*;
 @WebServlet(name = "Logout Page", value = "/logout")
 public class LogoutController extends HttpServlet {
+
+    Mizdooni service = MizdooniProvider.GetInstance();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Mizdooni mizdooni = MizdooniProvider.GetInstance();
-        HttpSession session = request.getSession(false);
 
-        if (session != null) {
-            session.removeAttribute("username");
-            session.invalidate();
+        try {
+            service.Logout();
+            response.sendRedirect("/");
+        } catch (MizdooniNotAuthorizedException e) {
+            throw new ServletException(e);
         }
-        response.sendRedirect(request.getContextPath() + "/login");
-
-//        try{
-//            mizdooni.Logout();
-//            response.sendRedirect(request.getContextPath() + "/login");
-//        }catch (MizdooniNotAuthorizedException ex){
-//            session.setAttribute("errorMessage", ex.getMessage());
-//            response.sendRedirect(request.getContextPath() + "/error");
-//        }
 
     }
 }

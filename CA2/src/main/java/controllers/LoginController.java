@@ -10,6 +10,9 @@ import java.io.IOException;
 
 @WebServlet(name = "Login Page", value = "/login")
 public class LoginController extends HttpServlet {
+
+    Mizdooni service = MizdooniProvider.GetInstance();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("login.jsp").forward(request, response);
@@ -17,64 +20,17 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        String username = request.getParameter("username");
-        String password = request.getParameter("Password");
-        Mizdooni mizdooni = MizdooniProvider.GetInstance();
 
-//        if(isValidUser(username, password)){
-//            response.sendRedirect(request.getContextPath() + "/");
-//            session.setAttribute("username", username);
-//        } else {
-//            response.sendRedirect(request.getContextPath() + "/login");
-//        }
+        try{
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
-        String role = mizdooni.getUserRole(username);
-        //if(isValidUser(username, password)){
-        if(true){
-            if(role.equals("client")) {
-                response.sendRedirect(request.getContextPath() + "/client_home");
+            service.Login(username, password);
+            response.sendRedirect("/");
 
-            } else if (role.equals("manager")) {
-                response.sendRedirect(request.getContextPath() + "/manager_home");
-            }
-            session.setAttribute("username", username);
-        } else {
-            response.sendRedirect(request.getContextPath() + "/login");
+        }catch (MizdooniException ex){
+            throw new ServletException(ex);
         }
 
-//            try {
-//                //mizdooni.Login(username, password);
-//
-//
-//                //response.sendRedirect(request.getContextPath() + "/200");
-//            } catch (MizdooniNotAuthenticatedException e) {
-//                session.setAttribute("errorMessage", e.getMessage());
-//                response.sendRedirect("error.jsp");
-//            }
-
-
-    }
-    private boolean isValidUser(String username, String password){
-        Mizdooni mizdooni = MizdooniProvider.GetInstance();
-        boolean flag = true;
-        try {
-            var user = mizdooni.FindUser(username);
-            //User[] users =  mizdooni.getUsers();
-
-//        for (User user: users){
-            if (user.getPassword().equals(password) && user.getUsername().equals(username)) {
-                flag = true;
-//                break;
-            } else {
-                flag = false;
-//                break;
-            }
-        }
-        catch (NotExistentUser ex){
-            ex.getMessage();
-        }
-
-        return flag;
     }
 }

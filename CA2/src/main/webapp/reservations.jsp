@@ -15,7 +15,7 @@
   <title>Reservations</title>
 </head>
 <body>
-<p id="username">username: <%= session.getAttribute("username") %>
+<p id="username">username: <%= request.getAttribute("username") %>
   <a href="/">Home</a>
   <a href="/logout" style="color: red">Log Out</a>
 </p>
@@ -25,25 +25,24 @@
 <table style="width:100%; text-align:center;" border="1">
   <tr>
     <th>Reservation Id</th>
-    <th>Resturant Name</th>
+    <th>Restaurant Name</th>
     <th>Table Number</th>
     <th>Date & Time</th>
     <th>Canceling</th>
   </tr>
   <%
-
-    //ArrayList<Reserve> reserves = (ArrayList<Reserve>) request.getAttribute("reserves");
-    Reserve[] reserves = (Reserve[]) request.getAttribute("reserve");
+    Reserve[] reserves = (Reserve[]) request.getAttribute("reserves");
     if (reserves != null) {
     for (Reserve reserve: reserves){
   %>
   <tr>
-    <td><%=reserve.getKey()%></td>
-    <td><a href=<%= request.getContextPath() + "/restaurants/" + reserve.getKey()%>><%= reserve.getTable().getRestaurant().getName()%></a></td>
+    <td><%=reserve.getReserveNumber()%></td>
+    <td><a href=<%= request.getContextPath() + "/restaurants/" + reserve.getTable().getRestaurant().getName()%>><%= reserve.getTable().getRestaurant().getName()%></a></td>
     <td><%=reserve.getTable().getTableNumber()%></td>
     <td><%=reserve.GetReserveTime()%></td>
     <td>
       <form action="" method="POST">
+        <input type="hidden" name="reserveNumber" value=<%=reserve.getReserveNumber()%>>
         <button type="submit" name="action" value="cancel">Cancel This</button>
       </form>
     </td>

@@ -26,6 +26,9 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
 
     void EnsureKeyExists(TKey key) throws KeyNotFound{
         if(!MemoryDb.containsKey(key)){
+            if(key == null){
+                throw new KeyNotFound("<null>");
+            }
             throw new KeyNotFound(key.toString());
         }
     }

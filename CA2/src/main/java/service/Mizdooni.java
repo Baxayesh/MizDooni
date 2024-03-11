@@ -18,19 +18,16 @@ public class Mizdooni {
         Database = database;
     }
 
-    public String getUserRole(String username) {
-        try {
-            var user = FindUser(username);
-            if(user.getRole().equals("client")){
-                return "client";
-            } else if (user.getRole().equals("manager")) {
-                return "manager";
-            } else {
-                throw new NotExistentUser();
-            }
-        }catch (NotExistentUser ex){
-            return  ex.getMessage();
-        }
+    public Restaurant GetRestaurantFor(String manager){
+        return Database
+                .Restaurants
+                .Search(restaurant -> restaurant.getManagerUsername().equals(manager))
+                .findFirst().get();
+    }
+
+    public User getLoggedIn() throws MizdooniNotAuthorizedException {
+        EnsureLoggedIn();
+        return LoggedInUser;
     }
 
     public void Login(String username, String password) throws MizdooniNotAuthenticatedException {
@@ -140,12 +137,13 @@ public class Mizdooni {
         }
 
         var table = new Table(tableNumber, restaurant, seatNumber);
-
         try{
             Database.Tables.Add(table);
         }catch (KeyAlreadyExists ex){
             throw new TableAlreadyExists();
         }
+        restaurant.addTable(tableNumber);
+
     }
 
     public int ReserveATable(
@@ -251,18 +249,6 @@ public class Mizdooni {
                 .Search(review -> true)
                 .toArray(Review[]::new);
     }
-    public Reserve[] getReserves(){
-        return Database
-                .Reserves
-                .Search(review -> true)
-                .toArray(Reserve[]::new);
-    }
-    public User[] getUsers(){
-        return Database
-                .Users
-                .Search(review -> true)
-                .toArray(User[]::new);
-    }
 
     public void AddReview(
             String issuerUsername,
@@ -315,7 +301,7 @@ public class Mizdooni {
 
     Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {
 
-        if(Database.Users.Exists(username)){
+        if(!Database.Users.Exists(username)){
             throw new NotExistentUser();
         }
 
@@ -349,7 +335,7 @@ public class Mizdooni {
         }
     }
 
-    Restaurant FindRestaurant(String restaurantName) throws NotExistentRestaurant {
+    public Restaurant FindRestaurant(String restaurantName) throws NotExistentRestaurant {
         try {
             return Database.Restaurants.Get(restaurantName);
         } catch (KeyNotFound ex) {
@@ -363,4 +349,7 @@ public class Mizdooni {
         }
     }
 
+    public Review[] getReviews(String restaurantName) {
+        return Database.Reviews.Search(review -> review.getRestaurantName().equals(restaurantName)).toArray(Review[]::new);
+    }
 }
