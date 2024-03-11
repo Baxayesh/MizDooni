@@ -9,10 +9,10 @@
 
 <ul type="square">
     <li>
-        <a href="${pageContext.request.contextPath}/restaurants">Restaurants</a>
+        <a href="http://localhost:8080/restaurants">Restaurants</a>
     </li>
     <li>
-        <a href="${pageContext.request.contextPath}/reservations">Reservations</a>
+        <a href="http://localhost:8080/reservations">Reservations</a>
     </li>
 </ul>
 

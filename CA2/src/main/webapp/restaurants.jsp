@@ -47,23 +47,25 @@
     <th>Overall Score</th>
   </tr>
   <%
-    ArrayList<Restaurant> restaurants = (ArrayList<Restaurant>) request.getAttribute("restaurants");
+    Restaurant[] restaurants = (Restaurant[]) request.getAttribute("restaurants");
     if (restaurants != null) {
-    for (Restaurant restaurant : restaurants) {
+      for (Restaurant restaurant : restaurants) {
   %>
   <tr>
     <td>
       <%= restaurant.getKey()%>
     </td>
-    <td><a href=<%= request.getContextPath() + "/restaurants/" + restaurant.getKey()%>><%= restaurant.getName()%></a></td>
+    <td><a href=<%= request.getContextPath() + "/restaurant/" + restaurant.getKey()%>><%= restaurant.getName()%></a></td>
     <td><%=restaurant.getRestaurantAddress().city()%></td>
     <td><%=restaurant.getType()%></td>
     <td><%=restaurant.getOpenTime()%> - <%=restaurant.getCloseTime()%></td>
     <%
       }
+      }
     %>
     <%
-      ArrayList<Review> reviews = (ArrayList<Review>) request.getAttribute("reviews");
+      Review[] reviews = (Review[]) request.getAttribute("reviews");
+      if (reviews != null) {
       for (Review review : reviews) {
     %>
     <td><%= review.getServiceScore()%></td>
@@ -75,17 +77,6 @@
       }
     %>
   </tr>
-<%--  <tr>--%>
-<%--    <td>14</td>--%>
-<%--    <td><a href="/restaurants/14">Akbar Agha</a></td>--%>
-<%--    <td>Esfahan</td>--%>
-<%--    <td>Iranian</td>--%>
-<%--    <td>8:00 - 22:30</td>--%>
-<%--    <td>2.45</td>--%>
-<%--    <td>3.45</td>--%>
-<%--    <td>4.5</td>--%>
-<%--    <td>4.75</td>--%>
-<%--  </tr>--%>
 </table>
 </body>
 </html>

@@ -16,13 +16,20 @@ public class LogoutController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Mizdooni mizdooni = MizdooniProvider.GetInstance();
         HttpSession session = request.getSession(false);
-        try{
-            mizdooni.Logout();
-            response.sendRedirect(request.getContextPath() + "/login");
-        }catch (MizdooniNotAuthorizedException ex){
-            session.setAttribute("errorMessage", ex.getMessage());
-            response.sendRedirect(request.getContextPath() + "/error");
+
+        if (session != null) {
+            session.removeAttribute("username");
+            session.invalidate();
         }
+        response.sendRedirect(request.getContextPath() + "/login");
+
+//        try{
+//            mizdooni.Logout();
+//            response.sendRedirect(request.getContextPath() + "/login");
+//        }catch (MizdooniNotAuthorizedException ex){
+//            session.setAttribute("errorMessage", ex.getMessage());
+//            response.sendRedirect(request.getContextPath() + "/error");
+//        }
 
     }
 }

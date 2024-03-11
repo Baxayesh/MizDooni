@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Table" %>
 <%@ page import="models.Restaurant" %>
-<%@ page import="database.Database" %>
+<%@ page import="service.*" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
 <html lang="en"><head>
@@ -19,22 +19,36 @@
 <h1>Welcome <%= session.getAttribute("username") %> <a href="/logout" style="color: red">Log Out</a></h1>
 
 <h2>Your Restaurant Information:</h2>
-<% Restaurant restaurant = (Restaurant) request.getAttribute("restaurant"); %>
-<% Database database; %>
-<% List<Table> tables  = new ArrayList<>(); %>
+<% Restaurant restaurant = (Restaurant) request.getAttribute("restaurants"); %>
+<% Table[] tables = (Table[]) request.getAttribute("tables"); %>
+<%--<%--%>
+<%--    Restaurant[] restaurants = (Restaurant[]) request.getAttribute("restaurants");--%>
+<%--%>--%>
+<%-- <% List<Table> tables  = new ArrayList<>(); %>
+--%>
 
 <ul>
+    <%
+        if(restaurant != null){
+    %>
     <li id="id">Id: 1</li>
     <li id="name">Name: <%=restaurant.getName()%></li>
     <li id="type">Type: <%=restaurant.getType()%></li>
     <li id="time">Time: <%=restaurant.getOpenTime()%> - <%=restaurant.getCloseTime()%></li>
     <li id="description">Description: <%=restaurant.getDescription()%></li>
     <li id="address">Address: <%=restaurant.getRestaurantAddress()%></li>
+    <%}%>
     <li id="tables">Tables:</li>
     <ul>
-        <% for (Table table : tables ) { %>
+        <% if(tables != null){
+            for (Table table : tables )
+            {
+        %>
         <li>Table <%= table.getTableNumber() %>, Seats: <%= table.getNumberOfSeats() %></li>
-        <% } %>
+        <%
+            }
+            }
+        %>
     </ul>
 </ul>
 

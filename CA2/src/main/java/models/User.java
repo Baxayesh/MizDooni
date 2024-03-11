@@ -25,7 +25,11 @@ public class User extends EntityModel<String> {
         this.password = password;
         this.email = email;
         userAddress = address;
+
     }
+
+
+
 
     public static void ValidateUser(String username, String role, String password, String email, Address address)
             throws InvalidUser, InvalidAddress {

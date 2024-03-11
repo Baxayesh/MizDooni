@@ -17,13 +17,13 @@ public class RestaurantsController extends HttpServlet {
     private static void loadPage(HttpServletRequest request, HttpServletResponse response, Restaurant[] restaurants, Review[] reviews) throws ServletException, IOException {
         request.setAttribute("restaurants", restaurants);
         request.setAttribute("reviews", reviews);
-        request.getRequestDispatcher("Restaurants.jsp").forward(request, response);
+        request.getRequestDispatcher("restaurants.jsp").forward(request, response);
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Mizdooni mizdooni = MizdooniProvider.GetInstance();
-        if (session.getAttribute("username") == null) response.sendRedirect(request.getContextPath() + "/login");
+        if (session.getAttribute("username") != null) response.sendRedirect(request.getContextPath() + "/login");
         else {
             Restaurant[] restaurants = mizdooni.getRestaurants();
             Review[] reviews = mizdooni.getReviews();

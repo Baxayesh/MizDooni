@@ -18,7 +18,7 @@ public class Mizdooni {
         Database = database;
     }
 
-    public String getUserRole(String username) throws MizdooniNotAuthenticatedException{
+    public String getUserRole(String username) {
         try {
             var user = FindUser(username);
             if(user.getRole().equals("client")){
@@ -29,7 +29,7 @@ public class Mizdooni {
                 throw new NotExistentUser();
             }
         }catch (NotExistentUser ex){
-            throw new MizdooniNotAuthenticatedException();
+            return  ex.getMessage();
         }
     }
 
@@ -257,6 +257,12 @@ public class Mizdooni {
                 .Search(review -> true)
                 .toArray(Reserve[]::new);
     }
+    public User[] getUsers(){
+        return Database
+                .Users
+                .Search(review -> true)
+                .toArray(User[]::new);
+    }
 
     public void AddReview(
             String issuerUsername,
@@ -299,7 +305,7 @@ public class Mizdooni {
         }
     }
 
-    User FindUser(String username) throws NotExistentUser {
+    public User FindUser(String username) throws NotExistentUser {
         try {
             return Database.Users.Get(username);
         } catch (KeyNotFound ex) {
@@ -352,7 +358,7 @@ public class Mizdooni {
     }
 
     void EnsureUserIs(User user, UserRole desiredRole) throws NotExpectedUserRole {
-        if(!user.RoleIs(desiredRole)){
+        if (!user.RoleIs(desiredRole)) {
             throw new NotExpectedUserRole(desiredRole);
         }
     }

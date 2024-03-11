@@ -15,7 +15,7 @@ import service.*;
 import models.*;
 import exceptions.*;
 
-@WebServlet(name = "Restaurant Page", value = "/restaurants/*")
+@WebServlet(name = "Restaurant Page", value = "/restaurant")
 public class RestaurantController extends HttpServlet {
     private void loadPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws ServletException, IOException {
         try {
@@ -25,11 +25,11 @@ public class RestaurantController extends HttpServlet {
             Review[] feedback = mizdooni.getReviews();
 
             request.setAttribute("restaurant", restaurant);
-            request.setAttribute("comment",Review.getComment());
+            //request.setAttribute("comment",Review.getComment());
             request.setAttribute("rate", mizdooni.GetRatingFor(restaurant));
             request.setAttribute("feedback", feedback);
 
-            request.getRequestDispatcher("/restaurant.jsp").forward(request, response);
+            request.getRequestDispatcher("restaurant.jsp").forward(request, response);
         } catch (NotExistentRestaurant e) {
             session.setAttribute("errorMessage", e.getMessage());
             response.sendRedirect(request.getContextPath() + "/error");
@@ -39,10 +39,10 @@ public class RestaurantController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-
-        if (session.getAttribute("username") == null) response.sendRedirect(request.getContextPath() + "/login");
+        // changed if condition
+        if (session.getAttribute("username") != null) response.sendRedirect(request.getContextPath() + "/login");
         else {
-            String[] split_url = request.getRequestURI().split("/");
+            //String[] split_url = request.getRequestURI().split("/");
             loadPage(request, response, session);
         }
     }
@@ -50,15 +50,15 @@ public class RestaurantController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if(request.getParameter("comment")!= null){
-            String username = (String) session.getAttribute("username");
-            String commentText = request.getParameter("comment");
-        }
-        if (request.getParameter("date_time")!= null){
-            Date currentDate = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String dateString = dateFormat.format(currentDate);
-        }
+//        if(request.getParameter("comment")!= null){
+//            String username = (String) session.getAttribute("username");
+//            String commentText = request.getParameter("comment");
+//        }
+//        if (request.getParameter("date_time")!= null){
+//            Date currentDate = new Date();
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            String dateString = dateFormat.format(currentDate);
+//        }
         loadPage(request, response, session);
     }
 }
