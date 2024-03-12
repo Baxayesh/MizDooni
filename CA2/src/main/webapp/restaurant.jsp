@@ -48,9 +48,9 @@
     <tr>
         <td>
             <label>Reserve Table:</label>
-            <form action="reserve" method="post">
+            <form action="" method="post">
                 <label>Table:</label>
-                <select id="table_number" name="table_number">
+                <select name="tableNumber">
                     <%
                         for(Integer table: restaurant.getTableNumbers().toArray(Integer[]::new)){
                     %>
@@ -58,8 +58,9 @@
                     <%}%>
                 </select>
                 <label>Date & Time:</label>
-                <input type="datetime-local" id="date_time" name="date_time">
+                <input type="datetime-local" name="reserveTime">
                 <br>
+                <input type="hidden" name="restaurant" value="<%=restaurant.getName()%>"/>
                 <button type="submit" name="action" value="reserve">Reserve</button>
             </form>
         </td>
@@ -70,19 +71,20 @@
     <tr>
         <td>
             <label>Feedback:</label>
-            <form action="feedBack" method="post">
+            <form action="" method="post">
                 <label>Food Rate:</label>
-                <input type="number" id="food_rate" name="food_rate" step="0.1" min="0" max="5">
+                <input type="number" name="food_rate" step="0.1" min="0" max="5">
                 <label>Service Rate:</label>
-                <input type="number" id="service_rate" name="service_rate" step="0.1" min="0" max="5">
+                <input type="number" name="service_rate" step="0.1" min="0" max="5">
                 <label>Ambiance Rate:</label>
-                <input type="number" id="ambiance_rate" name="ambiance_rate" step="0.1" min="0" max="5">
+                <input type="number" name="ambiance_rate" step="0.1" min="0" max="5">
                 <label>Overall Rate:</label>
-                <input type="number" id="overall_rate" name="overall_rate" step="0.1" min="0" max="5">
+                <input type="number" name="overall_rate" step="0.1" min="0" max="5">
                 <br>
                 <label>Comment:</label>
-                <textarea name="comment"  id="" cols="30" rows="5" placeholder="Enter your comment"></textarea>
+                <textarea name="comment" cols="30" rows="5" placeholder="Enter your comment"></textarea>
                 <br>
+                <input type="hidden" name="restaurant" value="<%=restaurant.getName()%>"/>
                 <button type="submit" name="action" value="feedback">Submit</button>
             </form>
         </td>
@@ -110,7 +112,7 @@
         <td><%=feedback.getComment()%></td>
         <td><%=feedback.getIssueTime()%></td>
         <td><%=feedback.getFoodScore()%></td>
-        <td><%= feedback.getServiceScore()%></td>
+        <td><%=feedback.getServiceScore()%></td>
         <td><%=feedback.getAmbianceScore()%></td>
         <td><%=feedback.getOverallScore()%></td>
     </tr>

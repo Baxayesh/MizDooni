@@ -10,6 +10,7 @@ import exceptions.KeyAlreadyExists;
 import exceptions.MizdooniInternalException;
 import lombok.SneakyThrows;
 import models.EntityModel;
+import models.Review;
 import models.User;
 //import org.xml.sax.helpers.ParserFactory;
 
@@ -38,6 +39,7 @@ public class MizdooniProvider {
         addRestaurants(instance);
         addTables(instance);
         addReserves(instance);
+        addReviews(db);
         instance.Login("ali", "ali");
         return instance;
     }
@@ -86,6 +88,14 @@ public class MizdooniProvider {
         mizdooni.ReserveATable("ali", "makhsos", 2, ReserveTime(14, 1));
         mizdooni.ReserveATable("reza", "makhsos", 1, ReserveTime(12, 1));
         mizdooni.ReserveATable("mirza", "regimi", 2, ReserveTime(18, 2));
+    }
+
+    @SneakyThrows
+    static void addReviews(Database database){
+        database.Reviews.Add(new Review("mamoly","ali", 5,4,4.5,3.75,"verry qood"));
+        database.Reviews.Add(new Review("regimi","ali", 3.5,2.3,1,2.75,"nut so qood"));
+        database.Reviews.Add(new Review("regimi","mirza", 2.0,1,1,2.5,"bad bad"));
+        database.Reviews.Add(new Review("makhsos","reza", 4.5,4.5,4,5,"vary varry qoood"));
     }
 
     static LocalDateTime ReserveTime(int hour, int daysFromToday){

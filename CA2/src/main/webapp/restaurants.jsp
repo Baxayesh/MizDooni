@@ -8,31 +8,36 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.Restaurant" %>
 <%@ page import="models.Review" %>
+<%@ page import="utils.*" %>
 <%@ page import="java.util.ArrayList" %>
+
+<%
+    RestaurantViewModel[] restaurants = (RestaurantViewModel[]) request.getAttribute("restaurants");
+%>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Restaurants</title>
 </head>
 <body>
-<p id="username">username: <%= session.getAttribute("username") %>
+<p id="username">username: <%= request.getAttribute("username") %>
   <a href="/">Home</a>
   <a href="/logout" style="color: red">Log Out</a>
 </p>
 <br><br>
-<form action="" method="POST">
-  <label>Search:</label>
-  <input type="text" name="search" value="">
-  <button type="submit" name="action" value="search_by_type">Search By Type</button>
-  <button type="submit" name="action" value="search_by_name">Search By Name</button>
-  <button type="submit" name="action" value="search_by_city">Search By City</button>
-  <button type="submit" name="action" value="clear">Clear Search</button>
-</form>
-<br><br>
-<form action="" method="POST">
-  <label>Sort By:</label>
-  <button type="submit" name="action" value="sort_by_rate">Overall Score</button>
-</form>
+    <form action="" method="POST">
+        <label>Search:</label>
+        <input type="text" name="search" value="">
+        <button type="submit" name="action" value="search_by_type">Search By Type</button>
+        <button type="submit" name="action" value="search_by_name">Search By Name</button>
+        <button type="submit" name="action" value="search_by_city">Search By City</button>
+        <button type="submit" name="action" value="clear">Clear Search</button>
+    </form>
+    <br><br>
+    <form action="" method="POST">
+        <label>Sort By:</label>
+        <button type="submit" name="action" value="sort_by_rate">Overall Score</button>
+    </form>
 <br><br>
 <table style="width:100%; text-align:center;" border="1">
   <tr>
@@ -47,35 +52,22 @@
     <th>Overall Score</th>
   </tr>
   <%
-    Restaurant[] restaurants = (Restaurant[]) request.getAttribute("restaurants");
     if (restaurants != null) {
-      for (Restaurant restaurant : restaurants) {
+      for (RestaurantViewModel restaurant : restaurants) {
   %>
   <tr>
     <td>
-      <%= restaurant.getKey()%>
+      <%= restaurant.getRestaurant().getKey()%>
     </td>
-    <td><a href=<%= request.getContextPath() + "/restaurant/" + restaurant.getKey()%>><%= restaurant.getName()%></a></td>
-    <td><%=restaurant.getRestaurantAddress().city()%></td>
-    <td><%=restaurant.getType()%></td>
-    <td><%=restaurant.getOpenTime()%> - <%=restaurant.getCloseTime()%></td>
-    <%
-      }
-      }
-    %>
-    <%
-      Review[] reviews = (Review[]) request.getAttribute("reviews");
-      if (reviews != null) {
-      for (Review review : reviews) {
-    %>
-    <td><%= review.getServiceScore()%></td>
-    <td><%= review.getFoodScore()%></td>
-    <td><%= review.getAmbianceScore()%></td>
-    <td><%= review.getOverallScore()%></td>
-    <%
-      }
-      }
-    %>
+    <td><a href=<%="/restaurants/" + restaurant.getRestaurant().getKey()%>><%= restaurant.getRestaurant().getName()%></a></td>
+    <td><%=restaurant.getRestaurant().getRestaurantAddress().city()%></td>
+    <td><%=restaurant.getRestaurant().getType()%></td>
+    <td><%=restaurant.getRestaurant().getOpenTime()%> - <%=restaurant.getRestaurant().getCloseTime()%></td>
+    <td><%=restaurant.getRating().getAverageServiceScore()%></td>
+    <td><%=restaurant.getRating().getAverageFoodScore()%></td>
+    <td><%=restaurant.getRating().getAverageAmbianceScore()%></td>
+    <td><%=restaurant.getRating().getAverageOverallScore()%></td>
+    <%}}%>
   </tr>
 </table>
 </body>
