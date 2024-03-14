@@ -1,0 +1,135 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font-family: "Spline Sans";
+    position: relative;
+    z-index: auto;
+}
+
+.logo-container {
+    width: 103px;
+    height: 85px;
+    top: 8px;
+    left: 0px;
+
+}
+
+.nav-button {
+    width: 150px;
+    height: 45px;
+    top: 13px;
+    left: 25px;
+    border-radius: 12px;
+    background-color: #ED3545;
+    color: #fff;
+    border: none;
+    font: Spline Sans;
+}
+
+.navbar-title {
+    float: right;
+    color: #ED3545;
+    line-height: 400%;
+    margin-left: 20px;
+}
+
+.main-bg {
+    background-image: url(../image/home_background.png);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover, contain;
+    height: 830px;
+    top: -200px;
+    left: -231px;
+}
+
+.home-main {
+    width: 704px;
+    height: 317px;
+    top: 297px;
+    margin-left: 100px;
+    text-align: center;
+
+
+}
+
+.main-logo {
+
+    width: 319px;
+    height: 250.37px;
+    left: 192px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card{
+    margin: 0px auto;
+    height: auto;
+    position: relative;
+    border-style: groove;
+    border-radius: 15px 15px !important;
+    
+}
+.rating-box{
+    position: absolute;
+    margin-top: 10px;
+    color: #ED3545;
+    background-color:#FFF6F7;
+    border-radius: 0px 15px 15px 0px;
+}
+.restaurant-name{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #303030;
+
+}
+.reviews{
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #7E7E7E;
+
+}
+.restaurant-type{
+
+    font-size: 10px;
+    font-weight: 300;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.restaurant-location{
+
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.open-or-close-time{
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.card-title{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0em;
+    text-align: left;
+
+}
+
