@@ -10,29 +10,28 @@ body {
 }
 
 .logo-container {
-    width: 103px;
-    height: 85px;
+    width: 65px;
+    height: 45px;
     top: 8px;
     left: 0px;
 
 }
 
 .nav-button {
-    width: 150px;
-    height: 45px;
-    top: 13px;
+    width: 130px;
+    height: 40px;
+    margin-bottom: 10px;
     left: 25px;
     border-radius: 12px;
     background-color: #ED3545;
     color: #fff;
     border: none;
-    font: Spline Sans;
 }
 
 .navbar-title {
     float: right;
     color: #ED3545;
-    line-height: 400%;
+    line-height: 50px;
     margin-left: 20px;
 }
 
@@ -67,22 +66,24 @@ body {
     margin-right: auto;
 }
 
-.card{
+.card {
     margin: 0px auto;
     height: auto;
     position: relative;
     border-style: groove;
     border-radius: 15px 15px !important;
-    
+
 }
-.rating-box{
+
+.rating-box {
     position: absolute;
     margin-top: 10px;
     color: #ED3545;
-    background-color:#FFF6F7;
+    background-color: #FFF6F7;
     border-radius: 0px 15px 15px 0px;
 }
-.restaurant-name{
+
+.restaurant-name {
     font-size: 14px;
     font-weight: 400;
     line-height: 17px;
@@ -91,7 +92,8 @@ body {
     color: #303030;
 
 }
-.reviews{
+
+.reviews {
     font-size: 10px;
     font-weight: 500;
     line-height: 12px;
@@ -100,7 +102,8 @@ body {
     color: #7E7E7E;
 
 }
-.restaurant-type{
+
+.restaurant-type {
 
     font-size: 10px;
     font-weight: 300;
@@ -109,7 +112,7 @@ body {
     text-align: left;
 }
 
-.restaurant-location{
+.restaurant-location {
 
     font-size: 10px;
     font-weight: 400;
@@ -117,19 +120,120 @@ body {
     letter-spacing: 0em;
     text-align: left;
 }
-.open-or-close-time{
+
+.open-or-close-time {
     font-size: 10px;
     font-weight: 400;
     line-height: 12px;
     letter-spacing: 0em;
     text-align: left;
 }
-.card-title{
+
+.card-title {
     font-size: 16px;
     font-weight: 400;
     line-height: 19px;
     letter-spacing: 0em;
     text-align: left;
+
+}
+
+/* .caret{border-top:4px solid red;} */
+
+.reserve-title {
+
+    background-color: #FFF6F7;
+    border-radius: 12px 12px 12px 12px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    height: 50px;
+    line-height: 50px;
+
+}
+
+.red {
+    color: #ED3545;
+}
+
+.green {
+    color: #2B9407;
+}
+
+.deactive {
+    color: #b19898;
+}
+
+.info-container {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+}
+
+.owner-info {
+    display: flex;
+    float: left;
+    justify-content: start;
+}
+
+.restaurant-address {
+    display: flex;
+    justify-content: end;
+}
+
+.rest-table-container {
+    width: 100%;
+    height: 100%;
+}
+
+.manage-table-container {
+    background-color: #fff;
+    height: 565px;
+    left: 10px;
+}
+
+.manage-rest-container {
+    height: 565px;
+    line-height: 565px;
+    left: 15px;
+    background-color: #FFF6F7;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 30px;
+}
+
+.add-table{
+    height: 50px;
+    line-height:50px;
+    color: #ED3545;
+    margin-bottom: 100px; 
+
+}
+
+.reservation-list {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0em;
+    display: flex;
+    float: left;
+    justify-content: start;
+
+}
+
+.reservation-table {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 14px;
+    letter-spacing: 0em;
+    color: #7E7E7E;
+    display: flex;
+    justify-content: end;
 
 }
 
