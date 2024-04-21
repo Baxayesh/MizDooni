@@ -18,6 +18,7 @@ public class Restaurant extends EntityModel<String> {
     private String ManagerUsername;
     private String Type;
     private String Description;
+    private String ImageUri;
     private ArrayList<Integer> TableNumbers;
     private Address restaurantAddress;
 
@@ -32,7 +33,8 @@ public class Restaurant extends EntityModel<String> {
             String managerUsername,
             String type,
             String description,
-            Address address
+            Address address,
+            String imageUri
     ) {
         super(name);
         OpenTime = openTime;
@@ -42,6 +44,7 @@ public class Restaurant extends EntityModel<String> {
         Description = description;
         TableNumbers = new ArrayList<>();
         restaurantAddress = address;
+        ImageUri = imageUri;
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {

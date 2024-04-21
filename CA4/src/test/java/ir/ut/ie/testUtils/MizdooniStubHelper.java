@@ -39,7 +39,8 @@ public class MizdooniStubHelper {
                 LocalTime.of(8,0),
                 LocalTime.of(18,0),
                 "",
-                "country","city","street"
+                "country","city","street",
+                ""
         );
     }
 
@@ -54,7 +55,8 @@ public class MizdooniStubHelper {
                 LocalTime.of(openingHour,0),
                 LocalTime.of(closureHour,0),
                 "",
-                "country","city","street"
+                "country","city","street",
+                ""
         );
     }
 

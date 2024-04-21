@@ -98,7 +98,8 @@ public class Mizdooni {
             String description,
             String country,
             String city,
-            String street
+            String street,
+            String image
     )
             throws
             NotExistentUser,
@@ -111,7 +112,7 @@ public class Mizdooni {
         var managerUser = FindUser(manager);
         EnsureUserIs(managerUser, UserRole.Manager);
 
-        var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address);
+        var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, address, image);
 
         try{
             Database.Restaurants.Add(restaurant);
