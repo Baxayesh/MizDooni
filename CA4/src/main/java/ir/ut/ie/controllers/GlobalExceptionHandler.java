@@ -20,9 +20,9 @@ public class GlobalExceptionHandler {
                 return new Error(mizdooniException);
 
         if(ex instanceof ExecutionControl.NotImplementedException)
-            return new Error("Functionality not implemented yet", HttpStatus.NOT_IMPLEMENTED, "");
+            return new Error("Functionality not implemented yet", HttpStatus.NOT_IMPLEMENTED.value(), "");
 
-        return new Error(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getClass().getName());
+        return new Error(ex.getMessage(), 500, ex.getClass().getName());
     }
 
 
