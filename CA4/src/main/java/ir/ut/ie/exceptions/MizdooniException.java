@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatusCode;
 
 public class MizdooniException extends Exception {
 
-    private int statusCode;
+    private final int statusCode;
 
-    public HttpStatusCode getHttpStatusCode(){
-        return HttpStatusCode.valueOf(statusCode);
+    public int getHttpStatusCode(){
+        return statusCode;
     }
 
     public String getMessage() {
