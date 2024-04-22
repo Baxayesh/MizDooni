@@ -122,6 +122,33 @@ public class Mizdooni {
 
     }
 
+    public int AddTable(
+            String restaurantName,
+            String managerName,
+            int seatNumber
+    ) throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, SeatNumNotPos {
+
+        try {
+            var id = getNextTableNumber(restaurantName);
+
+            AddTable(
+                    getNextTableNumber(restaurantName),
+                    restaurantName,
+                    managerName,
+                    seatNumber
+            );
+
+            return id;
+        } catch (TableAlreadyExists e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    int getNextTableNumber(String restaurantName) throws NotExistentRestaurant {
+        var restaurant = FindRestaurant(restaurantName);
+        return restaurant.getNextTableNumber();
+    }
+
     public void AddTable(
             int tableNumber,
             String restaurantName,
@@ -143,7 +170,7 @@ public class Mizdooni {
         }catch (KeyAlreadyExists ex){
             throw new TableAlreadyExists();
         }
-        restaurant.addTable(tableNumber);
+        restaurant.addTable(table);
 
     }
 
@@ -353,4 +380,5 @@ public class Mizdooni {
     public Review[] getReviews(String restaurantName) {
         return Database.Reviews.Search(review -> review.getRestaurantName().equals(restaurantName)).toArray(Review[]::new);
     }
+
 }

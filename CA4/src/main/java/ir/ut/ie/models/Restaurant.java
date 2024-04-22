@@ -19,7 +19,7 @@ public class Restaurant extends EntityModel<String> {
     private String Type;
     private String Description;
     private String ImageUri;
-    private ArrayList<Integer> TableNumbers;
+    private ArrayList<Table> Tables;
     private Address restaurantAddress;
 
     public String getName(){
@@ -42,7 +42,7 @@ public class Restaurant extends EntityModel<String> {
         ManagerUsername = managerUsername;
         Type = type;
         Description = description;
-        TableNumbers = new ArrayList<>();
+        Tables = new ArrayList<>();
         restaurantAddress = address;
         ImageUri = imageUri;
     }
@@ -74,12 +74,13 @@ public class Restaurant extends EntityModel<String> {
         EnsureTimeIsInWorkHours(reserveTime.toLocalTime());
     }
 
-    public Stream<Integer> getTableNumbers() {
-        return TableNumbers.stream();
+
+    public void addTable(Table table) {
+        Tables.add(table);
     }
 
-    public void addTable(int tableNumber) {
-        TableNumbers.add(tableNumber);
+    public int getNextTableNumber() {
+        return Tables.stream().map(Table::getTableNumber).sorted().max(Integer::compare).orElse(0) + 1;
     }
 
     public record Address(String country, String city, String street) {
