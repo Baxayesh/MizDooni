@@ -52,17 +52,6 @@ public class Mizdooni {
             throw new MizdooniNotAuthorizedException();
     }
 
-    public Rating getRatingFor(String restaurant) {
-
-        return Database
-            .Reviews.Search(review -> review.getRestaurantName().equals(restaurant))
-            .reduce(
-                new Rating(),
-                Rating::ConsiderReview,
-                Rating::Combine
-            );
-    }
-
     public void ensureLoggedIn(UserRole role) throws MizdooniNotAuthorizedException {
         ensureLoggedIn();
         ensureUserIs(LoggedInUser, role);
@@ -246,9 +235,9 @@ public class Mizdooni {
         ensureUserIs(issuer, UserRole.Client);
         var restaurant = findRestaurant(restaurantName);
         ensureUserHaveAnyPassedReserveAt(issuerUsername, restaurantName);
+        restaurant.upsertReview(review);
 
         Database.Reviews.Upsert(review);
-
     }
 
     void ensureUserHaveAnyPassedReserveAt(String user, String restaurant) throws NotAllowedToAddReview {

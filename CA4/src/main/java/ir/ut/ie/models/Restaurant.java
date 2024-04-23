@@ -1,13 +1,13 @@
 package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.*;
+import ir.ut.ie.utils.Rating;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
 
 @Getter
 @Setter
@@ -20,6 +20,8 @@ public class Restaurant extends EntityModel<String> {
     private String Description;
     private String ImageUri;
     private ArrayList<Table> Tables;
+    public Map<String,Review> Reviews;
+    public Rating Rating;
     private Address restaurantAddress;
 
     public String getName(){
@@ -45,6 +47,8 @@ public class Restaurant extends EntityModel<String> {
         Tables = new ArrayList<>();
         restaurantAddress = address;
         ImageUri = imageUri;
+        Rating = new Rating();
+        Reviews = new HashMap<>();
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {
@@ -133,6 +137,17 @@ public class Restaurant extends EntityModel<String> {
         public String toString() {
             return "%s, %s, %s".formatted(street, city, country);
         }
+    }
+
+    public void upsertReview(Review review){
+        var issuer = review.getIssuerUsername();
+
+        if(Reviews.containsKey(issuer)){
+            Rating.UpdateReview(Reviews.get(issuer), review);
+        } else {
+            Rating.ConsiderReview(review);
+        }
+        Reviews.put(review.getIssuerUsername(),review);
     }
 
 }

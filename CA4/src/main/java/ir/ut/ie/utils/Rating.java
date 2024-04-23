@@ -69,4 +69,11 @@ public class Rating {
                 right.ReviewCount + left.ReviewCount
         );
     }
+
+    public void UpdateReview(Review oldReview, Review newReview) {
+        TotalFoodScore += newReview.getFoodScore() - oldReview.getFoodScore();
+        TotalServiceScore += newReview.getServiceScore() - oldReview.getServiceScore();
+        TotalAmbianceScore += newReview.getAmbianceScore() - oldReview.getAmbianceScore();
+        TotalOverallScore += newReview.getOverallScore() - oldReview.getOverallScore();
+    }
 }
