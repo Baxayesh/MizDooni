@@ -327,7 +327,7 @@ public class Mizdooni {
         }
     }
 
-    Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {
+    public Reserve FindReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {
 
         if(!Database.Users.Exists(username)){
             throw new NotExistentUser();
@@ -381,4 +381,34 @@ public class Mizdooni {
         return Database.Reviews.Search(review -> review.getRestaurantName().equals(restaurantName)).toArray(Review[]::new);
     }
 
+    public Reserve[] GetReserves(String reservee) throws NotExistentUser, NotExpectedUserRole {
+
+        var user = FindUser(reservee);
+        EnsureUserIs(user, UserRole.Client);
+
+        return Database
+                .Reserves
+                .Search(reserve -> user.Is(reserve.getReserveeUsername()))
+                .toArray(Reserve[]::new);
+    }
+
+    public int ReserveATable(String reserveeUsername, String restaurantName, LocalDateTime reserveTime)
+            throws NotExistentUser, NotExpectedUserRole, NotExistentRestaurant, TimeBelongsToPast, TimeIsNotRound,
+            NotInWorkHour, NoFreeTable {
+
+        var reservee = FindUser(reserveeUsername);
+        EnsureUserIs(reservee, UserRole.Client);
+        var restaurant = FindRestaurant(restaurantName);
+        var reserveNumber = Database.ReserveIdGenerator.GetNext();
+        restaurant.ValidateReserveTime(reserveTime);
+        var reserve = restaurant.MakeReserve(reserveNumber, reservee, reserveTime);
+
+        try{
+            Database.Reserves.Add(reserve);
+        } catch (KeyAlreadyExists ex){
+            throw new RuntimeException(ex);
+        }
+
+        return reserve.getReserveNumber();
+    }
 }

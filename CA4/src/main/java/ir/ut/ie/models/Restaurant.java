@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -81,6 +80,28 @@ public class Restaurant extends EntityModel<String> {
 
     public int getNextTableNumber() {
         return Tables.stream().map(Table::getTableNumber).sorted().max(Integer::compare).orElse(0) + 1;
+    }
+
+    public Table getTable(int tableNumber) throws NotExistentTable {
+        return Tables
+                .stream()
+                .filter(table -> table.getTableNumber() == tableNumber)
+                .findFirst()
+                .orElseThrow(NotExistentTable::new);
+    }
+
+    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime) throws NoFreeTable {
+
+        for(var table : Tables){
+            if(table.isFreeOn(reserveTime)){
+                try {
+                    return table.MakeReserve(reserveNumber, reservee, reserveTime);
+                } catch (TableIsReserved ignored) {
+                }
+            }
+        }
+
+        throw new NoFreeTable();
     }
 
     public record Address(String country, String city, String street) {

@@ -36,10 +36,8 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     }
 
     void EnsureTableIsFreeIn(LocalDateTime reserveTime) throws TableIsReserved {
-        for(var reserve : Reserves){
-            if(reserve.GetReserveTime().equals(reserveTime) && reserve.IsActive()){
-                throw new TableIsReserved();
-            }
+        if(!isFreeOn(reserveTime)){
+            throw new TableIsReserved();
         }
     }
 
@@ -66,5 +64,14 @@ public class Table extends EntityModel<PairType<String, Integer>> {
             .forEach(availableTimes::ConsiderNextReservation);
 
         return availableTimes;
+    }
+
+    public boolean isFreeOn(LocalDateTime reserveTime) {
+        for(var reserve : Reserves){
+            if(reserve.GetReserveTime().equals(reserveTime) && reserve.IsActive()){
+                return false;
+            }
+        }
+        return true;
     }
 }
