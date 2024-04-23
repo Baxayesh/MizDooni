@@ -1,31 +1,67 @@
 package ir.ut.ie.controllers;
 
-import ir.ut.ie.contracts.PagedResponse;
-import ir.ut.ie.contracts.RestaurantModel;
-import jdk.jshell.spi.ExecutionControl;
+import ir.ut.ie.contracts.*;
+import ir.ut.ie.exceptions.*;
+import ir.ut.ie.models.Restaurant;
+import ir.ut.ie.utils.UserRole;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurants")
 public class RestaurantsController extends MizdooniController {
 
-    @SneakyThrows(ExecutionControl.NotImplementedException.class)
+    static final int RECOMMENDED_RESTAURANTS_COUNT = 6;
+
+    //type format 23:59
+    @SneakyThrows(NotExistentUser.class)
     @PostMapping
-    public void AddRestaurant(@RequestBody Map<String, String> request){
-        throw new ExecutionControl.NotImplementedException("");
+    public void AddRestaurant(@RequestBody Map<String, String> request) throws FieldIsRequired,
+            NotAValidDatetime, RestaurantAlreadyExists, MizdooniNotAuthorizedException, InvalidAddress {
+
+        service.ensureLoggedIn(UserRole.Manager);
+        var owner = service.getLoggedIn();
+
+        service.addRestaurant(
+                getRequiredField(request, "name"),
+                owner.getUsername(),
+                getRequiredField(request, "type"),
+                toTime(getRequiredField(request, "openTime"), "openTime"),
+                toTime(getRequiredField(request, "closeTime"), "closeTime"),
+                getRequiredField(request, "description"),
+                getRequiredField(request, "country"),
+                getRequiredField(request, "city"),
+                getRequiredField(request, "street"),
+                getRequiredField(request, "image")
+        );
     }
 
-    @SneakyThrows(ExecutionControl.NotImplementedException.class)
     @GetMapping
-    public RestaurantModel[] GetManagerRestaurants(){
-        throw new ExecutionControl.NotImplementedException("");
+    public RestaurantModel[] GetManagerRestaurants() throws MizdooniNotAuthorizedException {
+
+        service.ensureLoggedIn(UserRole.Manager);
+        var owner = service.getLoggedIn();
+
+        return Arrays.stream(service.getRestaurantsFor(owner.getUsername()))
+                .map(RestaurantModel::fromDomainObject)
+                .toArray(RestaurantModel[]::new);
     }
 
-    @SneakyThrows(ExecutionControl.NotImplementedException.class)
+
+
+    Restaurant[] FetchSearchResults(String query, String searchMethod){
+        return switch (searchMethod.toLowerCase()) {
+            case "type" -> service.searchRestaurantByType(query);
+            case "location" -> service.searchRestaurantByLocation(query);
+            case "name" -> service.searchRestaurantByName(query);
+            default -> new Restaurant[0];
+        };
+    }
+
     //valid values for by = {type, location, name}
     @GetMapping(params = {"q","by"})
     public PagedResponse<RestaurantModel> Search(
@@ -33,26 +69,52 @@ public class RestaurantsController extends MizdooniController {
             @RequestParam(name="by") String searchMethod,
             @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
-    ){
-        throw new ExecutionControl.NotImplementedException("");
+    ) throws MizdooniNotAuthorizedException {
+        service.ensureLoggedIn(UserRole.Client);
+
+        var searchResults = FetchSearchResults(query, searchMethod);
+
+        var pagedResults = Arrays.stream(searchResults)
+                .skip(offset)
+                .limit(limit)
+                .map(RestaurantModel::fromDomainObject)
+                .toArray(RestaurantModel[]::new);
+
+        return new PagedResponse<>(searchResults.length, offset, limit, pagedResults);
     }
 
-    @SneakyThrows(ExecutionControl.NotImplementedException.class)
+    Restaurant[] FetchRecommendations(String recommendingMethod) throws MizdooniNotAuthorizedException {
+        return switch (recommendingMethod) {
+            case "userLocation" -> {
+                var user = service.getLoggedIn();
+                yield service.getBestRestaurants(user.getUserAddress().city(), RECOMMENDED_RESTAURANTS_COUNT);
+            }
+            case "bestRating" -> service.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
+            default -> new Restaurant[0];
+        };
+    }
+
     //valid values for recommendBy = {userLocation, bestRating}
     @GetMapping(params = {"recommendBy"})
-    public RestaurantModel[] Recommend(@RequestParam(name="recommendBy") String recommendingMethod){
-        throw new ExecutionControl.NotImplementedException("");
+    public RestaurantModel[] Recommend(@RequestParam(name="recommendBy") String recommendingMethod)
+            throws MizdooniNotAuthorizedException {
+
+        service.ensureLoggedIn(UserRole.Client);
+        var restaurants = FetchRecommendations(recommendingMethod);
+        return Arrays.stream(restaurants).map(RestaurantModel::fromDomainObject).toArray(RestaurantModel[]::new);
     }
 
-    @SneakyThrows(ExecutionControl.NotImplementedException.class)
+
     @GetMapping(path = "/{name}", params={"onDate", "requestedSeats"})
     public LocalTime[] GetAvailableReserveSlots(
             @PathVariable(name = "name") String restaurantName,
             @RequestParam(name = "onDate") String requestDateString,
             @RequestParam(name = "requestedSeats") int requestedSeats
-    ){
-        throw new ExecutionControl.NotImplementedException("");
+    ) throws NotAValidDatetime, NotExistentRestaurant, MizdooniNotAuthorizedException {
 
+        service.ensureLoggedIn(UserRole.Client);
+        var requestDate = toDate(requestDateString,"onDate");
+        return service.getAvailableTables(restaurantName, requestDate, requestedSeats);
     }
 
 }

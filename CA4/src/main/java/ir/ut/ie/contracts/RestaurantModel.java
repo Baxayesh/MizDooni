@@ -1,13 +1,8 @@
 package ir.ut.ie.contracts;
 
 import ir.ut.ie.models.Restaurant;
-import ir.ut.ie.models.Table;
-import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public record RestaurantModel(
         String Name,
@@ -20,5 +15,19 @@ public record RestaurantModel(
         Restaurant.Address restaurantAddress,
         RatingModel rating
 ) {
+
+    public static RestaurantModel fromDomainObject(Restaurant model) {
+        return new RestaurantModel(
+            model.getName(),
+            model.getOpenTime(),
+                model.getCloseTime(),
+                model.getManagerUsername(),
+                model.getType(),
+                model.getDescription(),
+                model.getImageUri(),
+                model.getRestaurantAddress(),
+                RatingModel.fromDomainObject(model.getRating())
+            );
+    }
 
 }

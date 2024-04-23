@@ -3,11 +3,11 @@ package ir.ut.ie.controllers;
 import ir.ut.ie.exceptions.FieldIsRequired;
 import ir.ut.ie.exceptions.NotAValidDatetime;
 import ir.ut.ie.exceptions.NotAValidNumber;
-import ir.ut.ie.service.Mizdooni;
-import ir.ut.ie.service.MizdooniProvider;
+import ir.ut.ie.service.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
@@ -31,6 +31,14 @@ public abstract class MizdooniController {
             throw new FieldIsRequired(fieldName);
 
         return field;
+    }
+
+    LocalTime toTime(String field, String fieldName) throws NotAValidDatetime {
+        try {
+            return LocalTime.parse(field);
+        } catch (DateTimeParseException ex){
+            throw new NotAValidDatetime(fieldName);
+        }
     }
 
     LocalDate toDate(String field, String fieldName) throws NotAValidDatetime {
