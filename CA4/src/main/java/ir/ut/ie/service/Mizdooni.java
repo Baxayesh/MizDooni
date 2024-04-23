@@ -292,7 +292,7 @@ public class Mizdooni {
             NotExistentRestaurant,
             NotExpectedUserRole,
             ScoreOutOfRange,
-            CannotAddReview
+            NotAllowedToAddReview
     {
         var review = new Review(restaurantName, issuerUsername, foodScore, serviceScore, ambianceScore,
                 overallScore, comment);
@@ -306,7 +306,7 @@ public class Mizdooni {
 
     }
 
-    void EnsureUserHaveAnyPassedReserveAt(String user, String restaurant) throws CannotAddReview {
+    void EnsureUserHaveAnyPassedReserveAt(String user, String restaurant) throws NotAllowedToAddReview {
         if(
             Database.Reserves.Search( reserve ->
                 reserve.getReserveeUsername().equals(user) &&
@@ -315,7 +315,7 @@ public class Mizdooni {
                 reserve.IsPassed()
             ).findAny().isEmpty()
         ){
-            throw new CannotAddReview();
+            throw new NotAllowedToAddReview();
         }
     }
 
@@ -410,5 +410,14 @@ public class Mizdooni {
         }
 
         return reserve.getReserveNumber();
+    }
+
+    public Review FindReview(String restaurantName, String issuer) throws MizdooniNotFoundException {
+
+        try {
+            return Database.Reviews.Get(new PairType<>(restaurantName, issuer));
+        } catch (KeyNotFound e) {
+            throw new MizdooniNotFoundException("Review");
+        }
     }
 }

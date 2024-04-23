@@ -2,10 +2,10 @@ package ir.ut.ie.exceptions;;
 
 import static ir.ut.ie.defines.Errors.CANNOT_ADD_REVIEW;
 
-public class CannotAddReview extends MizdooniUserException {
+public class NotAllowedToAddReview extends MizdooniUserException {
 
 
-    public CannotAddReview() {
+    public NotAllowedToAddReview() {
         super(CANNOT_ADD_REVIEW);
     }
 }
