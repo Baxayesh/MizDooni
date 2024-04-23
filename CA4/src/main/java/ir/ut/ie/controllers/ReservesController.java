@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @RequestMapping("/reserves")
 public class ReservesController extends MizdooniController {
 
-    @GetMapping()
+    @GetMapping(params = {})
     @SneakyThrows(NotExistentUser.class)
     public ReserveModel[] GetCurrentUserReserves()
             throws MizdooniNotAuthorizedException {
@@ -51,11 +51,10 @@ public class ReservesController extends MizdooniController {
 
     }
 
-    @GetMapping(value = "/{id}", params = "id")
+    @GetMapping(value = "/{id}")
     @SneakyThrows(NotExistentUser.class)
-    public ReserveModel GetReserveDetails(@PathParam(value = "id") String id)
+    public ReserveModel GetReserveDetails(@PathVariable String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve {
-
 
         service.EnsureLoggedIn(UserRole.Client);
         var reservee = service.getLoggedIn();
@@ -67,9 +66,9 @@ public class ReservesController extends MizdooniController {
 
     }
 
-    @DeleteMapping(value = "/{id}", params = "id")
+    @DeleteMapping(value = "/{id}")
     @SneakyThrows(NotExistentUser.class)
-    public void CancelReserve(@PathParam(value = "id") String id)
+    public void CancelReserve(@PathVariable String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve,
             CancelingExpiredReserve, CancelingCanceledReserve {
 
@@ -84,7 +83,7 @@ public class ReservesController extends MizdooniController {
 
 
     // date format : 2007-12-31
-    @GetMapping(params = {"restaurant", "table", "date"})
+    @GetMapping(params = {"restaurant"})
     public ReserveModel[] GetReservesForManager(
             @RequestParam(name = "restaurant") String restaurantName,
             @RequestParam(name = "table", required = false, defaultValue = "") String tableNumber,
