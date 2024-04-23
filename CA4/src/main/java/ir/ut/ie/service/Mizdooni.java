@@ -8,6 +8,7 @@ import ir.ut.ie.utils.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.*;
 
 public class Mizdooni {
 
@@ -329,5 +330,29 @@ public class Mizdooni {
                     return 1;
                 }).limit(limit)
                 .toArray(Restaurant[]::new);
+    }
+
+    public LocationModel[] getUsedLocations(){
+
+        var addresses = Database.Restaurants.All().map(Restaurant::getRestaurantAddress);
+
+        var locations = new HashMap<String, Set<String>>();
+
+        addresses.forEach(address -> {
+            if(!locations.containsKey(address.country())){
+                locations.put(address.country(), new TreeSet<>(){});
+            }
+            locations.get(address.country()).add(address.city());
+        });
+
+        return locations
+                .keySet()
+                .stream()
+                .map(country -> new LocationModel(country, locations.get(country).toArray(String[]::new)))
+                .toArray(LocationModel[]::new);
+    }
+
+    public String[] getUsedFoodTypes(){
+        return Database.Restaurants.All().map(Restaurant::getType).distinct().toArray(String[]::new);
     }
 }
