@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({MizdooniException.class,ExecutionControl.NotImplementedException.class})
     public ResponseEntity<Error> handleError(HttpServletRequest req, Exception ex) {
 
         var response = createResponse(req, ex);

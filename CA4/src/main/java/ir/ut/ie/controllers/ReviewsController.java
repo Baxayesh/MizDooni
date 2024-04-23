@@ -51,8 +51,6 @@ public class ReviewsController extends MizdooniController {
     )
             throws MizdooniNotAuthorizedException {
 
-        limit = Math.min(50, limit);
-
         service.EnsureLoggedIn();
 
         var reviews = service.getReviews(restaurantName);
