@@ -23,7 +23,7 @@ public class ReviewsController extends MizdooniController {
     ) throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
             NotExistentRestaurant, NotAllowedToAddReview, ScoreOutOfRange {
 
-        service.EnsureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn(UserRole.Client);
         var issuer = service.getLoggedIn();
 
         var foodScore = getRequiredNumberField(request, "foodRate");
@@ -32,7 +32,7 @@ public class ReviewsController extends MizdooniController {
         var overallScore = getRequiredNumberField(request, "overallRate");
         var comment = request.get("comment");
 
-        service.AddReview(
+        service.addReview(
                 issuer.getUsername(),
                 restaurantName,
                 foodScore,
@@ -51,7 +51,7 @@ public class ReviewsController extends MizdooniController {
     )
             throws MizdooniNotAuthorizedException {
 
-        service.EnsureLoggedIn();
+        service.ensureLoggedIn();
 
         var reviews = service.getReviews(restaurantName);
         var reviewModels = Arrays.stream(reviews)
@@ -69,9 +69,9 @@ public class ReviewsController extends MizdooniController {
             @RequestParam(name="issuer") String issuerUsername)
             throws MizdooniNotAuthorizedException, MizdooniNotFoundException {
 
-        service.EnsureLoggedIn();
+        service.ensureLoggedIn();
 
-        var review = service.FindReview(restaurantName, issuerUsername);
+        var review = service.findReview(restaurantName, issuerUsername);
 
         return ReviewModel.fromDomainObject(review);
     }

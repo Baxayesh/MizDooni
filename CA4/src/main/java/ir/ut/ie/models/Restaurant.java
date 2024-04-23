@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @Getter
 @Setter
@@ -90,18 +91,27 @@ public class Restaurant extends EntityModel<String> {
                 .orElseThrow(NotExistentTable::new);
     }
 
-    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime) throws NoFreeTable {
+    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime, int seats) throws
+            NoFreeTable, TimeBelongsToPast, TimeIsNotRound, NotInWorkHour {
 
-        for(var table : Tables){
-            if(table.isFreeOn(reserveTime)){
-                try {
-                    return table.MakeReserve(reserveNumber, reservee, reserveTime);
-                } catch (TableIsReserved ignored) {
-                }
-            }
+        ValidateReserveTime(reserveTime);
+
+        var goalTable = Tables.stream()
+                .filter(table -> table.isFreeOn(reserveTime) && table.getNumberOfSeats() >= seats)
+                .min(
+                    (o1, o2) -> {
+                        if(o1.getNumberOfSeats() < o2.getNumberOfSeats())
+                            return -1;
+                        return 1;
+                    }
+                ).orElseThrow(NoFreeTable::new);
+
+        try {
+            return goalTable.MakeReserve(reserveNumber, reservee, reserveTime);
+        } catch (TableIsReserved e) {
+            throw new RuntimeException(e);
         }
 
-        throw new NoFreeTable();
     }
 
     public record Address(String country, String city, String street) {

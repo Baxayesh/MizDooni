@@ -37,7 +37,7 @@ public class MizdooniProvider {
     @SneakyThrows
     static void addUsers(Mizdooni mizdooni){
         for(var user : (ExternalServiceUserModel[])FetchValues("users", ExternalServiceUserModel.class)){
-            mizdooni.AddUser(user.role, user.username, user.password, user.email, user.address.country(), user.address.city());
+            mizdooni.addUser(user.role, user.username, user.password, user.email, user.address.country(), user.address.city());
         }
     }
 
@@ -46,7 +46,7 @@ public class MizdooniProvider {
 
         for (var restaurant :
                 (ExternalServiceRestaurantModel[])FetchValues("restaurants", ExternalServiceRestaurantModel.class)) {
-            mizdooni.AddRestaurant(
+            mizdooni.addRestaurant(
                     restaurant.name,
                     restaurant.managerUsername,
                     restaurant.type,
@@ -67,8 +67,7 @@ public class MizdooniProvider {
 
         for (var table :
                 (ExternalServiceTableModel[])FetchValues("tables", ExternalServiceTableModel.class)) {
-            mizdooni.AddTable(
-                    table.tableNumber,
+            mizdooni.addTable(
                     table.restaurantName,
                     table.managerUsername,
                     table.seatsNumber

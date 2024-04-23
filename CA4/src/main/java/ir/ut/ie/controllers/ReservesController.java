@@ -5,7 +5,6 @@ import ir.ut.ie.contracts.ReserveModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.utils.UserRole;
-import jakarta.websocket.server.PathParam;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +16,14 @@ import java.util.stream.Stream;
 @RequestMapping("/reserves")
 public class ReservesController extends MizdooniController {
 
-    @GetMapping(params = {})
-    @SneakyThrows(NotExistentUser.class)
+    @GetMapping()
     public ReserveModel[] GetCurrentUserReserves()
             throws MizdooniNotAuthorizedException {
 
-        service.EnsureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn(UserRole.Client);
         var client = service.getLoggedIn();
 
-        return Arrays.stream(service.GetReserves(client.getUsername()))
+        return Arrays.stream(service.getReserves(client.getUsername()))
                 .map(ReserveModel::fromDomainObject)
                 .toArray(ReserveModel[]::new);
     }
@@ -34,18 +32,20 @@ public class ReservesController extends MizdooniController {
     @PostMapping
     public EntityCreatedResponse ReserveTable(@RequestBody Map<String, String> request)
             throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidDatetime, NotExistentRestaurant,
-            TimeBelongsToPast, NotExistentUser, NotInWorkHour, NoFreeTable, TimeIsNotRound {
+            TimeBelongsToPast, NotExistentUser, NotInWorkHour, NoFreeTable, TimeIsNotRound, NotAValidNumber {
 
 
-        service.EnsureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn(UserRole.Client);
         var reservee = service.getLoggedIn();
         var restaurant = getRequiredField(request, "restaurant");
         var reserveTime = toDatetime(getRequiredField(request, "time"), "time");
+        var seats = getRequiredIntField(request, "seats");
 
-        var id = service.ReserveATable(
+        var id = service.reserveATable(
                 reservee.getUsername(),
                 restaurant,
-                reserveTime
+                reserveTime,
+                seats
         );
         return new EntityCreatedResponse(id);
 
@@ -56,11 +56,11 @@ public class ReservesController extends MizdooniController {
     public ReserveModel GetReserveDetails(@PathVariable String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve {
 
-        service.EnsureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn(UserRole.Client);
         var reservee = service.getLoggedIn();
         var reserveId = toInt(id, "id");
 
-        var reserve = service.FindReserve(reservee.getUsername(), reserveId);
+        var reserve = service.findReserve(reservee.getUsername(), reserveId);
 
         return ReserveModel.fromDomainObject(reserve);
 
@@ -72,11 +72,11 @@ public class ReservesController extends MizdooniController {
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve,
             CancelingExpiredReserve, CancelingCanceledReserve {
 
-        service.EnsureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn(UserRole.Client);
         var reservee = service.getLoggedIn();
         var reserveId = toInt(id, "id");
 
-        service.CancelReserve(reservee.getUsername(), reserveId);
+        service.cancelReserve(reservee.getUsername(), reserveId);
 
 
     }
@@ -91,10 +91,10 @@ public class ReservesController extends MizdooniController {
             throws MizdooniNotAuthorizedException, NotExistentRestaurant,
             NotAValidNumber, NotExistentTable, NotAValidDatetime {
 
-        service.EnsureLoggedIn(UserRole.Manager);
+        service.ensureLoggedIn(UserRole.Manager);
         var owner = service.getLoggedIn();
 
-        var restaurant = service.FindRestaurant(restaurantName);
+        var restaurant = service.findRestaurant(restaurantName);
 
         if(!owner.Is(restaurant.getManagerUsername()))
             throw new MizdooniNotAuthorizedException();

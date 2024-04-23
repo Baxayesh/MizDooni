@@ -18,12 +18,12 @@ public class SessionController extends MizdooniController {
         var username = getRequiredField(requestBody, "username");
         var password = getRequiredField(requestBody, "password");
 
-        service.Login(username, password);
+        service.login(username, password);
     }
 
     @DeleteMapping
     public void Logout() throws MizdooniNotAuthorizedException {
-        service.Logout();
+        service.logout();
     }
 
 }

@@ -19,13 +19,13 @@ public class TablesController extends MizdooniController {
             throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
             NotExistentRestaurant, SeatNumNotPos {
 
-        service.EnsureLoggedIn(UserRole.Manager);
+        service.ensureLoggedIn(UserRole.Manager);
 
         var restaurant = getRequiredField(request, "restaurant");
         var seatsNumber = getRequiredIntField(request, "seats");
         var managerName = service.getLoggedIn().getUsername();
 
-        var id = service.AddTable(
+        var id = service.addTable(
                 restaurant,
                 managerName,
                 seatsNumber
@@ -39,10 +39,10 @@ public class TablesController extends MizdooniController {
     TableModel[] GetRestaurantTables(@RequestParam(name = "restaurant") String restaurantName)
             throws NotExistentRestaurant, MizdooniNotAuthorizedException {
 
-        service.EnsureLoggedIn(UserRole.Manager);
+        service.ensureLoggedIn(UserRole.Manager);
         var manager = service.getLoggedIn();
 
-        var restaurant = service.FindRestaurant(restaurantName);
+        var restaurant = service.findRestaurant(restaurantName);
 
         if(!restaurant.getManagerUsername().equals(manager.getUsername()))
             throw new MizdooniNotAuthorizedException();

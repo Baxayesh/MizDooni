@@ -4,11 +4,14 @@ import ir.ut.ie.exceptions.SeatNumNotPos;
 import ir.ut.ie.exceptions.TableIsReserved;
 import lombok.Getter;
 import lombok.Setter;
-import ir.ut.ie.utils.AvailableTable;
 import ir.ut.ie.utils.PairType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -48,20 +51,23 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         return reserve;
     }
 
-    public AvailableTable GetAvailableTimes(){
+    public List<LocalTime> GetAvailableTimes(LocalDate onDate){
 
-        var now = LocalDateTime.now();
+        var availableTimes = new ArrayList<LocalTime>();
 
-        var availableTimes = new AvailableTable(this);
-
-        Reserves
+        var reservedTimes = Reserves
             .stream()
-            .filter(Reserve::IsActive)
-            .map(Reserve::GetReserveTime)
-            .sorted()
-            .dropWhile(time -> time.isAfter(now))
-            .distinct()
-            .forEach(availableTimes::ConsiderNextReservation);
+            .filter(reserve -> reserve.IsActive() && reserve.GetReserveTime().toLocalDate().equals(onDate))
+            .map(reserve -> reserve.GetReserveTime().toLocalTime())
+            .collect(Collectors.toSet());
+
+        for(var currentTime = getRestaurant().getOpenTime();
+        currentTime.isBefore(getRestaurant().getCloseTime());
+        currentTime = currentTime.plusHours(1)){
+            if(!reservedTimes.contains(currentTime)){
+                availableTimes.add(currentTime);
+            }
+        }
 
         return availableTimes;
     }

@@ -15,7 +15,7 @@ public class UsersController extends MizdooniController {
 
     @PostMapping
     public void Signup(@RequestBody Map<String, String> request) throws InvalidAddress, InvalidUser, UserAlreadyExits, FieldIsRequired {
-        service.AddUser(
+        service.addUser(
                 getRequiredField(request, "role"),
                 getRequiredField(request, "username"),
                 getRequiredField(request, "password"),

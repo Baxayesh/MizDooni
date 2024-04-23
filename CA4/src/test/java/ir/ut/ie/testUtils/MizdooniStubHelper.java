@@ -32,7 +32,7 @@ public class MizdooniStubHelper {
     public void AddAnonymousRestaurant(String restaurantName){
         var managerName = "anonymous_manager_of_"+restaurantName;
         AddAnonymousManager(managerName);
-        Service.AddRestaurant(
+        Service.addRestaurant(
                 restaurantName,
                 managerName,
                 "",
@@ -48,7 +48,7 @@ public class MizdooniStubHelper {
     public void AddAnonymousRestaurant(String restaurantName, int openingHour, int closureHour){
         var managerName = "anonymous_manager_of_"+restaurantName;
         AddAnonymousManager(managerName);
-        Service.AddRestaurant(
+        Service.addRestaurant(
                 restaurantName,
                 managerName,
                 "",
@@ -62,7 +62,7 @@ public class MizdooniStubHelper {
 
     @SneakyThrows
     public void AddAnonymousCustomer(String username){
-        Service.AddUser(
+        Service.addUser(
                 "client",
                 username,
                 "password",
@@ -74,7 +74,7 @@ public class MizdooniStubHelper {
 
     @SneakyThrows
     public void AddAnonymousManager(String username){
-        Service.AddUser(
+        Service.addUser(
                 "manager",
                 username,
                 "password",
@@ -110,12 +110,11 @@ public class MizdooniStubHelper {
     }
 
     @SneakyThrows
-    public void AddAnonymousTable(String restaurant, int table) {
+    public int AddAnonymousTable(String restaurant) {
 
         var manager = Database.Restaurants.Get(restaurant).getManagerUsername();
 
-        Service.AddTable(
-                table,
+        return Service.addTable(
                 restaurant,
                 manager,
                 1
@@ -123,16 +122,16 @@ public class MizdooniStubHelper {
     }
 
     @SneakyThrows
-    public void AddPreviousReserve(String reservee, String restaurant, int table, LocalDateTime reserveTime) {
+    public void AddPreviousReserve(String reservee, String restaurant, LocalDateTime reserveTime) {
 
         if(!Database.Users.Exists(reservee))
             AddAnonymousCustomer(reservee);
 
-        Service.ReserveATable(
+        Service.reserveATable(
                 reservee,
                 restaurant,
-                table,
-                reserveTime
+                reserveTime,
+                1
         );
 
     }

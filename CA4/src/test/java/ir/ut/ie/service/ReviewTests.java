@@ -30,7 +30,7 @@ public class ReviewTests {
 
         assertThrows(
                 NotExistentUser.class,
-                () ->  stub.Mizdooni().AddReview(
+                () ->  stub.Mizdooni().addReview(
                         username,
                         restaurant,
                         5,5,5,5,""
@@ -49,7 +49,7 @@ public class ReviewTests {
 
         assertThrows(
                 NotExpectedUserRole.class,
-                () ->  stub.Mizdooni().AddReview(
+                () ->  stub.Mizdooni().addReview(
                         username,
                         restaurant,
                         5,5,5,5,""
@@ -67,7 +67,7 @@ public class ReviewTests {
 
         assertThrows(
                 NotExistentRestaurant.class,
-                () ->  stub.Mizdooni().AddReview(
+                () ->  stub.Mizdooni().addReview(
                         username,
                         restaurant,
                         5,5,5,5,""
@@ -87,7 +87,7 @@ public class ReviewTests {
 
         assertThrows(
                 ScoreOutOfRange.class,
-                () ->  stub.Mizdooni().AddReview(
+                () ->  stub.Mizdooni().addReview(
                         username,
                         restaurant,
                         -1,6,-1,6,""
@@ -111,7 +111,7 @@ public class ReviewTests {
         assertThrows(
                 NotAllowedToAddReview.class,
                 () ->
-                    stub.Mizdooni().AddReview(
+                    stub.Mizdooni().addReview(
                             username,
                             restaurant,
                             5,5,5,5,comment
@@ -126,16 +126,15 @@ public class ReviewTests {
         var restaurant = "restaurant";
         var username = "user";
         var comment  = "comment";
-        var table = 1;
 
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousCustomer(username);
-        stub.AddAnonymousTable(restaurant, table);
+        var table = stub.AddAnonymousTable(restaurant);
         stub.AddPassedReserve(username, restaurant, table);
 
         var callTime = LocalDateTime.now();
 
-        stub.Mizdooni().AddReview(
+        stub.Mizdooni().addReview(
                 username,
                 restaurant,
                 5,5,5,5,comment

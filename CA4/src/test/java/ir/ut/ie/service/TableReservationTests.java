@@ -41,19 +41,18 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_doReserveWithNotExistentUsername_THEN_shouldThrowNotExistentUser() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "not_existent_username";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
+        stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 NotExistentUser.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
     }
@@ -63,20 +62,19 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_doReserveWithManagerUsername_THEN_shouldThrowNotExpectedUserRole() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "manager";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousManager(username);
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
+        stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 NotExpectedUserRole.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -86,20 +84,19 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_doReserveWithNotRoundReserveTime_THEN_shouldThrowTimeIsNotRound() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateReserveTime(1,12, 35);
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
+        stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 TimeIsNotRound.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -109,40 +106,38 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_doReserveWithForNotExistentRestaurant_THEN_shouldThrowNotExistentRestaurant() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousCustomer(username);
 
         assertThrows(
                 NotExistentRestaurant.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
     }
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_doReserveWithForNotExistentTable_THEN_shouldThrowNotExistentTable() {
+    void GIVEN_normalMizdooni_WHEN_doReserveWithForNotExistentTable_THEN_shouldThrowNoFreeTable() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
 
         assertThrows(
-                NotExistentTable.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                NoFreeTable.class,
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -150,24 +145,23 @@ public class TableReservationTests {
 
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_ReserveAPreviouslyReservedTable_THEN_shouldThrowTableIsReserved() {
+    void GIVEN_normalMizdooni_WHEN_ReserveAPreviouslyReservedTable_THEN_shouldThrowNoFreeTable() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
-        stub.AddPreviousReserve("someone_else", restaurant, table, reserveTime);
+        stub.AddAnonymousTable(restaurant);
+        stub.AddPreviousReserve("someone_else", restaurant, reserveTime);
 
         assertThrows(
-                TableIsReserved.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                NoFreeTable.class,
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -178,20 +172,19 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_ReserveATableInPast_THEN_shouldThrowTimeBelongsToPast() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateReserveTime(-1, 12, 0);
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
+        var table = stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 TimeBelongsToPast.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -201,20 +194,19 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_ReserveATableWhenRestaurantIsClosed_THEN_shouldThrowNotInWorkHour() {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateReserveTime(1, 19, 0);
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant, 8, 18);
-        stub.AddAnonymousTable(restaurant, table);
+        var table = stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 NotInWorkHour.class,
-                () ->  stub.Mizdooni().ReserveATable(
+                () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
-                        table,
-                        reserveTime
+                        reserveTime,
+                        1
                 )
         );
 
@@ -230,23 +222,21 @@ public class TableReservationTests {
             NotExistentUser,
             TimeIsNotRound,
             NotInWorkHour,
-            NotExistentTable
-    {
+            NotExistentTable, NoFreeTable {
 
         var restaurant = "restaurant";
-        var table = 1;
         var username = "user";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant, table);
+        var table = stub.AddAnonymousTable(restaurant);
 
         var reserve =
-                stub.Mizdooni().ReserveATable(
+                stub.Mizdooni().reserveATable(
                     username,
                     restaurant,
-                    table,
-                    reserveTime
+                    reserveTime,
+                    1
                 );
 
         stub.AssertReserveRegistered(
