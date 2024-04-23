@@ -60,4 +60,9 @@ public class InMemoryRepo<TKey, TItem extends EntityModel<TKey>> implements IRep
         return MemoryDb.containsKey(key);
     }
 
+    @Override
+    public Stream<TItem> All() {
+        return MemoryDb.values().stream();
+    }
+
 }

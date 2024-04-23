@@ -307,4 +307,27 @@ public class Mizdooni {
                 .toArray(Reserve[]::new);
     }
 
+    public Restaurant[] getBestRestaurants(String city, int limit) {
+        return Database
+                .Restaurants
+                .Search(restaurant -> restaurant.getRestaurantAddress().city().equals(city))
+                .sorted((r1, r2)-> {
+                    if(r1.getRating().getAverageOverallScore() > r2.getRating().getAverageOverallScore())
+                        return -1;
+                    return 1;
+                }).limit(limit)
+                .toArray(Restaurant[]::new);
+    }
+
+    public Restaurant[] getBestRestaurants(int limit) {
+        return Database
+                .Restaurants
+                .All()
+                .sorted((r1, r2)-> {
+                    if(r1.getRating().getAverageOverallScore() > r2.getRating().getAverageOverallScore())
+                        return -1;
+                    return 1;
+                }).limit(limit)
+                .toArray(Restaurant[]::new);
+    }
 }

@@ -17,4 +17,5 @@ public interface IRepository<TKey, TItem extends EntityModel<TKey>> {
     Stream<TItem> Search(Predicate<TItem> searchCriteria);
     boolean Exists(TKey key);
 
+    Stream<TItem> All();
 }
