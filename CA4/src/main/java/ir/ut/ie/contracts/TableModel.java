@@ -1,10 +1,6 @@
 package ir.ut.ie.contracts;
 
-import ir.ut.ie.models.Reserve;
-import ir.ut.ie.models.Restaurant;
 import ir.ut.ie.models.Table;
-
-import java.util.ArrayList;
 
 public record TableModel(
         int tableNumber,
@@ -13,12 +9,12 @@ public record TableModel(
         String managerName
 ){
 
-    public static TableModel FromTableObject(Table table){
+    public static TableModel fromDomainObject(Table model){
         return new TableModel(
-                table.getTableNumber(),
-                table.getNumberOfSeats(),
-                table.getRestaurant().getName(),
-                table.getRestaurant().getManagerUsername()
+                model.getTableNumber(),
+                model.getNumberOfSeats(),
+                model.getRestaurant().getName(),
+                model.getRestaurant().getManagerUsername()
         );
     }
 }

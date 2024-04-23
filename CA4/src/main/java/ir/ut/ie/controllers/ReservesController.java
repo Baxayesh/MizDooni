@@ -6,6 +6,7 @@ import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.utils.UserRole;
 import jakarta.websocket.server.PathParam;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -17,19 +18,16 @@ import java.util.stream.Stream;
 public class ReservesController extends MizdooniController {
 
     @GetMapping()
+    @SneakyThrows(NotExistentUser.class)
     public ReserveModel[] GetCurrentUserReserves()
             throws MizdooniNotAuthorizedException {
 
-        try {
-            service.EnsureLoggedIn(UserRole.Client);
-            var client = service.getLoggedIn();
+        service.EnsureLoggedIn(UserRole.Client);
+        var client = service.getLoggedIn();
 
-            return Arrays.stream(service.GetReserves(client.getUsername()))
-                    .map(ReserveModel::FromObject)
-                    .toArray(ReserveModel[]::new);
-        } catch (NotExistentUser ex) {
-            throw new RuntimeException(ex);
-        }
+        return Arrays.stream(service.GetReserves(client.getUsername()))
+                .map(ReserveModel::fromDomainObject)
+                .toArray(ReserveModel[]::new);
     }
 
     //time format : 2007-12-31T23:59:59
@@ -51,45 +49,36 @@ public class ReservesController extends MizdooniController {
         );
         return new EntityCreatedResponse(id);
 
-
-
-
     }
 
     @GetMapping(value = "/{id}", params = "id")
+    @SneakyThrows(NotExistentUser.class)
     public ReserveModel GetReserveDetails(@PathParam(value = "id") String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve {
 
-        try {
-            service.EnsureLoggedIn(UserRole.Client);
-            var reservee = service.getLoggedIn();
-            var reserveId = toInt(id, "id");
 
-            var reserve = service.FindReserve(reservee.getUsername(), reserveId);
+        service.EnsureLoggedIn(UserRole.Client);
+        var reservee = service.getLoggedIn();
+        var reserveId = toInt(id, "id");
 
-            return ReserveModel.FromObject(reserve);
-        } catch (NotExistentUser ex) {
-            throw new RuntimeException(ex);
-        }
+        var reserve = service.FindReserve(reservee.getUsername(), reserveId);
 
+        return ReserveModel.fromDomainObject(reserve);
 
     }
 
     @DeleteMapping(value = "/{id}", params = "id")
+    @SneakyThrows(NotExistentUser.class)
     public void CancelReserve(@PathParam(value = "id") String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve,
             CancelingExpiredReserve, CancelingCanceledReserve {
 
-        try {
-            service.EnsureLoggedIn(UserRole.Client);
-            var reservee = service.getLoggedIn();
-            var reserveId = toInt(id, "id");
+        service.EnsureLoggedIn(UserRole.Client);
+        var reservee = service.getLoggedIn();
+        var reserveId = toInt(id, "id");
 
-            service.CancelReserve(reservee.getUsername(), reserveId);
+        service.CancelReserve(reservee.getUsername(), reserveId);
 
-        } catch (NotExistentUser e) {
-            throw new MizdooniNotAuthorizedException();
-        }
 
     }
 
@@ -125,6 +114,6 @@ public class ReservesController extends MizdooniController {
             reserves = reserves.filter(reserve -> reserve.GetReserveTime().toLocalDate().equals(filterDate));
         }
 
-        return reserves.map(ReserveModel::FromObject).toArray(ReserveModel[]::new);
+        return reserves.map(ReserveModel::fromDomainObject).toArray(ReserveModel[]::new);
     }
 }

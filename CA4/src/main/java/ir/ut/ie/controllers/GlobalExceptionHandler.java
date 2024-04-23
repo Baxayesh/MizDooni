@@ -2,7 +2,6 @@ package ir.ut.ie.controllers;
 
 import ir.ut.ie.contracts.Error;
 import ir.ut.ie.exceptions.MizdooniException;
-import ir.ut.ie.exceptions.MizdooniInternalException;
 import jakarta.servlet.http.HttpServletRequest;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,10 @@ public class GlobalExceptionHandler {
                 return new Error(mizdooniException);
 
         if(ex instanceof ExecutionControl.NotImplementedException)
-            return new Error("Functionality not implemented yet", HttpStatus.NOT_IMPLEMENTED.value(), "");
+            return new Error(
+                    "Functionality not implemented yet",
+                    HttpStatus.NOT_IMPLEMENTED.value(),
+                    "NotImplementedException");
 
         return new Error(ex.getMessage(), 500, ex.getClass().getName());
     }

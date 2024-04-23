@@ -1,25 +1,23 @@
 package ir.ut.ie.controllers;
 
+import ir.ut.ie.contracts.EntityCreatedResponse;
 import ir.ut.ie.contracts.TableModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.utils.UserRole;
-import jakarta.websocket.server.PathParam;
+import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/tables")
 public class TablesController extends MizdooniController {
 
-
-    public record CreateTableResponse(int createdTableId){}
-
     @PostMapping
-    CreateTableResponse CreateTable(@RequestBody Map<String, String> request)
+    @SneakyThrows(NotExistentUser.class)
+    EntityCreatedResponse CreateTable(@RequestBody Map<String, String> request)
             throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
-            NotExistentRestaurant, SeatNumNotPos, NotExistentUser {
+            NotExistentRestaurant, SeatNumNotPos {
 
         service.EnsureLoggedIn(UserRole.Manager);
 
@@ -33,20 +31,26 @@ public class TablesController extends MizdooniController {
                 seatsNumber
         );
 
-        return new CreateTableResponse(id);
+        return new EntityCreatedResponse(id);
 
     }
 
     @GetMapping(params = {"restaurant"})
     TableModel[] GetRestaurantTables(@RequestParam(name = "restaurant") String restaurantName)
-            throws NotExistentRestaurant {
+            throws NotExistentRestaurant, MizdooniNotAuthorizedException {
+
+        service.EnsureLoggedIn(UserRole.Manager);
+        var manager = service.getLoggedIn();
 
         var restaurant = service.FindRestaurant(restaurantName);
+
+        if(!restaurant.getManagerUsername().equals(manager.getUsername()))
+            throw new MizdooniNotAuthorizedException();
 
         return restaurant
                 .getTables()
                 .stream()
-                .map(TableModel::FromTableObject)
+                .map(TableModel::fromDomainObject)
                 .toArray(TableModel[]::new);
     }
 }
