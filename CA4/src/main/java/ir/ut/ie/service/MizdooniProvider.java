@@ -30,7 +30,7 @@ public class MizdooniProvider {
         addUsers(instance);
         addRestaurants(instance);
         addTables(instance);
-        addReviews(db);
+        addReviews(instance,db);
         MizdooniProvider.instance = instance;
     }
 
@@ -76,20 +76,22 @@ public class MizdooniProvider {
     }
 
     @SneakyThrows
-    static void addReviews(Database database){
+    static void addReviews(Mizdooni mizdooni, Database database){
         for (var review :
                 (ExternalServiceReviewModel[])FetchValues("reviews", ExternalServiceReviewModel.class)) {
-            database.Reviews.Upsert(
-                    new Review(
-                            review.restaurantName,
-                            review.username,
-                            review.foodRate,
-                            review.serviceRate,
-                            review.ambianceRate,
-                            review.overallRate,
-                            review.comment
-                    )
+
+            var reviewModel = new Review(
+                    review.restaurantName,
+                    review.username,
+                    review.foodRate,
+                    review.serviceRate,
+                    review.ambianceRate,
+                    review.overallRate,
+                    review.comment
             );
+
+            database.Reviews.Upsert(reviewModel);
+            mizdooni.findRestaurant(review.restaurantName()).upsertReview(reviewModel);
         }
     }
 

@@ -51,36 +51,47 @@ public class RestaurantsController extends MizdooniController {
                 .toArray(RestaurantModel[]::new);
     }
 
-
-
-    Restaurant[] FetchSearchResults(String query, String searchMethod){
-        return switch (searchMethod.toLowerCase()) {
-            case "type" -> service.searchRestaurantByType(query);
-            case "location" -> service.searchRestaurantByLocation(query);
-            case "name" -> service.searchRestaurantByName(query);
-            default -> new Restaurant[0];
-        };
+    PagedResponse<RestaurantModel> pageResults(Restaurant[] allItems, int offset, int limit){
+        return new PagedResponse<>(
+                allItems.length,
+                offset,
+                limit,
+                Arrays.stream(allItems)
+                        .skip(offset)
+                        .limit(limit)
+                        .map(RestaurantModel::fromDomainObject)
+                        .toArray(RestaurantModel[]::new)
+        );
     }
 
-    //valid values for by = {type, location, name}
-    @GetMapping(params = {"q","by"})
-    public PagedResponse<RestaurantModel> Search(
-            @RequestParam(name="q") String query,
-            @RequestParam(name="by") String searchMethod,
+    @GetMapping(params = {"name"})
+    public PagedResponse<RestaurantModel> SearchByName(
+            @RequestParam(name="name") String name,
             @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ) throws MizdooniNotAuthorizedException {
-        service.ensureLoggedIn(UserRole.Client);
+        service.ensureLoggedIn();
+        return pageResults(service.searchRestaurantByName(name), offset, limit);
+    }
 
-        var searchResults = FetchSearchResults(query, searchMethod);
+    @GetMapping(params = {"type"})
+    public PagedResponse<RestaurantModel> SearchByType(
+            @RequestParam(name="type") String type,
+            @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
+            @RequestParam(name="limit", required = false, defaultValue = "5") int limit
+    ) throws MizdooniNotAuthorizedException {
+        service.ensureLoggedIn();
+        return pageResults(service.searchRestaurantByType(type), offset, limit);
+    }
 
-        var pagedResults = Arrays.stream(searchResults)
-                .skip(offset)
-                .limit(limit)
-                .map(RestaurantModel::fromDomainObject)
-                .toArray(RestaurantModel[]::new);
-
-        return new PagedResponse<>(searchResults.length, offset, limit, pagedResults);
+    @GetMapping(params = {"location"})
+    public PagedResponse<RestaurantModel> SearchByLocation(
+            @RequestParam(name="location") String location,
+            @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
+            @RequestParam(name="limit", required = false, defaultValue = "5") int limit
+    ) throws MizdooniNotAuthorizedException {
+        service.ensureLoggedIn();
+        return pageResults(service.searchRestaurantByLocation(location), offset, limit);
     }
 
     Restaurant[] FetchRecommendations(String recommendingMethod) throws MizdooniNotAuthorizedException {
@@ -89,12 +100,12 @@ public class RestaurantsController extends MizdooniController {
                 var user = service.getLoggedIn();
                 yield service.getBestRestaurants(user.getUserAddress().city(), RECOMMENDED_RESTAURANTS_COUNT);
             }
-            case "bestRating" -> service.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
+            case "rating" -> service.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
             default -> new Restaurant[0];
         };
     }
 
-    //valid values for recommendBy = {userLocation, bestRating}
+    //valid values for recommendBy = {userLocation, rating}
     @GetMapping(params = {"recommendBy"})
     public RestaurantModel[] Recommend(@RequestParam(name="recommendBy") String recommendingMethod)
             throws MizdooniNotAuthorizedException {
@@ -103,9 +114,16 @@ public class RestaurantsController extends MizdooniController {
         var restaurants = FetchRecommendations(recommendingMethod);
         return Arrays.stream(restaurants).map(RestaurantModel::fromDomainObject).toArray(RestaurantModel[]::new);
     }
+    @GetMapping(path = "/{name}")
+    public RestaurantModel GetRestaurant(
+            @PathVariable(name = "name") String restaurantName
+    ) throws NotExistentRestaurant, MizdooniNotAuthorizedException {
 
+        service.ensureLoggedIn();
+        return RestaurantModel.fromDomainObject(service.findRestaurant(restaurantName));
+    }
 
-    @GetMapping(path = "/{name}", params={"onDate", "requestedSeats"})
+    @GetMapping(path = "/{name}/availableTimeSlots", params={"onDate", "requestedSeats"})
     public LocalTime[] GetAvailableReserveSlots(
             @PathVariable(name = "name") String restaurantName,
             @RequestParam(name = "onDate") String requestDateString,
