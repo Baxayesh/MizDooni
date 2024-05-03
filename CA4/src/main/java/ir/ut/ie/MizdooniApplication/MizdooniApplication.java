@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = "ir.ut.ie.controllers")
 public class MizdooniApplication {
 
-	static final String FRONTEND_SERVER_ORIGIN = "http://localhost:8080";
+	static final String FRONTEND_SERVER_ORIGIN = "http://localhost:3000";
 
 
 	public static void main(String[] args) {
