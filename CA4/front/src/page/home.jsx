@@ -1,72 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import Navbar from "../components/navbar";
 import Search from "../components/search";
-import axios from 'axios';
 import About from "../components/about";
 import Cards from "../components/cards";
 import CardContext from './../context/cards';
 import { useNavigate } from "react-router-dom";
 import NavContext from "../context/nav";
-// import SearchContext from './../context/search.js';
 
 const Home = () => {
-    // const [data, setData] = useState([]);
-    // const [ratingData, setRatingData] = useState([]);
-    // const [date, setDate] = useState(new Date());
-    // const [location, setLocation] = useState([]);
-    // const [restType, setRestType] = useState([]);
-    // const [searchInfo, setSearchInfo] = useState([]);
+ 
     const navigate = useNavigate();
-    // const CardContext = useContext(CardContext);
-
-    // const baseUrl = "http://localhost:8080/restaurants";
-
-    // useEffect(() => {
-    //     axios.get(baseUrl + "?recommendBy=userLocation")
-    //         .then((res) => {
-
-    //             setData(res.data)
-    //         })
-    //         .catch((err) => { console.log(err) });
-    // }, [])
-
-    // useEffect(() => {
-    //     axios.get(baseUrl + "?recommendBy=rating")
-    //         .then((res) => {
-
-    //             setRatingData(res.data)
-    //         })
-    //         .catch((err) => { console.log(err) });
-    // }, [])
-
-    // useEffect(() => {
-    //     setDate(new Date());
-    // }, [])
-
-    // useEffect(() => {
-    //     axios.get("http://localhost:8080/locations")
-    //         .then((res) => {
-    //             setLocation(res.data)
-    //         })
-    //         .catch((err) => { console.log(err) });
-    // }, [])
-
-    // useEffect(() => {
-    //     axios.get("http://localhost:8080/foodTypes")
-    //         .then((res) => {
-    //             setRestType(res.data)
-    //         })
-    //         .catch((err) => { console.log(err) });
-    // }, [])
-
-
-    // const handleChange = (e) => {
-    //     const { value, name } = e.target;
-    //     setSearchInfo({ ...searchInfo, [name]: value });
-        
-    // }
-
-
 
     const ctx = useContext(NavContext);
 
@@ -83,7 +26,7 @@ const Home = () => {
     return (
         <>
 
-            {/* <Navbar /> */}
+            <Navbar />
             <CardContext.Provider
                 value={{ 
                 searchInfo: ctx.searchInfo,
