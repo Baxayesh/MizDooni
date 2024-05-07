@@ -23,7 +23,7 @@ public abstract class User extends EntityModel<String> {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.address = new UserAddress(this, country, city);
+        this.address = new UserAddress(country, city);
         ValidateUser();
     }
 
@@ -38,9 +38,6 @@ public abstract class User extends EntityModel<String> {
         }
         if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", email)){
             throw new InvalidUser();
-        }
-        if (address.country == null || address.country.isEmpty() || address.city == null || address.city.isEmpty()) {
-            throw new InvalidAddress();
         }
 
     }

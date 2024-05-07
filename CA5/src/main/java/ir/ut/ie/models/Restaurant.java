@@ -50,7 +50,7 @@ public class Restaurant extends EntityModel<String> {
         Type = type;
         Description = description;
         Tables = new ArrayList<>();
-        restaurantAddress = new RestaurantAddress(this, country, city, street);
+        restaurantAddress = new RestaurantAddress(country, city, street);
         ImageUri = imageUri;
         Rating = new Rating(this);
     }
