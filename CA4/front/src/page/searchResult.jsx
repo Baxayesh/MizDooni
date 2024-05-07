@@ -1,7 +1,7 @@
 import Cards from "../components/cards";
 import { useContext } from "react";
 import NavContext from "../context/nav";
-
+import Navbar from "../components/navbar";
 
 const SearchResult = () => {
     const ctxt = useContext(NavContext);
@@ -23,6 +23,7 @@ const SearchResult = () => {
     }
     return (
         <>
+            <Navbar />
             <div className="row container-fluid" style={{ marginTop: "100px" }}>
                 <div className="col-md-12 col-xs-12">
                     <p style={styles.cardsTitle}>

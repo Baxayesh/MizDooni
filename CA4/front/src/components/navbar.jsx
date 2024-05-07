@@ -1,16 +1,11 @@
 import Logo from "../image/logo.png";
 import { useContext } from "react";
 import NavContext from "../context/nav";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const ctxt = useContext(NavContext);
-
-  // const [data, setData] = useState('');
-
-  // useEffect(() => {
-  //   const response = axios.get();
-  // }, []);
-
+  const navigate = useNavigate();
   const styles = {
     logoContainer: {
       width: "65px",
@@ -43,11 +38,15 @@ const Navbar = () => {
           <img src={Logo} className="nav-img" style={styles.logoContainer} alt="logo" />
           <p className="navbar-title" style={styles.navbarTitle}>Reserve Table From Anywhere!</p>
         </div>
-        <p style={{padding:"0px", marginLeft:"400px"}}>Welcome, {ctxt.values?.username}!</p>
-        {/* <Button variant="outline" shape="round" color="undefined_undefined" className="mt-[17px] w-full sm:px-5"></Button> */}
-        <button className="btn btn-danger" style={styles.navButton} type="button">
-          Reserve Now!
-        </button>
+        <p style={{ padding: "0px", marginLeft: "400px" }}>Welcome, {ctxt.values.username}!</p>
+        
+          <button className="btn btn-danger" style={styles.navButton} type="button" 
+          onClick={()=>{
+            (ctxt.valuesReg.role == "client")?(navigate("/customer")):(navigate("/manager"));
+          }}>
+            Reserve Now!
+          </button>
+        
 
       </div>
     </nav>
