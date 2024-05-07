@@ -1,7 +1,9 @@
 package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.*;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,25 +12,44 @@ import java.util.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@Entity
+@jakarta.persistence.Table(name = "RESTAURANTS")
 public class Restaurant extends EntityModel<String> {
 
+    @Id
     private String Name;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "MANAGER_ID", nullable = false)
     private Manager Manager;
 
+    @Column(nullable = false)
     private LocalTime OpenTime;
+    @Column(nullable = false)
     private LocalTime CloseTime;
 
+    @Column(nullable = false)
     private String Type;
+    @Column(nullable = false)
     private String Description;
+    @Column(nullable = false)
     private String ImageUri;
 
+    @OneToOne(orphanRemoval = true, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private RestaurantAddress restaurantAddress;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "Restaurant")
     private ArrayList<Table> Tables;
 
+    @OneToOne(orphanRemoval = true,optional = false, mappedBy = "Restaurant", fetch = FetchType.LAZY)
     public Rating Rating;
 
+    @Override
+    public String getKey(){
+        return this.Name;
+    }
 
     public Restaurant(
             String name,
@@ -42,7 +63,6 @@ public class Restaurant extends EntityModel<String> {
             String street,
             String imageUri
     ) throws InvalidAddress {
-        super(name);
         Name = name;
         OpenTime = openTime;
         CloseTime = closeTime;

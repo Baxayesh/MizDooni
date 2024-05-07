@@ -2,24 +2,41 @@ package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.InvalidAddress;
 import ir.ut.ie.exceptions.InvalidUser;
+import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.regex.Pattern;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "USER_ROLE")
 public abstract class User extends EntityModel<String> {
 
+    @Id
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @OneToOne(orphanRemoval = true, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private UserAddress address;
 
-    public User(String username, String password, String email, String country, String city) throws InvalidAddress, InvalidUser {
-        super(username);
+    @Override
+    public String getKey(){
+        return username;
+    }
 
+    public User(String username, String password, String email, String country, String city) throws InvalidAddress, InvalidUser {
         this.username = username;
         this.password = password;
         this.email = email;

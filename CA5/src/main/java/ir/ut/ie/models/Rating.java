@@ -1,17 +1,30 @@
 package ir.ut.ie.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class Rating {
 
-    private final Restaurant Restaurant;
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Restaurant Restaurant;
 
+    @Column
     private double TotalFoodScore;
+    @Column
     private double TotalServiceScore;
+    @Column
     private double TotalAmbianceScore;
+    @Column
     private double TotalOverallScore;
 
     @Getter
+    @Column
     private int ReviewCount;
 
     public Rating(Restaurant restaurant){

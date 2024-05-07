@@ -17,8 +17,8 @@ public record ReviewModel(
 
     public static ReviewModel fromDomainObject(Review model) {
         return new ReviewModel(
-                model.getRestaurantName(),
-                model.getIssuerUsername(),
+                model.getRestaurant().getName(),
+                model.getIssuer().getUsername(),
                 model.getFoodScore(),
                 model.getServiceScore(),
                 model.getAmbianceScore(),

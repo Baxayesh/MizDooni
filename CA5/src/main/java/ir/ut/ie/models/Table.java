@@ -2,7 +2,9 @@ package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.SeatNumNotPos;
 import ir.ut.ie.exceptions.TableIsReserved;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ir.ut.ie.utils.PairType;
 
@@ -16,21 +18,38 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@Entity
+@jakarta.persistence.Table(name = "TABLES")
 public class Table extends EntityModel<PairType<String, Integer>> {
 
+    @Id
     private int TableNumber;
+    @Column(nullable = false)
     private int NumberOfSeats;
+
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Restaurant Restaurant;
+
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Manager Owner;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "Table")
     private ArrayList<Reserve> Reserves;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
         return new PairType<>(restaurant.getKey(), tableNumber);
     }
 
+    @Override
+    public PairType<String, Integer> getKey(){
+        return CreateTableKey(Restaurant, TableNumber);
+    }
+
     public Table(int tableNumber, Restaurant restaurant, int numOfSeats) throws SeatNumNotPos {
-        super(CreateTableKey(restaurant, tableNumber));
+        super();
         if(tableNumber < 1)
             throw new SeatNumNotPos();
 

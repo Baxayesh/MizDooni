@@ -333,7 +333,7 @@ public class Mizdooni {
     }
 
     public Review[] getReviews(String restaurantName) {
-        return Database.Reviews.Search(review -> review.getRestaurantName().equals(restaurantName)).toArray(Review[]::new);
+        return Database.Reviews.Search(review -> review.getRestaurant().Is(restaurantName)).toArray(Review[]::new);
     }
 
     public Reserve[] getReserves(String reservee)  {

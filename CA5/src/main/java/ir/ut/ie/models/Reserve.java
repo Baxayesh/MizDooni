@@ -2,7 +2,9 @@ package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.CancelingCanceledReserve;
 import ir.ut.ie.exceptions.CancelingExpiredReserve;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ir.ut.ie.utils.PairType;
 
@@ -10,18 +12,36 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Reserve extends EntityModel<PairType<String,Integer>> {
 
+    @Id
     private int ReserveNumber;
+
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Restaurant Restaurant;
+
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Table Table;
+
+    @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Client Reservee;
+
+    @Column(nullable = false)
     private LocalDateTime ReserveTime;
+    @Column(nullable = false)
     private Boolean IsCanceled;
+
+    @Override
+    public PairType<String, Integer> getKey() {
+        return new PairType<>(this.getReservee().getUsername(), this.getReserveNumber());
+    }
 
 
     public Reserve(int reserveNumber, Table table, Client reservee, LocalDateTime reserveTime) {
-        super(new PairType<>(reservee.getUsername(), reserveNumber));
         ReserveNumber = reserveNumber;
         Table = table;
         Restaurant = table.getRestaurant();
