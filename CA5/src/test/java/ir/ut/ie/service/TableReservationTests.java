@@ -176,7 +176,7 @@ public class TableReservationTests {
         var reserveTime = CreateReserveTime(-1, 12, 0);
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant);
-        var table = stub.AddAnonymousTable(restaurant);
+        stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 TimeBelongsToPast.class,
@@ -198,7 +198,7 @@ public class TableReservationTests {
         var reserveTime = CreateReserveTime(1, 19, 0);
         stub.AddAnonymousCustomer(username);
         stub.AddAnonymousRestaurant(restaurant, 8, 18);
-        var table = stub.AddAnonymousTable(restaurant);
+        stub.AddAnonymousTable(restaurant);
 
         assertThrows(
                 NotInWorkHour.class,
@@ -218,11 +218,10 @@ public class TableReservationTests {
             NotExistentRestaurant,
             TimeBelongsToPast,
             NotExpectedUserRole,
-            TableIsReserved,
             NotExistentUser,
             TimeIsNotRound,
             NotInWorkHour,
-            NotExistentTable, NoFreeTable {
+            NoFreeTable {
 
         var restaurant = "restaurant";
         var username = "user";

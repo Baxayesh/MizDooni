@@ -98,8 +98,7 @@ public class ReviewTests {
 
 
     @Test
-    void GIVEN_userDoesNotHaveAnyPreviousPassedReserve_WHEN_addAValidReview_THEN_CannotAddReviewShouldBeThrown()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange, NotAllowedToAddReview {
+    void GIVEN_userDoesNotHaveAnyPreviousPassedReserve_WHEN_addAValidReview_THEN_CannotAddReviewShouldBeThrown() {
 
         var restaurant = "restaurant";
         var username = "user";

@@ -23,23 +23,6 @@ public class Rating {
         ReviewCount = 0;
     }
 
-
-    private Rating(
-            Restaurant restaurant,
-            double totalFoodScore,
-            double totalServiceScore,
-            double totalAmbianceScore,
-            double totalOverallScore,
-            int reviewCount
-    ) {
-        Restaurant = restaurant;
-        TotalFoodScore = totalFoodScore;
-        TotalServiceScore = totalServiceScore;
-        TotalAmbianceScore = totalAmbianceScore;
-        TotalOverallScore = totalOverallScore;
-        ReviewCount = reviewCount;
-    }
-
     public double getAverageFoodScore() {
         return ReviewCount == 0 ? 0 : TotalFoodScore / ReviewCount;
     }

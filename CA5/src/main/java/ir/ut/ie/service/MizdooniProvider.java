@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
 import ir.ut.ie.exceptions.KeyAlreadyExists;
-import ir.ut.ie.models.Restaurant;
-import ir.ut.ie.models.RestaurantAddress;
-import ir.ut.ie.models.Review;
-import ir.ut.ie.models.UserAddress;
+import ir.ut.ie.models.*;
 import lombok.SneakyThrows;
 
-import java.net.URL;
+import java.net.URI;
 import java.time.LocalTime;
 
 public class MizdooniProvider {
@@ -118,7 +115,7 @@ public class MizdooniProvider {
         TypeFactory typeFactory = mapper.getTypeFactory();
 
         try {
-            var url = new URL(DATA_PROVIDER_ADDRESS + "/" + resource);
+            var url = new URI(DATA_PROVIDER_ADDRESS + "/" + resource).toURL();
 
             return mapper.readValue(url, typeFactory.constructArrayType(objectType));
 

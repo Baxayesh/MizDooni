@@ -1,4 +1,4 @@
-package ir.ut.ie.exceptions;;
+package ir.ut.ie.exceptions;
 
 public class MizdooniNotFoundException extends MizdooniException {
 

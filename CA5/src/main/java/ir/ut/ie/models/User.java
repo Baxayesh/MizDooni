@@ -4,7 +4,6 @@ import ir.ut.ie.exceptions.InvalidAddress;
 import ir.ut.ie.exceptions.InvalidUser;
 import lombok.Getter;
 import lombok.Setter;
-import ir.ut.ie.utils.UserRole;
 
 import java.util.regex.Pattern;
 

@@ -1,19 +1,11 @@
 package ir.ut.ie.exceptions;
 
-import org.springframework.http.HttpStatusCode;
-
-;
-
 public class MizdooniException extends Exception {
 
     private final int statusCode;
 
     public int getHttpStatusCode(){
         return statusCode;
-    }
-
-    public String getMessage() {
-        return super.getMessage();
     }
 
     public MizdooniException(String message, int statusCode) {

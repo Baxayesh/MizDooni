@@ -1,4 +1,4 @@
-package ir.ut.ie.exceptions;;
+package ir.ut.ie.exceptions;
 
 import static ir.ut.ie.defines.Errors.SCORE_OUT_OF_RANGE;
 
