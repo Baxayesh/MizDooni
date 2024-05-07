@@ -1,9 +1,11 @@
-package ir.ut.ie.utils;
+package ir.ut.ie.models;
 
 import lombok.Getter;
-import ir.ut.ie.models.Review;
 
 public class Rating {
+
+    private final Restaurant Restaurant;
+
     private double TotalFoodScore;
     private double TotalServiceScore;
     private double TotalAmbianceScore;
@@ -12,7 +14,8 @@ public class Rating {
     @Getter
     private int ReviewCount;
 
-    public Rating(){
+    public Rating(Restaurant restaurant){
+        Restaurant = restaurant;
         TotalFoodScore = 0;
         TotalServiceScore = 0;
         TotalAmbianceScore = 0;
@@ -22,12 +25,14 @@ public class Rating {
 
 
     private Rating(
+            Restaurant restaurant,
             double totalFoodScore,
             double totalServiceScore,
             double totalAmbianceScore,
             double totalOverallScore,
             int reviewCount
     ) {
+        Restaurant = restaurant;
         TotalFoodScore = totalFoodScore;
         TotalServiceScore = totalServiceScore;
         TotalAmbianceScore = totalAmbianceScore;
@@ -51,23 +56,12 @@ public class Rating {
         return  ReviewCount == 0 ? 0 : TotalOverallScore / ReviewCount;
     }
 
-    public Rating ConsiderReview(Review newReview) {
+    public void ConsiderReview(Review newReview) {
         ReviewCount++;
         TotalFoodScore += newReview.getFoodScore();
         TotalServiceScore += newReview.getServiceScore();
         TotalAmbianceScore += newReview.getAmbianceScore();
         TotalOverallScore += newReview.getOverallScore();
-        return this;
-    }
-
-    public static Rating Combine(Rating right, Rating left){
-        return new Rating(
-                right.TotalFoodScore + left.TotalFoodScore,
-                right.TotalServiceScore + left.TotalServiceScore,
-                right.TotalAmbianceScore + left.TotalAmbianceScore,
-                right.TotalOverallScore + left.TotalOverallScore,
-                right.ReviewCount + left.ReviewCount
-        );
     }
 
     public void UpdateReview(Review oldReview, Review newReview) {

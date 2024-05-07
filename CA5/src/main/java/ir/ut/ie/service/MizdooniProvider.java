@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
+import ir.ut.ie.exceptions.KeyAlreadyExists;
 import ir.ut.ie.models.Restaurant;
+import ir.ut.ie.models.RestaurantAddress;
 import ir.ut.ie.models.Review;
-import ir.ut.ie.models.User;
+import ir.ut.ie.models.UserAddress;
 import lombok.SneakyThrows;
 
 import java.net.URL;
@@ -37,7 +39,7 @@ public class MizdooniProvider {
     @SneakyThrows
     static void addUsers(Mizdooni mizdooni){
         for(var user : (ExternalServiceUserModel[])FetchValues("users", ExternalServiceUserModel.class)){
-            mizdooni.addUser(user.role, user.username, user.password, user.email, user.address.country(), user.address.city());
+            mizdooni.addUser(user.role, user.username, user.password, user.email, user.address.getCountry(), user.address.getCity());
         }
     }
 
@@ -53,9 +55,9 @@ public class MizdooniProvider {
                     ParseTime(restaurant.startTime),
                     ParseTime(restaurant.endTime),
                     restaurant.description,
-                    restaurant.address.country(),
-                    restaurant.address.city(),
-                    restaurant.address.street(),
+                    restaurant.address.getCountry(),
+                    restaurant.address.getCity(),
+                    restaurant.address.getStreet(),
                     restaurant.image
             );
         }
@@ -81,8 +83,8 @@ public class MizdooniProvider {
                 (ExternalServiceReviewModel[])FetchValues("reviews", ExternalServiceReviewModel.class)) {
 
             var reviewModel = new Review(
-                    review.restaurantName,
-                    review.username,
+                    mizdooni.findRestaurant(review.restaurantName),
+                    mizdooni.findClient(review.username),
                     review.foodRate,
                     review.serviceRate,
                     review.ambianceRate,
@@ -90,8 +92,16 @@ public class MizdooniProvider {
                     review.comment
             );
 
-            database.Reviews.Upsert(reviewModel);
-            mizdooni.findRestaurant(review.restaurantName()).upsertReview(reviewModel);
+
+            try{
+                database.Reviews.Add(reviewModel);
+                mizdooni.findRestaurant(review.restaurantName()).Rating.ConsiderReview(reviewModel);
+            }catch (KeyAlreadyExists ex){
+                var oldReview = database.Reviews.Get(reviewModel.getKey());
+                database.Reviews.Upsert(reviewModel);
+                mizdooni.findRestaurant(review.restaurantName()).Rating.UpdateReview(oldReview, reviewModel);
+            }
+
         }
     }
 
@@ -120,8 +130,8 @@ public class MizdooniProvider {
     }
 
 
-    record ExternalServiceUserModel(String username, String password, String role, String email, User.Address address){}
-    record ExternalServiceRestaurantModel(String name, String managerUsername, String type, String image, String description, String startTime, String endTime, Restaurant.Address address){ }
+    record ExternalServiceUserModel(String username, String password, String role, String email, UserAddress address){}
+    record ExternalServiceRestaurantModel(String name, String managerUsername, String type, String image, String description, String startTime, String endTime, RestaurantAddress address){ }
     record ExternalServiceTableModel(String managerUsername, String restaurantName, int seatsNumber, int tableNumber){}
     record ExternalServiceReviewModel(String username, String restaurantName, String comment, double ambianceRate, double foodRate, double serviceRate, double overallRate){ }
 }

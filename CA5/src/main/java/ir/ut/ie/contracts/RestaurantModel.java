@@ -12,7 +12,7 @@ public record RestaurantModel(
         String Type,
         String Description,
         String ImageUri,
-        Restaurant.Address restaurantAddress,
+        RestaurantAddressModel restaurantAddress,
         RatingModel rating
 ) {
 
@@ -21,11 +21,11 @@ public record RestaurantModel(
             model.getName(),
             model.getOpenTime(),
                 model.getCloseTime(),
-                model.getManagerUsername(),
+                model.getManager().getUsername(),
                 model.getType(),
                 model.getDescription(),
                 model.getImageUri(),
-                model.getRestaurantAddress(),
+                RestaurantAddressModel.fromDomainObject(model.getRestaurantAddress()),
                 RatingModel.fromDomainObject(model.getRating())
             );
     }

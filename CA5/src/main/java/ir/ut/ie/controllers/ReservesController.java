@@ -96,7 +96,7 @@ public class ReservesController extends MizdooniController {
 
         var restaurant = service.findRestaurant(restaurantName);
 
-        if(!owner.Is(restaurant.getManagerUsername()))
+        if(!owner.Is(restaurant.getManager().getUsername()))
             throw new MizdooniNotAuthorizedException();
 
         Stream<Reserve> reserves;

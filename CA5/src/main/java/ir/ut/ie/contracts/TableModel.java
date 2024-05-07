@@ -14,7 +14,7 @@ public record TableModel(
                 model.getTableNumber(),
                 model.getNumberOfSeats(),
                 model.getRestaurant().getName(),
-                model.getRestaurant().getManagerUsername()
+                model.getRestaurant().getManager().getUsername()
         );
     }
 }

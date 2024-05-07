@@ -98,7 +98,7 @@ public class RestaurantsController extends MizdooniController {
         return switch (recommendingMethod) {
             case "userLocation" -> {
                 var user = service.getLoggedIn();
-                yield service.getBestRestaurants(user.getUserAddress().city(), RECOMMENDED_RESTAURANTS_COUNT);
+                yield service.getBestRestaurants(user.getAddress().getCity(), RECOMMENDED_RESTAURANTS_COUNT);
             }
             case "rating" -> service.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
             default -> new Restaurant[0];

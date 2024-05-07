@@ -112,11 +112,11 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public int AddAnonymousTable(String restaurant) {
 
-        var manager = Database.Restaurants.Get(restaurant).getManagerUsername();
+        var manager = Database.Restaurants.Get(restaurant).getManager();
 
         return Service.addTable(
                 restaurant,
-                manager,
+                manager.getUsername(),
                 1
         );
     }
@@ -143,7 +143,7 @@ public class MizdooniStubHelper {
                 new Reserve(
                         Database.ReserveIdGenerator.GetNext(),
                         Database.Tables.Get(new PairType<>(restaurant, table)),
-                        Database.Users.Get(reservee),
+                        Service.findClient(reservee),
                         LocalDateTime.now().minusDays(1)
                 )
         );

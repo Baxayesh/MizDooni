@@ -12,21 +12,19 @@ import java.time.LocalDateTime;
 @Setter
 public class Reserve extends EntityModel<PairType<String,Integer>> {
 
+    private int ReserveNumber;
+    private Restaurant Restaurant;
     private Table Table;
-    private User Reservee;
+    private Client Reservee;
     private LocalDateTime ReserveTime;
     private Boolean IsCanceled;
 
-    public int getReserveNumber() {
-        return super.getKey().getSecond();
-    }
-    public String getReserveeUsername(){
-        return super.getKey().getFirst();
-    }
 
-    public Reserve(int reserveNumber, Table table, User reservee, LocalDateTime reserveTime) {
+    public Reserve(int reserveNumber, Table table, Client reservee, LocalDateTime reserveTime) {
         super(new PairType<>(reservee.getUsername(), reserveNumber));
-        this.Table = table;
+        ReserveNumber = reserveNumber;
+        Table = table;
+        Restaurant = table.getRestaurant();
         Reservee = reservee;
         ReserveTime = reserveTime;
         IsCanceled = false;

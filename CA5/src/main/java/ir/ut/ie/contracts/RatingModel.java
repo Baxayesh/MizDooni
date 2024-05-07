@@ -1,6 +1,6 @@
 package ir.ut.ie.contracts;
 
-import ir.ut.ie.utils.Rating;
+import ir.ut.ie.models.Rating;
 
 public record RatingModel(
         double foodScore,

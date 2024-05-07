@@ -21,6 +21,8 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     private int TableNumber;
     private int NumberOfSeats;
     private Restaurant Restaurant;
+    private Manager Owner;
+
     private ArrayList<Reserve> Reserves;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
@@ -35,6 +37,7 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         TableNumber = tableNumber;
         NumberOfSeats = numOfSeats;
         Restaurant = restaurant;
+        Owner = Restaurant.getManager();
         Reserves = new ArrayList<>();
     }
 
@@ -44,7 +47,7 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         }
     }
 
-    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime) throws TableIsReserved {
+    public Reserve MakeReserve(int reserveNumber, Client reservee, LocalDateTime reserveTime) throws TableIsReserved {
         EnsureTableIsFreeIn(reserveTime);
         var reserve = new Reserve(reserveNumber, this, reservee, reserveTime);
         Reserves.add(reserve);

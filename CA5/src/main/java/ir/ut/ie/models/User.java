@@ -7,36 +7,33 @@ import lombok.Setter;
 import ir.ut.ie.utils.UserRole;
 
 import java.util.regex.Pattern;
+
 @Getter
 @Setter
-public class User extends EntityModel<String> {
+public abstract class User extends EntityModel<String> {
 
-    private String role;
     private String username;
     private String password;
     private String email;
-    private Address userAddress;
 
-    public User(String username, String role, String password, String email, Address address) {
+    private UserAddress address;
+
+    public User(String username, String password, String email, String country, String city) throws InvalidAddress, InvalidUser {
         super(username);
-        //Role = role;
-        this.role = role;
+
         this.username = username;
         this.password = password;
         this.email = email;
-        userAddress = address;
-
+        this.address = new UserAddress(this, country, city);
+        ValidateUser();
     }
 
 
 
 
-    public static void ValidateUser(String username, String role, String password, String email, Address address)
+    void ValidateUser()
             throws InvalidUser, InvalidAddress {
 
-        if (!role.equals("client") && !role.equals("manager")){
-            throw new InvalidUser();
-        }
         if (username.contains(" ") || username.contains(";") || !Pattern.matches("^[a-zA-Z0-9_]*$", username)){
             throw new InvalidUser();
         }
@@ -49,10 +46,4 @@ public class User extends EntityModel<String> {
 
     }
 
-    public boolean RoleIs(UserRole desiredRole) {
-        return role.equalsIgnoreCase(desiredRole.toString());
-    }
-
-
-    public record Address(String country, String city){}
 }

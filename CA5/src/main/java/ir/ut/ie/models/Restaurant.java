@@ -1,7 +1,6 @@
 package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.*;
-import ir.ut.ie.utils.Rating;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,42 +12,47 @@ import java.util.*;
 @Setter
 public class Restaurant extends EntityModel<String> {
 
+    private String Name;
+
+    private Manager Manager;
+
     private LocalTime OpenTime;
     private LocalTime CloseTime;
-    private String ManagerUsername;
+
     private String Type;
     private String Description;
     private String ImageUri;
-    private ArrayList<Table> Tables;
-    public Map<String,Review> Reviews;
-    public Rating Rating;
-    private Address restaurantAddress;
 
-    public String getName(){
-        return super.getKey();
-    }
+    private RestaurantAddress restaurantAddress;
+
+    private ArrayList<Table> Tables;
+
+    public Rating Rating;
+
 
     public Restaurant(
             String name,
             LocalTime openTime,
             LocalTime closeTime,
-            String managerUsername,
+            Manager manager,
             String type,
             String description,
-            Address address,
+            String country,
+            String city,
+            String street,
             String imageUri
-    ) {
+    ) throws InvalidAddress {
         super(name);
+        Name = name;
         OpenTime = openTime;
         CloseTime = closeTime;
-        ManagerUsername = managerUsername;
+        Manager = manager;
         Type = type;
         Description = description;
         Tables = new ArrayList<>();
-        restaurantAddress = address;
+        restaurantAddress = new RestaurantAddress(this, country, city, street);
         ImageUri = imageUri;
-        Rating = new Rating();
-        Reviews = new HashMap<>();
+        Rating = new Rating(this);
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {
@@ -95,7 +99,7 @@ public class Restaurant extends EntityModel<String> {
                 .orElseThrow(NotExistentTable::new);
     }
 
-    public Reserve MakeReserve(int reserveNumber, User reservee, LocalDateTime reserveTime, int seats) throws
+    public Reserve MakeReserve(int reserveNumber, Client reservee, LocalDateTime reserveTime, int seats) throws
             NoFreeTable, TimeBelongsToPast, TimeIsNotRound, NotInWorkHour {
 
         ValidateReserveTime(reserveTime);
@@ -116,38 +120,6 @@ public class Restaurant extends EntityModel<String> {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public record Address(String country, String city, String street) {
-
-        public void Validate() throws InvalidAddress {
-            if (
-                    country == null ||
-                    country.isEmpty() ||
-                    city == null ||
-                    city.isEmpty() ||
-                    street == null ||
-                    street.isEmpty()
-            ) {
-                throw new InvalidAddress();
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "%s, %s, %s".formatted(street, city, country);
-        }
-    }
-
-    public void upsertReview(Review review){
-        var issuer = review.getIssuerUsername();
-
-        if(Reviews.containsKey(issuer)){
-            Rating.UpdateReview(Reviews.get(issuer), review);
-        } else {
-            Rating.ConsiderReview(review);
-        }
-        Reviews.put(review.getIssuerUsername(),review);
     }
 
 }
