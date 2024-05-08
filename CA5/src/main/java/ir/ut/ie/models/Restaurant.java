@@ -119,7 +119,7 @@ public class Restaurant extends EntityModel<String> {
                 .orElseThrow(NotExistentTable::new);
     }
 
-    public Reserve MakeReserve(int reserveNumber, Client reservee, LocalDateTime reserveTime, int seats) throws
+    public Reserve MakeReserve(Client reservee, LocalDateTime reserveTime, int seats) throws
             NoFreeTable, TimeBelongsToPast, TimeIsNotRound, NotInWorkHour {
 
         ValidateReserveTime(reserveTime);
@@ -135,7 +135,7 @@ public class Restaurant extends EntityModel<String> {
                 ).orElseThrow(NoFreeTable::new);
 
         try {
-            return goalTable.MakeReserve(reserveNumber, reservee, reserveTime);
+            return goalTable.MakeReserve(reservee, reserveTime);
         } catch (TableIsReserved e) {
             throw new RuntimeException(e);
         }

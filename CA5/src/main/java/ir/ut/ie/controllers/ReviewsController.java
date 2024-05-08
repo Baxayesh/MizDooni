@@ -52,15 +52,14 @@ public class ReviewsController extends MizdooniController {
             throws MizdooniNotAuthorizedException {
 
         service.ensureLoggedIn();
-
-        var reviews = service.getReviews(restaurantName);
-        var reviewModels = Arrays.stream(reviews)
-                .skip(offset)
-                .limit(limit)
+        var allCount = service.getReviewCount(restaurantName);
+        var reviews = service.getReviews(restaurantName, offset, limit);
+        var reviewModels =
+                Arrays.stream(reviews)
                 .map(ReviewModel::fromDomainObject)
                 .toArray(ReviewModel[]::new);
 
-        return new PagedResponse<>(reviews.length, offset, limit, reviewModels);
+        return new PagedResponse<>(allCount, offset, limit, reviewModels);
     }
 
     @GetMapping(params = {"restaurant", "issuer"})

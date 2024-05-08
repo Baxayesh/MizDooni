@@ -48,12 +48,12 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         return CreateTableKey(Restaurant, TableNumber);
     }
 
-    public Table(int tableNumber, Restaurant restaurant, int numOfSeats) throws SeatNumNotPos {
+    public Table(Restaurant restaurant, int numOfSeats) throws SeatNumNotPos {
         super();
-        if(tableNumber < 1)
+
+        if(numOfSeats < 1)
             throw new SeatNumNotPos();
 
-        TableNumber = tableNumber;
         NumberOfSeats = numOfSeats;
         Restaurant = restaurant;
         Owner = Restaurant.getManager();
@@ -66,9 +66,9 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         }
     }
 
-    public Reserve MakeReserve(int reserveNumber, Client reservee, LocalDateTime reserveTime) throws TableIsReserved {
+    public Reserve MakeReserve(Client reservee, LocalDateTime reserveTime) throws TableIsReserved {
         EnsureTableIsFreeIn(reserveTime);
-        var reserve = new Reserve(reserveNumber, this, reservee, reserveTime);
+        var reserve = new Reserve(this, reservee, reserveTime);
         Reserves.add(reserve);
         return reserve;
     }

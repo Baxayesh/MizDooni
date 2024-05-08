@@ -52,7 +52,6 @@ public class ReservesController extends MizdooniController {
     }
 
     @GetMapping(value = "/{id}")
-    @SneakyThrows(NotExistentUser.class)
     public ReserveModel GetReserveDetails(@PathVariable String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve {
 
@@ -67,7 +66,6 @@ public class ReservesController extends MizdooniController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @SneakyThrows(NotExistentUser.class)
     public void CancelReserve(@PathVariable String id)
             throws MizdooniNotAuthorizedException, NotAValidNumber, NotExistentReserve,
             CancelingExpiredReserve, CancelingCanceledReserve {

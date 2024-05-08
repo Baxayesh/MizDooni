@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
-import ir.ut.ie.exceptions.KeyAlreadyExists;
 import ir.ut.ie.models.*;
 import lombok.SneakyThrows;
 
@@ -24,7 +23,7 @@ public class MizdooniProvider {
     }
 
     public static void ReloadInstance() {
-        var db = Database.CreateInMemoryDatabase();
+        var db = new Database();
         var instance = new Mizdooni(db);
         addUsers(instance);
         addRestaurants(instance);
@@ -90,14 +89,7 @@ public class MizdooniProvider {
             );
 
 
-            try{
-                database.Reviews.Add(reviewModel);
-                mizdooni.findRestaurant(review.restaurantName()).Rating.ConsiderReview(reviewModel);
-            }catch (KeyAlreadyExists ex){
-                var oldReview = database.Reviews.Get(reviewModel.getKey());
-                database.Reviews.Upsert(reviewModel);
-                mizdooni.findRestaurant(review.restaurantName()).Rating.UpdateReview(oldReview, reviewModel);
-            }
+            database.ReviewRepo.upsert(reviewModel);
 
         }
     }

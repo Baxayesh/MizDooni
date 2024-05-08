@@ -41,8 +41,7 @@ public class Reserve extends EntityModel<PairType<String,Integer>> {
     }
 
 
-    public Reserve(int reserveNumber, Table table, Client reservee, LocalDateTime reserveTime) {
-        ReserveNumber = reserveNumber;
+    public Reserve(Table table, Client reservee, LocalDateTime reserveTime) {
         Table = table;
         Restaurant = table.getRestaurant();
         Reservee = reservee;

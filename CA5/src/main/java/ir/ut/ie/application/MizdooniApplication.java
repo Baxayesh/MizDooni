@@ -2,6 +2,7 @@ package ir.ut.ie.application;
 
 import ir.ut.ie.service.MizdooniProvider;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,6 +10,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan(basePackages = "ir.ut.ie.models")
 @ComponentScan(basePackages = "ir.ut.ie.controllers")
 public class MizdooniApplication {
 

@@ -71,7 +71,7 @@ public class RestaurantsController extends MizdooniController {
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ) throws MizdooniNotAuthorizedException {
         service.ensureLoggedIn();
-        return pageResults(service.searchRestaurantByName(name), offset, limit);
+        return pageResults(service.searchRestaurantByName(name, offset, limit), offset, limit);
     }
 
     @GetMapping(params = {"type"})
@@ -81,7 +81,7 @@ public class RestaurantsController extends MizdooniController {
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ) throws MizdooniNotAuthorizedException {
         service.ensureLoggedIn();
-        return pageResults(service.searchRestaurantByType(type), offset, limit);
+        return pageResults(service.searchRestaurantByType(type, offset, limit), offset, limit);
     }
 
     @GetMapping(params = {"location"})
@@ -91,14 +91,14 @@ public class RestaurantsController extends MizdooniController {
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ) throws MizdooniNotAuthorizedException {
         service.ensureLoggedIn();
-        return pageResults(service.searchRestaurantByLocation(location), offset, limit);
+        return pageResults(service.searchRestaurantByLocation(location, offset, limit), offset, limit);
     }
 
     Restaurant[] FetchRecommendations(String recommendingMethod) throws MizdooniNotAuthorizedException {
         return switch (recommendingMethod) {
             case "userLocation" -> {
                 var user = service.getLoggedIn();
-                yield service.getBestRestaurants(user.getAddress().getCity(), RECOMMENDED_RESTAURANTS_COUNT);
+                yield service.getBestRestaurants(user.getAddress(), RECOMMENDED_RESTAURANTS_COUNT);
             }
             case "rating" -> service.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
             default -> new Restaurant[0];
@@ -132,7 +132,7 @@ public class RestaurantsController extends MizdooniController {
 
         service.ensureLoggedIn(UserRole.Client);
         var requestDate = toDate(requestDateString,"onDate");
-        return service.getAvailableTables(restaurantName, requestDate, requestedSeats);
+        return service.getAvailableTimes(restaurantName, requestDate, requestedSeats);
     }
 
 }

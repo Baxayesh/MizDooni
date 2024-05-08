@@ -4,7 +4,6 @@ import ir.ut.ie.database.Database;
 import lombok.SneakyThrows;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.service.Mizdooni;
-import ir.ut.ie.utils.PairType;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,7 +22,7 @@ public class MizdooniStubHelper {
     }
 
     public MizdooniStubHelper(){
-        Database = ir.ut.ie.database.Database.CreateInMemoryDatabase();
+        Database = new Database();
         Service = new Mizdooni(Database);
     }
 
@@ -96,10 +95,7 @@ public class MizdooniStubHelper {
             String comment,
             LocalDateTime creationTime
     ){
-        var review = Database
-                .Reviews
-                .Get(new PairType<>(restaurantName, issuerUsername))
-                ;
+        var review = Database.ReviewRepo.get(restaurantName, issuerUsername);
 
         assertEquals(foodScore, review.getFoodScore());
         assertEquals(ambianceScore, review.getAmbianceScore());
@@ -112,7 +108,7 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public int AddAnonymousTable(String restaurant) {
 
-        var manager = Database.Restaurants.Get(restaurant).getManager();
+        var manager = Database.UserRepo.get(restaurant);
 
         return Service.addTable(
                 restaurant,
@@ -124,7 +120,7 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public void AddPreviousReserve(String reservee, String restaurant, LocalDateTime reserveTime) {
 
-        if(!Database.Users.Exists(reservee))
+        if(!Database.UserRepo.exists(reservee))
             AddAnonymousCustomer(reservee);
 
         Service.reserveATable(
@@ -139,10 +135,9 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public void AddPassedReserve(String reservee, String restaurant, int table) {
 
-        Database.Reserves.Add(
+        Database.ReserveRepo.add(
                 new Reserve(
-                        Database.ReserveIdGenerator.GetNext(),
-                        Database.Tables.Get(new PairType<>(restaurant, table)),
+                        Database.TableRepo.get(restaurant, table),
                         Service.findClient(reservee),
                         LocalDateTime.now().minusDays(1)
                 )
@@ -159,7 +154,7 @@ public class MizdooniStubHelper {
             int table,
             LocalDateTime reserveTime
     ) {
-        var reserve = Database.Reserves.Get(new PairType<>(username,reserveNumber));
+        var reserve = Database.ReserveRepo.get(username,reserveNumber);
 
         assertEquals(restaurant, reserve.getTable().getRestaurant().getName());
         assertEquals(table, reserve.getTable().getTableNumber());

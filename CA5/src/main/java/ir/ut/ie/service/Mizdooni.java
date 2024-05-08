@@ -4,12 +4,10 @@ import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.*;
 import ir.ut.ie.utils.*;
-import lombok.SneakyThrows;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
 
 public class Mizdooni {
 
@@ -21,10 +19,7 @@ public class Mizdooni {
     }
 
     public Restaurant[] getRestaurantsFor(String manager){
-        return Database
-                .Restaurants
-                .Search(restaurant -> restaurant.getManager().getUsername().equals(manager))
-                .toArray(Restaurant[]::new);
+        return Database.RestaurantRepo.getByManager(manager);
     }
 
     public User getLoggedIn() throws MizdooniNotAuthorizedException {
@@ -34,7 +29,7 @@ public class Mizdooni {
 
     public void login(String username, String password) throws MizdooniNotAuthenticatedException {
         try {
-            var user = _findUser(username);
+            var user = Database.UserRepo.get(username);
             if (!user.getPassword().equals(password))
                 throw new MizdooniNotAuthenticatedException();
             LoggedInUser = user;
@@ -47,6 +42,8 @@ public class Mizdooni {
     public void logout() throws MizdooniNotAuthorizedException {
         ensureLoggedIn();
         LoggedInUser = null;
+
+
     }
 
     public void ensureLoggedIn() throws MizdooniNotAuthorizedException {
@@ -85,17 +82,13 @@ public class Mizdooni {
         User user;
         if(role.equals("client")) {
             user = new Client(username, password, email, country, city);
-        } else {
+        } else if(role.equals("manager")) {
             user = new Manager(username, password, email, country, city);
+        }else {
+            throw new InvalidUser();
         }
 
-        try{
-            Database.Users.Add(user);
-        }
-        catch (KeyAlreadyExists ex){
-            throw new UserAlreadyExits();
-        }
-
+        Database.UserRepo.add(user);
     }
 
     public void addRestaurant(
@@ -120,17 +113,8 @@ public class Mizdooni {
 
         var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, country, city, street, image);
 
-        try{
-            Database.Restaurants.Add(restaurant);
-        } catch (KeyAlreadyExists ex){
-            throw new RestaurantAlreadyExists();
-        }
+        Database.RestaurantRepo.add(restaurant);
 
-    }
-
-    int getNextTableNumber(String restaurantName) throws NotExistentRestaurant {
-        var restaurant = findRestaurant(restaurantName);
-        return restaurant.getNextTableNumber();
     }
 
     public int addTable(
@@ -138,8 +122,6 @@ public class Mizdooni {
             String managerName,
             int seatNumber
     ) throws NotExistentRestaurant, MizdooniNotAuthorizedException, NotExistentUser, SeatNumNotPos {
-
-        var tableNumber = getNextTableNumber(restaurantName);
 
         var restaurant = findRestaurant(restaurantName);
 
@@ -149,16 +131,9 @@ public class Mizdooni {
             throw new MizdooniNotAuthorizedException();
         }
 
-        var table = new Table(tableNumber, restaurant, seatNumber);
+        var table = new Table(restaurant, seatNumber);
 
-        try{
-            Database.Tables.Add(table);
-        }catch (KeyAlreadyExists ex){
-            throw new RuntimeException(ex);
-        }
-        restaurant.addTable(table);
-
-        return tableNumber;
+        return Database.TableRepo.add(table);
     }
 
 
@@ -169,66 +144,45 @@ public class Mizdooni {
         var reservee = findClient(reserveeUsername);
 
         var restaurant = findRestaurant(restaurantName);
-        var reserveNumber = Database.ReserveIdGenerator.GetNext();
-        var reserve = restaurant.MakeReserve(reserveNumber, reservee, reserveTime, seats);
+        var reserve = restaurant.MakeReserve(reservee, reserveTime, seats);
 
-        try{
-            Database.Reserves.Add(reserve);
-        } catch (KeyAlreadyExists ex){
-            throw new RuntimeException(ex);
-        }
+        return Database.ReserveRepo.add(reserve); //TODO: check for duplicate save of reserve
 
-        return reserve.getReserveNumber();
     }
 
     public void cancelReserve(String username, int reserveNumber)
             throws
-            NotExistentUser,
             NotExistentReserve,
             CancelingExpiredReserve,
             CancelingCanceledReserve
     {
         var reserve = findReserve(username, reserveNumber);
         reserve.Cancel();
+        Database.ReserveRepo.save(reserve);
     }
 
-    public LocalTime[] getAvailableTables(
+    public LocalTime[] getAvailableTimes(
             String restaurantName, LocalDate requestDate, int requestedSeats)
         throws NotExistentRestaurant {
 
-        if(!Database.Restaurants.Exists(restaurantName))
+        if(!Database.RestaurantRepo.exists(restaurantName))
             throw new NotExistentRestaurant();
 
-        return Database
-                .Tables
-                .Search(table -> table.getRestaurant().Is(restaurantName) && table.getNumberOfSeats() >= requestedSeats)
-                .flatMap(table -> table.GetAvailableTimes(requestDate).stream())
-                .toArray(LocalTime[]::new);
+        return Database.TableRepo.getAvailableTimes(restaurantName, requestDate, requestedSeats);
     }
 
-    public Restaurant[] searchRestaurantByName(String restaurantName) {
-        return Database
-            .Restaurants
-            .Search(restaurant -> restaurant.getName().toLowerCase().contains(restaurantName.toLowerCase()))
-            .toArray(Restaurant[]::new);
+    public Restaurant[] searchRestaurantByName(String restaurantName, int offset, int limit){
+        return Database.RestaurantRepo.searchByName(restaurantName, offset, limit);
     }
 
-    public Restaurant[] searchRestaurantByType(String type){
-        return Database
-            .Restaurants
-            .Search(restaurant -> restaurant.getType().equalsIgnoreCase(type))
-            .toArray(Restaurant[]::new);
-    }
-    public Restaurant[] searchRestaurantByLocation(String location){
-        return Database
-                .Restaurants
-                .Search(restaurant ->
-                        restaurant.getRestaurantAddress().getCity().equalsIgnoreCase(location) ||
-                        restaurant.getRestaurantAddress().getCountry().equalsIgnoreCase(location))
-                .toArray(Restaurant[]::new);
+    public Restaurant[] searchRestaurantByType(String type, int offset, int limit){
+        return Database.RestaurantRepo.searchByType(type, offset, limit);
     }
 
-    @SneakyThrows(KeyNotFound.class)
+    public Restaurant[] searchRestaurantByLocation(String location, int offset, int limit){
+       return Database.RestaurantRepo.searchByLocation(location, offset, limit);
+    }
+
     public void addReview(
             String issuerUsername,
             String restaurantName,
@@ -253,40 +207,18 @@ public class Mizdooni {
 
         ensureUserHaveAnyPassedReserveAt(issuerUsername, restaurantName);
 
-
-        if(!Database.Reviews.Exists(new PairType<>(restaurantName, issuerUsername))){
-            restaurant.Rating.ConsiderReview(review);
-        }else{
-            restaurant.Rating.UpdateReview(Database.Reviews.Get(new PairType<>(restaurantName, issuerUsername)) , review);
-        }
-
-        Database.Reviews.Upsert(review);
+        Database.ReviewRepo.upsert(review);
 
     }
 
     void ensureUserHaveAnyPassedReserveAt(String user, String restaurant) throws NotAllowedToAddReview {
-        if(
-            Database.Reserves.Search( reserve ->
-                reserve.getReservee().getUsername().equals(user) &&
-                reserve.getTable().getRestaurant().Is(restaurant) &&
-                reserve.IsActive() &&
-                reserve.IsPassed()
-            ).findAny().isEmpty()
-        ){
+        if(Database.ReserveRepo.doUserHasAnyPassedReserveAt(user, restaurant)){
             throw new NotAllowedToAddReview();
         }
     }
 
-    User _findUser(String username) throws NotExistentUser {
-        try {
-            return Database.Users.Get(username);
-        } catch (KeyNotFound ex) {
-            throw new NotExistentUser();
-        }
-    }
-
     public Manager findManager(String username) throws NotExistentUser, NotExpectedUserRole {
-        var user = _findUser(username);
+        var user = Database.UserRepo.get(username);
 
         if(user instanceof Manager manager)
             return manager;
@@ -295,7 +227,7 @@ public class Mizdooni {
     }
 
     public Client findClient(String username) throws NotExistentUser, NotExpectedUserRole {
-        var user = _findUser(username);
+        var user = Database.UserRepo.get(username);
 
         if(user instanceof Client client)
             return client;
@@ -303,91 +235,43 @@ public class Mizdooni {
         throw new NotExpectedUserRole(UserRole.Client);
     }
 
-    public Reserve findReserve(String username, int reserveNumber) throws NotExistentReserve, NotExistentUser {
-
-        if(!Database.Users.Exists(username)){
-            throw new NotExistentUser();
-        }
-
-        try{
-            return Database.Reserves.Get(new PairType<>(username, reserveNumber));
-        } catch (KeyNotFound e) {
-            throw new NotExistentReserve();
-        }
+    public Reserve findReserve(String username, int reserveNumber) throws NotExistentReserve {
+        return Database.ReserveRepo.get(username, reserveNumber);
     }
 
     public Restaurant findRestaurant(String restaurantName) throws NotExistentRestaurant {
-        try {
-            return Database.Restaurants.Get(restaurantName);
-        } catch (KeyNotFound ex) {
-            throw new NotExistentRestaurant();
-        }
+        return Database.RestaurantRepo.get(restaurantName);
     }
 
     public Review findReview(String restaurantName, String issuer) throws MizdooniNotFoundException {
-        try {
-            return Database.Reviews.Get(new PairType<>(restaurantName, issuer));
-        } catch (KeyNotFound e) {
-            throw new MizdooniNotFoundException("Review");
-        }
+        return Database.ReviewRepo.get(restaurantName, issuer);
     }
 
-    public Review[] getReviews(String restaurantName) {
-        return Database.Reviews.Search(review -> review.getRestaurant().Is(restaurantName)).toArray(Review[]::new);
+    public Review[] getReviews(String restaurantName, int offset, int limit) {
+        return Database.ReviewRepo.get(restaurantName, offset, limit);
+    }
+
+    public int getReviewCount(String restaurantName){
+        return Database.ReviewRepo.count(restaurantName);
     }
 
     public Reserve[] getReserves(String reservee)  {
-        return Database
-                .Reserves
-                .Search(reserve -> reserve.getReservee().getUsername().equals(reservee))
-                .toArray(Reserve[]::new);
+        return Database.ReserveRepo.get(reservee);
     }
 
-    public Restaurant[] getBestRestaurants(String city, int limit) {
-        return Database
-                .Restaurants
-                .Search(restaurant -> restaurant.getRestaurantAddress().getCity().equals(city))
-                .sorted((r1, r2)-> {
-                    if(r1.getRating().getAverageOverallScore() > r2.getRating().getAverageOverallScore())
-                        return -1;
-                    return 1;
-                }).limit(limit)
-                .toArray(Restaurant[]::new);
+    public Restaurant[] getBestRestaurants(UserAddress location, int limit) {
+        return Database.RestaurantRepo.getBests(location, limit);
     }
 
     public Restaurant[] getBestRestaurants(int limit) {
-        return Database
-                .Restaurants
-                .All()
-                .sorted((r1, r2)-> {
-                    if(r1.getRating().getAverageOverallScore() > r2.getRating().getAverageOverallScore())
-                        return -1;
-                    return 1;
-                }).limit(limit)
-                .toArray(Restaurant[]::new);
+        return Database.RestaurantRepo.getBests(limit);
     }
 
     public LocationModel[] getUsedLocations(){
-
-        var addresses = Database.Restaurants.All().map(Restaurant::getRestaurantAddress);
-
-        var locations = new HashMap<String, Set<String>>();
-
-        addresses.forEach(address -> {
-            if(!locations.containsKey(address.getCountry())){
-                locations.put(address.getCountry(), new TreeSet<>(){});
-            }
-            locations.get(address.getCountry()).add(address.getCity());
-        });
-
-        return locations
-                .keySet()
-                .stream()
-                .map(country -> new LocationModel(country, locations.get(country).toArray(String[]::new)))
-                .toArray(LocationModel[]::new);
+        return Database.RestaurantRepo.getLocations();
     }
 
     public String[] getUsedFoodTypes(){
-        return Database.Restaurants.All().map(Restaurant::getType).distinct().toArray(String[]::new);
+        return Database.RestaurantRepo.getTypes();
     }
 }

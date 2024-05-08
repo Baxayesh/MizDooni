@@ -3,7 +3,6 @@ package ir.ut.ie.models;
 import ir.ut.ie.exceptions.InvalidAddress;
 import ir.ut.ie.exceptions.InvalidUser;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
