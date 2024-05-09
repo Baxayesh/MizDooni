@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -40,7 +41,7 @@ public class Restaurant extends EntityModel<String> {
     @JoinColumn(nullable = false)
     private RestaurantAddress restaurantAddress;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "Restaurant")
+    @OneToMany(mappedBy = "Restaurant")
     private ArrayList<Table> Tables;
 
     @OneToOne(orphanRemoval = true,optional = false, mappedBy = "Restaurant", fetch = FetchType.LAZY)
@@ -102,15 +103,6 @@ public class Restaurant extends EntityModel<String> {
         EnsureTimeIsInWorkHours(reserveTime.toLocalTime());
     }
 
-
-    public void addTable(Table table) {
-        Tables.add(table);
-    }
-
-    public int getNextTableNumber() {
-        return Tables.stream().map(Table::getTableNumber).sorted().max(Integer::compare).orElse(0) + 1;
-    }
-
     public Table getTable(int tableNumber) throws NotExistentTable {
         return Tables
                 .stream()
@@ -142,5 +134,16 @@ public class Restaurant extends EntityModel<String> {
 
     }
 
-}
+    public LocalTime[] getAvailableTimes(LocalDate requestDate, int requestedSeats) {
 
+        var availableTimes = new ArrayList<LocalTime>();
+
+        for (var table : Tables){
+            if(table.getNumberOfSeats() >= requestedSeats){
+                availableTimes.addAll(table.getAvailableTimes(requestDate));
+            }
+        }
+
+        return availableTimes.toArray(LocalTime[]::new);
+    }
+}

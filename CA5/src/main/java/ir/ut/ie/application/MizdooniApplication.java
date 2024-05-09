@@ -10,9 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-@ComponentScan(basePackages = "ir.ut.ie.models")
-@ComponentScan(basePackages = "ir.ut.ie.controllers")
+@ComponentScan(basePackages = "ir.ut.ie")
 public class MizdooniApplication {
 
 	static final String FRONTEND_SERVER_ORIGIN = "http://localhost:3000";
@@ -20,7 +18,7 @@ public class MizdooniApplication {
 
 	public static void main(String[] args) {
 
-		MizdooniProvider.ReloadInstance();
+		//MizdooniProvider.ReloadInstance();
 		SpringApplication.run(MizdooniApplication.class, args);
 
 	}

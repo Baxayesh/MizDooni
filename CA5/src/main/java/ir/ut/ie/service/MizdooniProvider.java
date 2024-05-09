@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
 import ir.ut.ie.models.*;
+import jakarta.persistence.EntityManager;
 import lombok.SneakyThrows;
 
 import java.net.URI;
@@ -15,15 +16,15 @@ public class MizdooniProvider {
 
     private static final String DATA_PROVIDER_ADDRESS = "http://91.107.137.117:55";
 
-    public static Mizdooni GetInstance(){
+    public static Mizdooni GetInstance(EntityManager em){
         if(instance == null){
-            ReloadInstance();
+            ReloadInstance(em);
         }
         return instance;
     }
 
-    public static void ReloadInstance() {
-        var db = new Database();
+    public static void ReloadInstance(EntityManager em) {
+        var db = Database.createUsing(em);
         var instance = new Mizdooni(db);
         addUsers(instance);
         addRestaurants(instance);

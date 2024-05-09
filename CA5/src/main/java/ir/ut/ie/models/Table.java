@@ -36,7 +36,7 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     @JoinColumn(nullable = false)
     private Manager Owner;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "Table")
+    @OneToMany(mappedBy = "Table")
     private ArrayList<Reserve> Reserves;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
@@ -73,7 +73,7 @@ public class Table extends EntityModel<PairType<String, Integer>> {
         return reserve;
     }
 
-    public List<LocalTime> GetAvailableTimes(LocalDate onDate){
+    public List<LocalTime> getAvailableTimes(LocalDate onDate){
 
         var availableTimes = new ArrayList<LocalTime>();
 

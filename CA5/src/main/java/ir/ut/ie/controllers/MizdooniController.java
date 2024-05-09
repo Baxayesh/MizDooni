@@ -4,6 +4,9 @@ import ir.ut.ie.exceptions.FieldIsRequired;
 import ir.ut.ie.exceptions.NotAValidDatetime;
 import ir.ut.ie.exceptions.NotAValidNumber;
 import ir.ut.ie.service.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,17 +15,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
+
+@Setter
+@Getter
 public abstract class MizdooniController {
 
+    @Autowired
     protected Mizdooni service;
-
-    public void setService(Mizdooni mizdooni) {
-        service = mizdooni;
-    }
-
-    public MizdooniController() {
-        service = MizdooniProvider.GetInstance();
-    }
 
     String getRequiredField(Map<String, String> request, String fieldName) throws FieldIsRequired {
         var field = request.get(fieldName);

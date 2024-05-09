@@ -6,7 +6,6 @@ import jdk.jshell.spi.ExecutionControl;
 
 public interface IReviewRepository {
 
-
     Review[] get(String restaurantName, int offset, int limit);
 
     int count(String restaurantName);

@@ -4,16 +4,21 @@ import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.*;
 import ir.ut.ie.utils.*;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@Service
 public class Mizdooni {
 
     private final Database Database;
     private User LoggedInUser;
 
+    @Autowired
     public Mizdooni(Database database){
         Database = database;
     }
@@ -27,6 +32,7 @@ public class Mizdooni {
         return LoggedInUser;
     }
 
+    @Transactional
     public void login(String username, String password) throws MizdooniNotAuthenticatedException {
         try {
             var user = Database.UserRepo.get(username);
@@ -70,6 +76,7 @@ public class Mizdooni {
         throw new NotExpectedUserRole(role);
     }
 
+    @Transactional
     public void addUser(
             String role,
             String username,
@@ -91,6 +98,7 @@ public class Mizdooni {
         Database.UserRepo.add(user);
     }
 
+    @Transactional
     public void addRestaurant(
             String name,
             String managerName,
@@ -117,6 +125,7 @@ public class Mizdooni {
 
     }
 
+    @Transactional
     public int addTable(
             String restaurantName,
             String managerName,
@@ -136,7 +145,7 @@ public class Mizdooni {
         return Database.TableRepo.add(table);
     }
 
-
+    @Transactional
     public int reserveATable(String reserveeUsername, String restaurantName, LocalDateTime reserveTime, int seats)
             throws NotExistentUser, NotExpectedUserRole, NotExistentRestaurant, TimeBelongsToPast, TimeIsNotRound,
             NotInWorkHour, NoFreeTable {
@@ -150,6 +159,7 @@ public class Mizdooni {
 
     }
 
+    @Transactional
     public void cancelReserve(String username, int reserveNumber)
             throws
             NotExistentReserve,
@@ -158,17 +168,17 @@ public class Mizdooni {
     {
         var reserve = findReserve(username, reserveNumber);
         reserve.Cancel();
-        Database.ReserveRepo.save(reserve);
+        Database.ReserveRepo.update(reserve);
     }
 
     public LocalTime[] getAvailableTimes(
             String restaurantName, LocalDate requestDate, int requestedSeats)
         throws NotExistentRestaurant {
 
-        if(!Database.RestaurantRepo.exists(restaurantName))
-            throw new NotExistentRestaurant();
+        var restaurant = findRestaurant(restaurantName);
 
-        return Database.TableRepo.getAvailableTimes(restaurantName, requestDate, requestedSeats);
+        return restaurant.getAvailableTimes(requestDate, requestedSeats);
+
     }
 
     public Restaurant[] searchRestaurantByName(String restaurantName, int offset, int limit){
@@ -183,6 +193,7 @@ public class Mizdooni {
        return Database.RestaurantRepo.searchByLocation(location, offset, limit);
     }
 
+    @Transactional
     public void addReview(
             String issuerUsername,
             String restaurantName,
