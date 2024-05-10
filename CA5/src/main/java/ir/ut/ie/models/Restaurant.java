@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,7 +17,7 @@ import java.util.*;
 @NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "RESTAURANTS")
-public class Restaurant extends EntityModel<String> {
+public class Restaurant implements Serializable {
 
     @Id
     private String Name;
@@ -38,7 +39,7 @@ public class Restaurant extends EntityModel<String> {
     private String ImageUri;
 
     @OneToOne(orphanRemoval = true, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "address")
     private RestaurantAddress restaurantAddress;
 
     @OneToMany(mappedBy = "Restaurant")
@@ -47,10 +48,12 @@ public class Restaurant extends EntityModel<String> {
     @OneToOne(orphanRemoval = true,optional = false, mappedBy = "Restaurant", fetch = FetchType.LAZY)
     public Rating Rating;
 
-    @Override
+
     public String getKey(){
         return this.Name;
     }
+
+    public boolean Is(String name) { return this.Name.equals(name); }
 
     public Restaurant(
             String name,
@@ -71,9 +74,9 @@ public class Restaurant extends EntityModel<String> {
         Type = type;
         Description = description;
         Tables = new ArrayList<>();
-        restaurantAddress = new RestaurantAddress(country, city, street);
         ImageUri = imageUri;
         Rating = new Rating(this);
+        restaurantAddress = new RestaurantAddress(this, country, city, street);
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {

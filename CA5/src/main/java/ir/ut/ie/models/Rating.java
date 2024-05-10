@@ -1,15 +1,18 @@
 package ir.ut.ie.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
+@Entity
+@jakarta.persistence.Table(name = "RATINGS")
 public class Rating {
 
+    @Id
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Restaurant Restaurant;

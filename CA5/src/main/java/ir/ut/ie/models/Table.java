@@ -28,11 +28,11 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     @Column(nullable = false)
     private int NumberOfSeats;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Restaurant Restaurant;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Manager Owner;
 

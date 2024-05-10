@@ -4,6 +4,7 @@ import ir.ut.ie.service.MizdooniProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "ir.ut.ie")
+@EntityScan(basePackages = {"ir.ut.ie.models"})
 public class MizdooniApplication {
 
 	static final String FRONTEND_SERVER_ORIGIN = "http://localhost:3000";

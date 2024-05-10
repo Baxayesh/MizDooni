@@ -1,8 +1,7 @@
 package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.InvalidAddress;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +14,11 @@ import lombok.Setter;
 @Table(name = "RESTAURANT_ADDRESSES")
 public class RestaurantAddress {
 
+    @Id
+    @OneToOne
+    @JoinColumn
+    Restaurant Restaurant;
+
     @Column(nullable = false)
     String country;
     @Column(nullable = false)
@@ -22,10 +26,13 @@ public class RestaurantAddress {
     @Column(nullable = false)
     String street;
 
-    public RestaurantAddress(String country, String city, String street) throws InvalidAddress {
+
+
+    public RestaurantAddress(Restaurant restaurant, String country, String city, String street) throws InvalidAddress {
         this.country = country;
         this.city = city;
         this.street = street;
+        Restaurant = restaurant;
         Validate();
     }
 

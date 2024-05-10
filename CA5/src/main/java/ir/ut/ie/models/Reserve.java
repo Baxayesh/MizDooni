@@ -13,20 +13,22 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@jakarta.persistence.Table(name = "RESERVES")
 public class Reserve extends EntityModel<PairType<String,Integer>> {
 
     @Id
     private int ReserveNumber;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Restaurant Restaurant;
 
-    @OneToOne(optional = false)
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false, name = "table")
     private Table Table;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private Client Reservee;
 
