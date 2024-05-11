@@ -40,7 +40,7 @@ public class Restaurant implements Serializable {
 
     @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    private RestaurantAddress restaurantAddress;
+    private RestaurantAddress RestaurantAddress;
 
     @OneToMany(mappedBy = "Restaurant")
     private List<Table> Tables;
@@ -72,7 +72,7 @@ public class Restaurant implements Serializable {
         Tables = new ArrayList<>();
         ImageUri = imageUri;
         Rating = new Rating(this);
-        restaurantAddress = new RestaurantAddress(this, country, city, street);
+        RestaurantAddress = new RestaurantAddress(this, country, city, street);
     }
 
     void EnsureTimeIsRound(LocalTime time) throws TimeIsNotRound {

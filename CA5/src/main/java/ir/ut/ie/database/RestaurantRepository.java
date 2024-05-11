@@ -114,11 +114,12 @@ public class RestaurantRepository implements IRestaurantRepository {
 
         var hql = "select distinct r.RestaurantAddress.Country, r.RestaurantAddress.City "
                 + "from Restaurant r order by r.RestaurantAddress.Country, r.RestaurantAddress.City";
-        var query = entityManager.createQuery(hql, String[].class);
+        var query = entityManager.createQuery(hql);
 
         for (var result : query.getResultList()) {
-            String country = result[0];
-            String city = result[1];
+            var elements = (Object[]) result;
+            String country = elements[0].toString();
+            String city = elements[1].toString();
 
             locations.computeIfAbsent(country, k -> new ArrayList<>()).add(city);
         }

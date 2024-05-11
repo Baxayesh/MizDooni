@@ -18,7 +18,6 @@ public class MizdooniApplication {
 
 	public static void main(String[] args) {
 
-		//MizdooniProvider.ReloadInstance();
 		SpringApplication.run(MizdooniApplication.class, args);
 
 	}

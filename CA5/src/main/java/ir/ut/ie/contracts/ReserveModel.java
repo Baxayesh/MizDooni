@@ -10,7 +10,7 @@ public record ReserveModel(
     String reservee,
     LocalDateTime reserveTime,
     boolean isCanceled,
-    RestaurantAddress address
+    RestaurantAddressModel address
 ) {
 
 
@@ -21,7 +21,7 @@ public record ReserveModel(
                 model.getReservee().getUsername(),
                 model.GetReserveTime(),
                 model.getIsCanceled(),
-                model.getTable().getRestaurant().getRestaurantAddress()
+                RestaurantAddressModel.fromDomainObject(model.getTable().getRestaurant().getRestaurantAddress())
         );
     }
 
