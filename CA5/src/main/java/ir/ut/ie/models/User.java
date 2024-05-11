@@ -33,11 +33,7 @@ public abstract class User implements Serializable {
     @PrimaryKeyJoinColumn
     private UserAddress Address;
 
-    public String getKey(){
-        return Username;
-    }
-
-    public boolean Is(String username){
+    public boolean is(String username){
         return this.Username.equals(username);
     }
 

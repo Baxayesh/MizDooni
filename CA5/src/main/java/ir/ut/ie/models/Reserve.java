@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ir.ut.ie.utils.PairType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "RESERVES")
-public class Reserve extends EntityModel<PairType<String, Integer>> implements Serializable {
+public class Reserve implements Serializable {
 
     @Id
     @GeneratedValue
@@ -38,12 +37,6 @@ public class Reserve extends EntityModel<PairType<String, Integer>> implements S
     private LocalDateTime ReserveTime;
     @Column(nullable = false)
     private Boolean IsCanceled;
-
-    @Override
-    public PairType<String, Integer> getKey() {
-        return new PairType<>(this.getReservee().getUsername(), this.getReserveNumber());
-    }
-
 
     public Reserve(Table table, Client reservee, LocalDateTime reserveTime) {
         Table = table;

@@ -4,7 +4,6 @@ import ir.ut.ie.exceptions.ScoreOutOfRange;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import ir.ut.ie.utils.PairType;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;

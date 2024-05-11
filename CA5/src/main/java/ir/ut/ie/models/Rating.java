@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "RATINGS")
-public class Rating {
+public class Rating implements Serializable {
 
     @Id
     @OneToOne(optional = false, fetch = FetchType.LAZY)

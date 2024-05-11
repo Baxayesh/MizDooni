@@ -46,7 +46,7 @@ public class ReserveRepository implements IReserveRepository {
 
         var reserve = entityManager.find(Reserve.class, reserveNumber);
 
-        if(reserve == null || !reserve.getReservee().Is(reservee))
+        if(reserve == null || !reserve.getReservee().is(reservee))
             throw new NotExistentReserve();
 
         return reserve;

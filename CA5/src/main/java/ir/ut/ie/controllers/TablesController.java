@@ -44,7 +44,7 @@ public class TablesController extends MizdooniController {
 
         var restaurant = service.findRestaurant(restaurantName);
 
-        if(!manager.Is(restaurant.getManager().getUsername()))
+        if(!manager.is(restaurant.getManager().getUsername()))
             throw new MizdooniNotAuthorizedException();
 
         return restaurant

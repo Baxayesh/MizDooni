@@ -49,12 +49,7 @@ public class Restaurant implements Serializable {
     @PrimaryKeyJoinColumn
     public Rating Rating;
 
-
-    public String getKey(){
-        return this.Name;
-    }
-
-    public boolean Is(String name) { return this.Name.equals(name); }
+    public boolean is(String name) { return this.Name.equals(name); }
 
     public Restaurant(
             String name,

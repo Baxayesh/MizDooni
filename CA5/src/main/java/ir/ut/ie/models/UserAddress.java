@@ -7,12 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "USER_ADDRESSES")
-public class UserAddress {
+public class UserAddress implements Serializable {
 
     @Id
     @OneToOne

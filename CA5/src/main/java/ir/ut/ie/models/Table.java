@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ir.ut.ie.utils.PairType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "TABLES")
-public class Table extends EntityModel<PairType<String, Integer>> {
+public class Table {
 
     @Id
     @GeneratedValue
@@ -40,15 +39,6 @@ public class Table extends EntityModel<PairType<String, Integer>> {
 
     @OneToMany(mappedBy = "Table")
     private List<Reserve> Reserves;
-
-    static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
-        return new PairType<>(restaurant.getKey(), tableNumber);
-    }
-
-    @Override
-    public PairType<String, Integer> getKey(){
-        return CreateTableKey(Restaurant, TableNumber);
-    }
 
     public Table(Restaurant restaurant, int numOfSeats) throws SeatNumNotPos {
         super();

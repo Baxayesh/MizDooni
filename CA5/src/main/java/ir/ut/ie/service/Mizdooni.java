@@ -136,7 +136,7 @@ public class Mizdooni {
 
         var manager = findManager(managerName);
 
-        if(!manager.Is(restaurant.getManager().getUsername())){
+        if(!manager.is(restaurant.getManager().getUsername())){
             throw new MizdooniNotAuthorizedException();
         }
 
