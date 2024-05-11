@@ -32,7 +32,7 @@ public class TableRepository implements ITableRepository {
     public Table get(String restaurant, int number) throws MizdooniNotFoundException {
         var table = entityManager.find(Table.class, number);
 
-        if(table == null || table.getRestaurant().is(restaurant))
+        if(table == null || !table.getRestaurant().is(restaurant))
             throw new MizdooniNotFoundException("Table");
 
         return table;

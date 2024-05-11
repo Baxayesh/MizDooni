@@ -142,7 +142,10 @@ public class Mizdooni {
 
         var table = new Table(restaurant, seatNumber);
 
-        return Database.TableRepo.add(table);
+
+        var id = Database.TableRepo.add(table);
+        restaurant.addTable(table);
+        return id;
     }
 
     @Transactional
@@ -155,7 +158,7 @@ public class Mizdooni {
         var restaurant = findRestaurant(restaurantName);
         var reserve = restaurant.MakeReserve(reservee, reserveTime, seats);
 
-        return Database.ReserveRepo.add(reserve); //TODO: check for duplicate save of reserve
+        return Database.ReserveRepo.add(reserve);
 
     }
 
@@ -223,7 +226,7 @@ public class Mizdooni {
     }
 
     void ensureUserHaveAnyPassedReserveAt(String user, String restaurant) throws NotAllowedToAddReview {
-        if(Database.ReserveRepo.doUserHasAnyPassedReserveAt(user, restaurant)){
+        if(!Database.ReserveRepo.doUserHasAnyPassedReserveAt(user, restaurant)){
             throw new NotAllowedToAddReview();
         }
     }
@@ -262,7 +265,7 @@ public class Mizdooni {
         return Database.ReviewRepo.get(restaurantName, offset, limit);
     }
 
-    public int getReviewCount(String restaurantName){
+    public long getReviewCount(String restaurantName){
         return Database.ReviewRepo.count(restaurantName);
     }
 

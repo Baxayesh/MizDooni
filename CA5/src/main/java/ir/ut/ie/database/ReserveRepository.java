@@ -33,10 +33,10 @@ public class ReserveRepository implements IReserveRepository {
 
         var query = entityManager.createQuery("select count(r) from Reserve r " +
                 "where r.Reservee.Username = :username_pr and r.Restaurant.Name = :restaurant_pr and " +
-                "r.ReserveTime < CURRENT_TIMESTAMP", Integer.class);
+                "r.ReserveTime < CURRENT_TIMESTAMP", Long.class);
 
-        query.setParameter(":username_pr", user);
-        query.setParameter(":restaurant_pr", restaurant);
+        query.setParameter("username_pr", user);
+        query.setParameter("restaurant_pr", restaurant);
 
         return query.getSingleResult() > 0;
     }
@@ -58,7 +58,7 @@ public class ReserveRepository implements IReserveRepository {
         var query = entityManager.createQuery("from Reserve r " +
                 "where r.Reservee.Username = :reservee_pr", Reserve.class);
 
-        query.setParameter(":reservee_pr", reservee);
+        query.setParameter("reservee_pr", reservee);
 
         return  query.getResultList().toArray(Reserve[]::new);
     }

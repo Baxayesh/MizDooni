@@ -37,7 +37,7 @@ public class RestaurantRepository implements IRestaurantRepository {
         var query = entityManager.createQuery("from Restaurant r where " +
                 "r.Manager.Username = :owner_pr", Restaurant.class);
 
-        query.setParameter(":owner_pr", owner);
+        query.setParameter("owner_pr", owner);
 
         return query.getResultList().toArray(Restaurant[]::new);
     }
@@ -75,7 +75,7 @@ public class RestaurantRepository implements IRestaurantRepository {
 
         var hql = "from Restaurant r where r.Name like :name_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
-        query.setParameter(":name_pr", "%" + name + "%");
+        query.setParameter("name_pr", "%" + name + "%");
         query.setFirstResult(offset);
         query.setMaxResults(limit);
 
@@ -87,7 +87,7 @@ public class RestaurantRepository implements IRestaurantRepository {
 
         var hql = "from Restaurant r where r.Type = :type_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
-        query.setParameter(":type_pr", type);
+        query.setParameter("type_pr", type);
         query.setFirstResult(offset);
         query.setMaxResults(limit);
 
@@ -100,7 +100,7 @@ public class RestaurantRepository implements IRestaurantRepository {
         var hql = "from Restaurant r where r.RestaurantAddress.City = :location_pr or " +
                 "r.RestaurantAddress.Country = :location_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
-        query.setParameter(":location_pr", location);
+        query.setParameter("location_pr", location);
         query.setFirstResult(offset);
         query.setMaxResults(limit);
 

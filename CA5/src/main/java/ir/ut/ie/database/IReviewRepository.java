@@ -8,7 +8,7 @@ public interface IReviewRepository {
 
     Review[] get(String restaurantName, int offset, int limit);
 
-    int count(String restaurantName);
+    long count(String restaurantName);
 
     Review get(String restaurantName, String issuer) throws MizdooniNotFoundException;
 

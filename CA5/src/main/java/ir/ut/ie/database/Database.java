@@ -1,6 +1,8 @@
 package ir.ut.ie.database;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,8 @@ public class Database {
     public final ITableRepository TableRepo;
     public final IReserveRepository ReserveRepo;
     public final IReviewRepository ReviewRepo;
+
+
 
     @Autowired
     public Database(
@@ -29,6 +33,8 @@ public class Database {
     }
 
     public static Database createUsing(EntityManager em){
+
+
         return new Database(
                 new UserRepository(em),
                 new RestaurantRepository(em),

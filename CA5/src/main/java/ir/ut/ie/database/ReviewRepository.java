@@ -37,9 +37,9 @@ public class ReviewRepository implements IReviewRepository {
     }
 
     @Override
-    public int count(String restaurantName) {
+    public long count(String restaurantName) {
         var query = entityManager.createQuery("select count(r) from Review r where " +
-                "r.Restaurant.Name = :restaurantName_pr", Integer.class);
+                "r.Restaurant.Name = :restaurantName_pr", Long.class);
 
         query.setParameter("restaurantName_pr", restaurantName);
 

@@ -149,11 +149,13 @@ public class TableReservationTests {
 
         var restaurant = "restaurant";
         var username = "user";
+        var someoneElse = "someone_else";
         var reserveTime = CreateValidReserveTime();
         stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousCustomer(someoneElse);
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousTable(restaurant);
-        stub.AddPreviousReserve("someone_else", restaurant, reserveTime);
+        stub.AddPreviousReserve(someoneElse, restaurant, reserveTime);
 
         assertThrows(
                 NoFreeTable.class,

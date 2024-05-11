@@ -145,4 +145,8 @@ public class Restaurant implements Serializable {
 
         return availableTimes.toArray(LocalTime[]::new);
     }
+
+    public void addTable(Table table) {
+        Tables.add(table);
+    }
 }

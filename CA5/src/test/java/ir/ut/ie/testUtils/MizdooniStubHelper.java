@@ -1,6 +1,7 @@
 package ir.ut.ie.testUtils;
 
 import ir.ut.ie.database.Database;
+import ir.ut.ie.testUtils.fakes.*;
 import lombok.SneakyThrows;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.service.Mizdooni;
@@ -22,13 +23,19 @@ public class MizdooniStubHelper {
     }
 
     public MizdooniStubHelper(){
-        Database = new Database();
+        Database = new Database(
+          new FakeUserRepo(),
+          new FakeRestaurantRepo(),
+          new FakeTableRepo(),
+          new FakeReserveRepo(),
+          new FakeReviewRepo()
+        );
         Service = new Mizdooni(Database);
     }
 
-
     @SneakyThrows
     public void AddAnonymousRestaurant(String restaurantName){
+
         var managerName = "anonymous_manager_of_"+restaurantName;
         AddAnonymousManager(managerName);
         Service.addRestaurant(
@@ -61,6 +68,8 @@ public class MizdooniStubHelper {
 
     @SneakyThrows
     public void AddAnonymousCustomer(String username){
+
+
         Service.addUser(
                 "client",
                 username,
@@ -73,6 +82,7 @@ public class MizdooniStubHelper {
 
     @SneakyThrows
     public void AddAnonymousManager(String username){
+
         Service.addUser(
                 "manager",
                 username,
@@ -108,20 +118,19 @@ public class MizdooniStubHelper {
     @SneakyThrows
     public int AddAnonymousTable(String restaurant) {
 
-        var manager = Database.UserRepo.get(restaurant);
+        var manager = Database.RestaurantRepo.get(restaurant).getManager();
 
         return Service.addTable(
                 restaurant,
                 manager.getUsername(),
                 1
         );
+
+
     }
 
     @SneakyThrows
     public void AddPreviousReserve(String reservee, String restaurant, LocalDateTime reserveTime) {
-
-        if(!Database.UserRepo.exists(reservee))
-            AddAnonymousCustomer(reservee);
 
         Service.reserveATable(
                 reservee,
@@ -161,4 +170,5 @@ public class MizdooniStubHelper {
         assertEquals(reserveTime, reserve.GetReserveTime());
         assertTrue(reserve.IsActive());
     }
+
 }
