@@ -35,7 +35,7 @@ public class RestaurantRepository implements IRestaurantRepository {
     public Restaurant[] getByManager(String owner) {
 
         var query = entityManager.createQuery("from Restaurant r where " +
-                "r.manager.username = :owner_pr", Restaurant.class);
+                "r.Manager.Username = :owner_pr", Restaurant.class);
 
         query.setParameter(":owner_pr", owner);
 
@@ -56,10 +56,12 @@ public class RestaurantRepository implements IRestaurantRepository {
     @Override
     public void add(Restaurant restaurant) throws RestaurantAlreadyExists {
 
-       if(exists(restaurant.getName()))
-           throw new RestaurantAlreadyExists();
+        if(exists(restaurant.getName()))
+            throw new RestaurantAlreadyExists();
 
-       entityManager.persist(restaurant);
+        entityManager.persist(restaurant);
+        entityManager.persist(restaurant.getRestaurantAddress());
+        entityManager.persist(restaurant.getRating());
     }
 
     @Override
@@ -71,7 +73,7 @@ public class RestaurantRepository implements IRestaurantRepository {
     @Override
     public Restaurant[] searchByName(String name, int offset, int limit) {
 
-        var hql = "from Restaurant r where r.name like :name_pr";
+        var hql = "from Restaurant r where r.Name like :name_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
         query.setParameter(":name_pr", "%" + name + "%");
         query.setFirstResult(offset);
@@ -83,7 +85,7 @@ public class RestaurantRepository implements IRestaurantRepository {
     @Override
     public Restaurant[] searchByType(String type, int offset, int limit) {
 
-        var hql = "from Restaurant r where r.type = :type_pr";
+        var hql = "from Restaurant r where r.Type = :type_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
         query.setParameter(":type_pr", type);
         query.setFirstResult(offset);
@@ -95,8 +97,8 @@ public class RestaurantRepository implements IRestaurantRepository {
     @Override
     public Restaurant[] searchByLocation(String location, int offset, int limit) {
 
-        var hql = "from Restaurant r where r.restaurantAddress.city = :location_pr or " +
-                "r.restaurantAddress.country = :location_pr";
+        var hql = "from Restaurant r where r.RestaurantAddress.City = :location_pr or " +
+                "r.RestaurantAddress.Country = :location_pr";
         var query = entityManager.createQuery(hql, Restaurant.class);
         query.setParameter(":location_pr", location);
         query.setFirstResult(offset);
@@ -110,8 +112,8 @@ public class RestaurantRepository implements IRestaurantRepository {
 
         var locations = new HashMap<String, List<String>>();
 
-        var hql = "select distinct r.restaurantAddress.country, r.restaurantAddress.city "
-                + "from Restaurant r order by r.restaurantAddress.country, r.restaurantAddress.city";
+        var hql = "select distinct r.RestaurantAddress.Country, r.RestaurantAddress.City "
+                + "from Restaurant r order by r.RestaurantAddress.Country, r.RestaurantAddress.City";
         var query = entityManager.createQuery(hql, String[].class);
 
         for (var result : query.getResultList()) {
@@ -137,16 +139,16 @@ public class RestaurantRepository implements IRestaurantRepository {
 
     @Override
     public String[] getTypes() {
-        return entityManager.createQuery("select distinct r.type from Restaurant r",String.class)
+        return entityManager.createQuery("select distinct r.Type from Restaurant r",String.class)
                 .getResultList().toArray(String[]::new);
     }
 
     @Override
     public Restaurant[] getBests(UserAddress location, int limit) {
         
-        var hql = "select r from Restaurant r join r.rating rt "
-                + "where r.restaurantAddress.country = :country_pr and r.restaurantAddress.city = :city_pr "
-                + "order by rt.totalOverallScore / rt.reviewCount desc";
+        var hql = "select r from Restaurant r join r.Rating rt "
+                + "where r.RestaurantAddress.Country = :country_pr and r.RestaurantAddress.City = :city_pr "
+                + "order by rt.TotalOverallScore / rt.ReviewCount desc";
         var query = entityManager.createQuery(hql, Restaurant.class);
 
         query.setParameter("country_pr", location.getCountry());
@@ -160,8 +162,8 @@ public class RestaurantRepository implements IRestaurantRepository {
     @Override
     public Restaurant[] getBests(int limit) {
         
-        var hql = "select r from Restaurant r join r.rating rt "
-                + "order by rt.totalOverallScore / rt.reviewCount desc";
+        var hql = "select r from Restaurant r join r.Rating rt "
+                + "order by rt.TotalOverallScore / rt.ReviewCount desc";
         var query = entityManager.createQuery(hql, Restaurant.class);
 
         query.setMaxResults(limit);

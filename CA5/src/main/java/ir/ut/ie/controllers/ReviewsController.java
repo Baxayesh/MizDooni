@@ -15,7 +15,6 @@ import java.util.Map;
 public class ReviewsController extends MizdooniController {
 
     @PostMapping
-    @PutMapping
     @SneakyThrows(NotExistentUser.class)
     public void PostReview(
             @RequestParam(name="restaurant") String restaurantName,

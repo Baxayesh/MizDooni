@@ -12,5 +12,7 @@ public interface IReviewRepository {
 
     Review get(String restaurantName, String issuer) throws MizdooniNotFoundException;
 
+    boolean exists(String restaurantName, String issuer);
+
     void upsert(Review review);
 }

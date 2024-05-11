@@ -33,19 +33,20 @@ public class Restaurant implements Serializable {
 
     @Column(nullable = false)
     private String Type;
-    @Column(nullable = false)
+    @Column(columnDefinition="text")
     private String Description;
     @Column(nullable = false)
     private String ImageUri;
 
-    @OneToOne(orphanRemoval = true, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "address")
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
     private RestaurantAddress restaurantAddress;
 
     @OneToMany(mappedBy = "Restaurant")
-    private ArrayList<Table> Tables;
+    private List<Table> Tables;
 
-    @OneToOne(orphanRemoval = true,optional = false, mappedBy = "Restaurant", fetch = FetchType.LAZY)
+    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
     public Rating Rating;
 
 

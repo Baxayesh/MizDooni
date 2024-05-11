@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ir.ut.ie.utils.PairType;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,9 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @jakarta.persistence.Table(name = "RESERVES")
-public class Reserve extends EntityModel<PairType<String,Integer>> {
+public class Reserve extends EntityModel<PairType<String, Integer>> implements Serializable {
 
     @Id
+    @GeneratedValue
     private int ReserveNumber;
 
     @ManyToOne(optional = false)
@@ -25,7 +27,7 @@ public class Reserve extends EntityModel<PairType<String,Integer>> {
     private Restaurant Restaurant;
 
     @ManyToOne(optional = false)
-    @JoinColumn(nullable = false, name = "table")
+    @JoinColumn(nullable = false)
     private Table Table;
 
     @ManyToOne(optional = false)

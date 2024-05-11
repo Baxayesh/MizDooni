@@ -27,7 +27,7 @@ public class ReviewRepository implements IReviewRepository {
     public Review[] get(String restaurantName, int offset, int limit) {
 
         var query = entityManager.createQuery("from Review r where " +
-                "r.restaurant.name = :restaurantName_pr", Review.class);
+                "r.Restaurant.Name = :restaurantName_pr", Review.class);
 
         query.setParameter("restaurantName_pr", restaurantName);
         query.setFirstResult(offset);
@@ -39,7 +39,7 @@ public class ReviewRepository implements IReviewRepository {
     @Override
     public int count(String restaurantName) {
         var query = entityManager.createQuery("select count(r) from Review r where " +
-                "r.restaurant.name = :restaurantName_pr", Integer.class);
+                "r.Restaurant.Name = :restaurantName_pr", Integer.class);
 
         query.setParameter("restaurantName_pr", restaurantName);
 
@@ -56,22 +56,33 @@ public class ReviewRepository implements IReviewRepository {
         return review;
     }
 
+    @Override
+    public boolean exists(String restaurantName, String issuer) {
+        return fetch(restaurantName, issuer) != null;
+    }
+
     public Review fetch(String restaurantName, String issuer){
 
         var query = entityManager.createQuery("from Review r where " +
-                "r.restaurant.name = :restaurantName_pr and r.issuer.username = :issuer_pr", Review.class);
+                "r.Restaurant.Name = :restaurantName_pr and r.Issuer.Username = :issuer_pr", Review.class);
 
         query.setParameter("restaurantName_pr", restaurantName);
         query.setParameter("issuer_pr", issuer);
 
-        return query.getSingleResult();
+        var results = query.getResultList();
+
+        if(results.isEmpty()){
+            return null;
+        }else{
+            return results.get(0);
+        }
 
     }
 
     @Override
     public void upsert(Review review) {
         var previousReview = fetch(review.getRestaurant().getName(), review.getIssuer().getUsername());
-        var rating = entityManager.find(Rating.class, review.getRestaurant());
+        var rating = entityManager.find(Rating.class, review.getRestaurant().getRating());
 
         if(previousReview == null){
             rating.ConsiderReview(review);

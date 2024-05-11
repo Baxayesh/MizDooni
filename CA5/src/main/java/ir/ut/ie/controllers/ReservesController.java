@@ -5,7 +5,6 @@ import ir.ut.ie.contracts.ReserveModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.utils.UserRole;
-import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

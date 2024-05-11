@@ -1,8 +1,6 @@
 package ir.ut.ie.application;
 
-import ir.ut.ie.service.MizdooniProvider;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;

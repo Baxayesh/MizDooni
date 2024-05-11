@@ -16,34 +16,33 @@ public class RestaurantAddress {
 
     @Id
     @OneToOne
-    @JoinColumn
     Restaurant Restaurant;
 
     @Column(nullable = false)
-    String country;
+    String Country;
     @Column(nullable = false)
-    String city;
+    String City;
     @Column(nullable = false)
-    String street;
+    String Street;
 
 
 
     public RestaurantAddress(Restaurant restaurant, String country, String city, String street) throws InvalidAddress {
-        this.country = country;
-        this.city = city;
-        this.street = street;
+        this.Country = country;
+        this.City = city;
+        this.Street = street;
         Restaurant = restaurant;
         Validate();
     }
 
     void Validate() throws InvalidAddress {
         if (
-                country == null ||
-                country.isEmpty() ||
-                city == null ||
-                city.isEmpty() ||
-                street == null ||
-                street.isEmpty()
+                Country == null ||
+                Country.isEmpty() ||
+                City == null ||
+                City.isEmpty() ||
+                Street == null ||
+                Street.isEmpty()
         ) {
             throw new InvalidAddress();
         }
@@ -51,6 +50,6 @@ public class RestaurantAddress {
 
     @Override
     public String toString() {
-        return "%s, %s, %s".formatted(street, city, country);
+        return "%s, %s, %s".formatted(Street, City, Country);
     }
 }

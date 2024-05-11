@@ -8,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,6 +29,7 @@ public class UserRepository implements IUserRepository {
             throw new UserAlreadyExits();
 
         entityManager.persist(user);
+        entityManager.persist(user.getAddress());
     }
 
     @Override

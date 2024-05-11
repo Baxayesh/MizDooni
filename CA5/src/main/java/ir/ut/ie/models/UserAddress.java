@@ -16,17 +16,16 @@ public class UserAddress {
 
     @Id
     @OneToOne
-    @JoinColumn
     User User;
 
     @Column(nullable = false)
-    private String country;
+    private String Country;
     @Column(nullable = false)
-    private String city;
+    private String City;
 
     public UserAddress(User user, String country, String city) throws InvalidAddress {
-        this.country = country;
-        this.city = city;
+        Country = country;
+        City = city;
         User = user;
 
         if(country.isEmpty() || city.isEmpty())

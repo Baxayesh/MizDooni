@@ -24,7 +24,9 @@ import java.util.stream.Collectors;
 public class Table extends EntityModel<PairType<String, Integer>> {
 
     @Id
+    @GeneratedValue
     private int TableNumber;
+
     @Column(nullable = false)
     private int NumberOfSeats;
 
@@ -37,7 +39,7 @@ public class Table extends EntityModel<PairType<String, Integer>> {
     private Manager Owner;
 
     @OneToMany(mappedBy = "Table")
-    private ArrayList<Reserve> Reserves;
+    private List<Reserve> Reserves;
 
     static PairType<String, Integer> CreateTableKey(Restaurant restaurant, int tableNumber){
         return new PairType<>(restaurant.getKey(), tableNumber);

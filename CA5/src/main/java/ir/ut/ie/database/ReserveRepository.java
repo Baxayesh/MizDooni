@@ -32,8 +32,8 @@ public class ReserveRepository implements IReserveRepository {
     public boolean doUserHasAnyPassedReserveAt(String user, String restaurant) {
 
         var query = entityManager.createQuery("select count(r) from Reserve r " +
-                "where r.reservee.username = :username_pr and r.restaurant.name = :restaurant_pr and " +
-                "r.reserveTime < CURRENT_TIMESTAMP", Integer.class);
+                "where r.Reservee.Username = :username_pr and r.Restaurant.Name = :restaurant_pr and " +
+                "r.ReserveTime < CURRENT_TIMESTAMP", Integer.class);
 
         query.setParameter(":username_pr", user);
         query.setParameter(":restaurant_pr", restaurant);
@@ -56,7 +56,7 @@ public class ReserveRepository implements IReserveRepository {
     public Reserve[] get(String reservee) {
 
         var query = entityManager.createQuery("from Reserve r " +
-                "where r.reservee.username = :reservee_pr", Reserve.class);
+                "where r.Reservee.Username = :reservee_pr", Reserve.class);
 
         query.setParameter(":reservee_pr", reservee);
 

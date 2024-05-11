@@ -2,15 +2,19 @@ package ir.ut.ie.models;
 
 import ir.ut.ie.exceptions.ScoreOutOfRange;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import ir.ut.ie.utils.PairType;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class Review extends EntityModel<PairType<String, String>> {
+@Entity
+@Table(name = "REVIEWS")
+public class Review implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
@@ -21,7 +25,8 @@ public class Review extends EntityModel<PairType<String, String>> {
     private Restaurant Restaurant;
 
     @jakarta.persistence.Id
-    private int Id; //TODO: give value to this field
+    @GeneratedValue
+    private int Id;
 
     @Column(nullable = false)
     private double FoodScore;
@@ -32,7 +37,7 @@ public class Review extends EntityModel<PairType<String, String>> {
     @Column(nullable = false)
     private double OverallScore;
 
-    @Column
+    @Column(columnDefinition="text")
     private String Comment;
 
     @Column(nullable = false)
@@ -42,11 +47,6 @@ public class Review extends EntityModel<PairType<String, String>> {
         if(score < 0 || score > 5){
             throw new ScoreOutOfRange();
         }
-    }
-
-    @Override
-    public PairType<String, String> getKey(){
-        return new PairType<>(this.Restaurant.getName(), this.getIssuer().getUsername());
     }
 
     public Review(
