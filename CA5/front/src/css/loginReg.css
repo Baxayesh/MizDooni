@@ -1,0 +1,54 @@
+.reg-in-log{
+    background-color: #FFF6F7;
+    color: #7E7E7E;
+    border-radius: 10px 0px 0px 10px;
+    height: 50px;
+    line-height: 50px;
+    cursor: pointer;
+}
+
+.log-in-log{
+    background-color: #ED3545;
+    color: #FFFFFF;
+    border-radius: 0px 10px 10px 0px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.reg-in-reg{
+    background-color: #ED3545;
+    color: #FFFFFF;
+    border-radius: 10px 0px 0px 10px;
+    height: 50px;
+    line-height: 50px;
+}
+
+.log-in-reg{
+    background-color: #FFF6F7;
+    color: #7E7E7E;
+    border-radius: 0px 10px 10px 0px;
+    height: 50px;
+    line-height: 50px;
+    cursor: pointer;
+}
+
+.login-form input, .reg-form input {
+    
+    width: 80%;
+    height: 30px;
+    background: #F5F5F5;
+    justify-content: center;
+    display: flex;
+    margin: 5px auto;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+  }
+  
+input[type="radio"] {
+    accent-color: #ED3545;
+    background-color: #7E7E7E;
+}
+
+
