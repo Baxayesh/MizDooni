@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,13 +30,8 @@ public class SecurityConfigurer {
             "/sessions",
             "/users",
             "/error",
-            "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
@@ -43,7 +39,8 @@ public class SecurityConfigurer {
     private static final String[] ALLOWED_ORIGINS = {
             "http://localhost:3001",
             "http://localhost:3000",
-            "http://localhost:8080"
+            "http://localhost:8080",
+            "https://localhost:443"
     };
 
 
@@ -70,6 +67,7 @@ public class SecurityConfigurer {
             .headers(options ->
                     options
                     .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
                     .contentSecurityPolicy(cps -> cps.policyDirectives("script-src 'self'"))
             )
             .build();
