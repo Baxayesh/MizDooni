@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class FakeRestaurantRepo implements IRestaurantRepository {
 
-    Map<String, Restaurant> memory;
+    final Map<String, Restaurant> memory;
 
     public FakeRestaurantRepo(){
         memory = new HashMap<>();

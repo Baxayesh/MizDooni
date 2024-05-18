@@ -86,7 +86,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateReserveTime(1,12, 35);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousTable(restaurant);
 
@@ -108,7 +108,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateValidReserveTime();
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
 
         assertThrows(
                 NotExistentRestaurant.class,
@@ -128,7 +128,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateValidReserveTime();
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         stub.AddAnonymousRestaurant(restaurant);
 
         assertThrows(
@@ -151,8 +151,8 @@ public class TableReservationTests {
         var username = "user";
         var someoneElse = "someone_else";
         var reserveTime = CreateValidReserveTime();
-        stub.AddAnonymousCustomer(username);
-        stub.AddAnonymousCustomer(someoneElse);
+        stub.AddAnonymousClient(username);
+        stub.AddAnonymousClient(someoneElse);
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousTable(restaurant);
         stub.AddPreviousReserve(someoneElse, restaurant, reserveTime);
@@ -176,7 +176,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateReserveTime(-1, 12, 0);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         stub.AddAnonymousRestaurant(restaurant);
         stub.AddAnonymousTable(restaurant);
 
@@ -198,7 +198,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateReserveTime(1, 19, 0);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         stub.AddAnonymousRestaurant(restaurant, 8, 18);
         stub.AddAnonymousTable(restaurant);
 
@@ -228,7 +228,7 @@ public class TableReservationTests {
         var restaurant = "restaurant";
         var username = "user";
         var reserveTime = CreateValidReserveTime();
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         stub.AddAnonymousRestaurant(restaurant);
         var table = stub.AddAnonymousTable(restaurant);
 

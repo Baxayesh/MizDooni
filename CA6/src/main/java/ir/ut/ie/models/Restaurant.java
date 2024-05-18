@@ -117,12 +117,7 @@ public class Restaurant implements Serializable {
 
         var goalTable = Tables.stream()
                 .filter(table -> table.isFreeOn(reserveTime) && table.getNumberOfSeats() >= seats)
-                .min(
-                    (o1, o2) -> {
-                        if(o1.getNumberOfSeats() < o2.getNumberOfSeats())
-                            return -1;
-                        return 1;
-                    }
+                .min(Comparator.comparingInt(Table::getNumberOfSeats)
                 ).orElseThrow(NoFreeTable::new);
 
         try {

@@ -7,6 +7,8 @@ import ir.ut.ie.service.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,7 +23,9 @@ import java.util.Map;
 public abstract class MizdooniController {
 
     @Autowired
-    protected Mizdooni service;
+    protected Mizdooni mizdooni;
+    @Autowired
+    protected AuthenticationService authenticationService;
 
     String getRequiredField(Map<String, String> request, String fieldName) throws FieldIsRequired {
         var field = request.get(fieldName);
@@ -80,6 +84,11 @@ public abstract class MizdooniController {
     double getRequiredNumberField(Map<String, String> request, String fieldName) throws FieldIsRequired, NotAValidNumber {
         return toNumber(getRequiredField(request, fieldName), fieldName);
     }
+
+    UserDetails getCurrentUser(){
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }
+
 
 

@@ -4,13 +4,16 @@ import ir.ut.ie.database.IUserRepository;
 import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.exceptions.UserAlreadyExits;
 import ir.ut.ie.models.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class FakeUserRepo implements IUserRepository {
 
-    Map<String, User> memory;
+    final Map<String, User> memory;
 
     public FakeUserRepo(){
         memory = new HashMap<>();
@@ -33,6 +36,20 @@ public class FakeUserRepo implements IUserRepository {
 
     public boolean exists(String username){
         return memory.containsKey(username);
+    }
+
+    @Override
+    public Optional<User> tryGet(String username) {
+
+        if (!exists(username))
+            return Optional.empty();
+
+        return Optional.of(memory.get(username));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }
 

@@ -16,7 +16,6 @@ import java.time.LocalTime;
 public class Mizdooni {
 
     private final Database Database;
-    private User LoggedInUser;
 
     @Autowired
     public Mizdooni(Database database){
@@ -25,77 +24,6 @@ public class Mizdooni {
 
     public Restaurant[] getRestaurantsFor(String manager){
         return Database.RestaurantRepo.getByManager(manager);
-    }
-
-    public User getLoggedIn() throws MizdooniNotAuthorizedException {
-        ensureLoggedIn();
-        return LoggedInUser;
-    }
-
-    @Transactional
-    public void login(String username, String password) throws MizdooniNotAuthenticatedException {
-        try {
-            var user = Database.UserRepo.get(username);
-            if (!user.getPassword().equals(password))
-                throw new MizdooniNotAuthenticatedException();
-            LoggedInUser = user;
-        } catch (NotExistentUser ex){
-            throw new MizdooniNotAuthenticatedException();
-        }
-
-    }
-
-    public void logout() throws MizdooniNotAuthorizedException {
-        ensureLoggedIn();
-        LoggedInUser = null;
-
-
-    }
-
-    public void ensureLoggedIn() throws MizdooniNotAuthorizedException {
-        if(LoggedInUser == null)
-            throw new MizdooniNotAuthorizedException();
-    }
-
-    public void ensureLoggedIn(UserRole role) throws MizdooniNotAuthorizedException {
-        ensureLoggedIn();
-
-        //NOTE: this method will be used to check access authority from controller layer
-        //and should be handled in a better way (access privilege should be invariant from user object type)
-        switch (role){
-            case Manager -> {
-                if(LoggedInUser instanceof Manager)
-                    return;
-            }
-            case Client -> {
-                if (LoggedInUser instanceof Client)
-                    return;
-            }
-
-        }
-        throw new NotExpectedUserRole(role);
-    }
-
-    @Transactional
-    public void addUser(
-            String role,
-            String username,
-            String password,
-            String email,
-            String country,
-            String city
-    ) throws UserAlreadyExits, InvalidAddress, InvalidUser {
-
-        User user;
-        if(role.equals("client")) {
-            user = new Client(username, password, email, country, city);
-        } else if(role.equals("manager")) {
-            user = new Manager(username, password, email, country, city);
-        }else {
-            throw new InvalidUser();
-        }
-
-        Database.UserRepo.add(user);
     }
 
     @Transactional
@@ -273,8 +201,9 @@ public class Mizdooni {
         return Database.ReserveRepo.get(reservee);
     }
 
-    public Restaurant[] getBestRestaurants(UserAddress location, int limit) {
-        return Database.RestaurantRepo.getBests(location, limit);
+    public Restaurant[] getBestRestaurantsFor(String username, int limit) throws NotExpectedUserRole, NotExistentUser {
+        var user = findClient(username);
+        return Database.RestaurantRepo.getBests(user.getAddress(), limit);
     }
 
     public Restaurant[] getBestRestaurants(int limit) {

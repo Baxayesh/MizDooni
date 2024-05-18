@@ -5,6 +5,7 @@ import ir.ut.ie.contracts.TableModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.utils.UserRole;
 import lombok.SneakyThrows;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -15,17 +16,17 @@ public class TablesController extends MizdooniController {
 
     @PostMapping
     @SneakyThrows(NotExistentUser.class)
+    @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     EntityCreatedResponse CreateTable(@RequestBody Map<String, String> request)
             throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
             NotExistentRestaurant, SeatNumNotPos {
 
-        service.ensureLoggedIn(UserRole.Manager);
 
         var restaurant = getRequiredField(request, "restaurant");
         var seatsNumber = getRequiredIntField(request, "seats");
-        var managerName = service.getLoggedIn().getUsername();
+        var managerName = getCurrentUser().getUsername();
 
-        var id = service.addTable(
+        var id = mizdooni.addTable(
                 restaurant,
                 managerName,
                 seatsNumber
@@ -36,15 +37,15 @@ public class TablesController extends MizdooniController {
     }
 
     @GetMapping(params = {"restaurant"})
+    @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     TableModel[] GetRestaurantTables(@RequestParam(name = "restaurant") String restaurantName)
             throws NotExistentRestaurant, MizdooniNotAuthorizedException {
 
-        service.ensureLoggedIn(UserRole.Manager);
-        var manager = service.getLoggedIn();
+        var manager = getCurrentUser();
 
-        var restaurant = service.findRestaurant(restaurantName);
+        var restaurant = mizdooni.findRestaurant(restaurantName);
 
-        if(!manager.is(restaurant.getManager().getUsername()))
+        if(!restaurant.getManager().is(manager.getUsername()))
             throw new MizdooniNotAuthorizedException();
 
         return restaurant

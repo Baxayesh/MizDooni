@@ -63,7 +63,7 @@ public class ReviewTests {
 
         var restaurant = "not_existent_restaurant";
         var username = "user";
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
 
         assertThrows(
                 NotExistentRestaurant.class,
@@ -83,7 +83,7 @@ public class ReviewTests {
         var restaurant = "restaurant";
         var username = "user";
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
 
         assertThrows(
                 ScoreOutOfRange.class,
@@ -105,7 +105,7 @@ public class ReviewTests {
         var comment  = "comment";
 
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
 
         assertThrows(
                 NotAllowedToAddReview.class,
@@ -127,7 +127,7 @@ public class ReviewTests {
         var comment  = "comment";
 
         stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousCustomer(username);
+        stub.AddAnonymousClient(username);
         var table = stub.AddAnonymousTable(restaurant);
         stub.AddPassedReserve(username, restaurant, table);
 

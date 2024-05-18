@@ -2,7 +2,6 @@ package ir.ut.ie.database;
 
 import ir.ut.ie.exceptions.MizdooniNotFoundException;
 import ir.ut.ie.models.Review;
-import jdk.jshell.spi.ExecutionControl;
 
 public interface IReviewRepository {
 

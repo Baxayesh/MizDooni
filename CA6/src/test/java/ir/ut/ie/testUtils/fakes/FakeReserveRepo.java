@@ -6,13 +6,12 @@ import ir.ut.ie.models.Reserve;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class FakeReserveRepo implements IReserveRepository {
 
 
-    List<Reserve> memory;
+    final List<Reserve> memory;
 
     public FakeReserveRepo(){
         memory = new ArrayList<>();

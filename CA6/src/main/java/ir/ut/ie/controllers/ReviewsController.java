@@ -5,6 +5,7 @@ import ir.ut.ie.contracts.ReviewModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.utils.UserRole;
 import lombok.SneakyThrows;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -16,14 +17,14 @@ public class ReviewsController extends MizdooniController {
 
     @PostMapping
     @SneakyThrows(NotExistentUser.class)
+    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public void PostReview(
             @RequestParam(name="restaurant") String restaurantName,
             @RequestBody Map<String, String> request
     ) throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
             NotExistentRestaurant, NotAllowedToAddReview, ScoreOutOfRange {
 
-        service.ensureLoggedIn(UserRole.Client);
-        var issuer = service.getLoggedIn();
+        var issuer = getCurrentUser();
 
         var foodScore = getRequiredNumberField(request, "foodRate");
         var ambientScore = getRequiredNumberField(request, "ambientRate");
@@ -31,7 +32,7 @@ public class ReviewsController extends MizdooniController {
         var overallScore = getRequiredNumberField(request, "overallRate");
         var comment = request.get("comment");
 
-        service.addReview(
+        mizdooni.addReview(
                 issuer.getUsername(),
                 restaurantName,
                 foodScore,
@@ -43,16 +44,15 @@ public class ReviewsController extends MizdooniController {
     }
 
     @GetMapping(params = {"restaurant"})
+    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public PagedResponse<ReviewModel> GetAllReviews(
             @RequestParam(name="restaurant") String restaurantName,
             @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
             @RequestParam(name="limit", required = false, defaultValue = "5") int limit
-    )
-            throws MizdooniNotAuthorizedException {
+    ){
 
-        service.ensureLoggedIn();
-        var allCount = service.getReviewCount(restaurantName);
-        var reviews = service.getReviews(restaurantName, offset, limit);
+        var allCount = mizdooni.getReviewCount(restaurantName);
+        var reviews = mizdooni.getReviews(restaurantName, offset, limit);
         var reviewModels =
                 Arrays.stream(reviews)
                 .map(ReviewModel::fromDomainObject)
@@ -62,14 +62,13 @@ public class ReviewsController extends MizdooniController {
     }
 
     @GetMapping(params = {"restaurant", "issuer"})
+    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public ReviewModel GetOneReview(
             @RequestParam(name="restaurant") String restaurantName,
             @RequestParam(name="issuer") String issuerUsername)
-            throws MizdooniNotAuthorizedException, MizdooniNotFoundException {
+            throws MizdooniNotFoundException {
 
-        service.ensureLoggedIn();
-
-        var review = service.findReview(restaurantName, issuerUsername);
+        var review = mizdooni.findReview(restaurantName, issuerUsername);
 
         return ReviewModel.fromDomainObject(review);
     }

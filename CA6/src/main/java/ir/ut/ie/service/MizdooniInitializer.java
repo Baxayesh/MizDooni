@@ -6,11 +6,14 @@ import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
 import ir.ut.ie.models.*;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceUnit;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.net.URI;
 import java.time.LocalTime;
@@ -18,35 +21,41 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class MizdooniInitializer {
 
     private static final String DATA_PROVIDER_ADDRESS = "http://91.107.137.117:55";
 
-    @PersistenceUnit
-    private EntityManagerFactory entityManagerFactory;
 
-    private Database database;
-    private Mizdooni mizdooni;
+    private final PlatformTransactionManager transactionManager;
+
+    private final AuthenticationService authenticationService;
+
+    private final Mizdooni mizdooni;
+
+    private final Database database;
 
     @PostConstruct
-    @Transactional
     public void Initiate() {
-        var em = entityManagerFactory.createEntityManager();
-        em.getTransaction().begin();
-        database = Database.createUsing(em);
-        mizdooni = new Mizdooni(database);
-        fetchUsers();
-        var newRestaurants = fetchRestaurants();
-        fetchTables(newRestaurants);
-        fetchReviews();
-        em.getTransaction().commit();
+        var tmpl = new TransactionTemplate(transactionManager);
+        tmpl.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(@NonNull TransactionStatus status) {
+                fetchUsers();
+                var newRestaurants = fetchRestaurants();
+                fetchTables(newRestaurants);
+                fetchReviews();
+            }
+
+        });
     }
+
 
     @SneakyThrows
     void fetchUsers(){
         for(var user : (ExternalServiceUserModel[])FetchValues("users", ExternalServiceUserModel.class)){
             if(!database.UserRepo.exists(user.username))
-                mizdooni.addUser(
+                authenticationService.addUser(
                         user.role,
                         user.username,
                         user.password,
@@ -151,3 +160,4 @@ public class MizdooniInitializer {
     record ExternalServiceTableModel(String managerUsername, String restaurantName, int seatsNumber, int tableNumber){}
     record ExternalServiceReviewModel(String username, String restaurantName, String comment, double ambianceRate, double foodRate, double serviceRate, double overallRate){ }
 }
+

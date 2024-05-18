@@ -10,7 +10,7 @@ import java.util.List;
 public class FakeTableRepo implements ITableRepository {
 
 
-    List<Table> memory;
+    final List<Table> memory;
 
     public FakeTableRepo(){
         memory = new ArrayList<>();

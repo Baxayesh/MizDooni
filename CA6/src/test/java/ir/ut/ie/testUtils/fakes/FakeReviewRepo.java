@@ -11,7 +11,7 @@ import java.util.List;
 public class FakeReviewRepo implements IReviewRepository {
 
 
-    List<Review> reviews;
+    final List<Review> reviews;
 
     public FakeReviewRepo(){
         reviews = new ArrayList<>();

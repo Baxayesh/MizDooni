@@ -1,6 +1,8 @@
 package ir.ut.ie.testUtils;
 
 import ir.ut.ie.database.Database;
+import ir.ut.ie.models.Client;
+import ir.ut.ie.models.Manager;
 import ir.ut.ie.testUtils.fakes.*;
 import lombok.SneakyThrows;
 import ir.ut.ie.models.Reserve;
@@ -17,6 +19,7 @@ public class MizdooniStubHelper {
     private final Mizdooni Service;
 
     private final Database Database;
+
 
     public Mizdooni Mizdooni(){
         return Service;
@@ -67,29 +70,26 @@ public class MizdooniStubHelper {
     }
 
     @SneakyThrows
-    public void AddAnonymousCustomer(String username){
-
-
-        Service.addUser(
-                "client",
-                username,
-                "password",
-                username+ "@anon.com",
-                "country",
-                "city"
+    public void AddAnonymousClient(String username){
+        Database.UserRepo.add(
+                new Client(
+                        username,
+                        "password",
+                        username+ "@anon.com",
+                        "country",
+                        "city")
         );
     }
 
     @SneakyThrows
     public void AddAnonymousManager(String username){
-
-        Service.addUser(
-                "manager",
-                username,
-                "password",
-                username + "@anon.com",
-                "country",
-                "city"
+        Database.UserRepo.add(
+                new Manager(
+                        username,
+                        "password",
+                        username+ "@anon.com",
+                        "country",
+                        "city")
         );
     }
 
