@@ -1,6 +1,5 @@
 package ir.ut.ie.models;
 
-import ir.ut.ie.exceptions.ScoreOutOfRange;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -44,12 +43,6 @@ public class Review implements Serializable {
     @Column(nullable = false)
     private LocalDateTime IssueTime;
 
-    static void EnsureScoreIsInValidRange(double score) throws ScoreOutOfRange {
-        if(score < 0 || score > 5){
-            throw new ScoreOutOfRange();
-        }
-    }
-
     public Review(
             Restaurant restaurant,
             Client user,
@@ -58,11 +51,7 @@ public class Review implements Serializable {
             double ambiance,
             double overall,
             String comment
-    ) throws ScoreOutOfRange {
-        EnsureScoreIsInValidRange(food);
-        EnsureScoreIsInValidRange(service);
-        EnsureScoreIsInValidRange(ambiance);
-        EnsureScoreIsInValidRange(overall);
+    ) {
         Issuer = user;
         Restaurant = restaurant;
         IssueTime = LocalDateTime.now();

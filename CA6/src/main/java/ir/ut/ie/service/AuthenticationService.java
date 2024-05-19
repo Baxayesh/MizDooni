@@ -31,16 +31,14 @@ public class AuthenticationService {
             String email,
             String country,
             String city
-    ) throws UserAlreadyExits, InvalidAddress, InvalidUser {
+    ) throws UserAlreadyExits, EmailAlreadyExits {
 
         var encodedPassword = passwordEncoder.encode(password);
         User user;
-        if(role.equals("client")) {
-            user = new Client(username, encodedPassword, email, country, city);
-        } else if(role.equals("manager")) {
+        if(role.equals("manager")) {
             user = new Manager(username, encodedPassword, email, country, city);
-        }else {
-            throw new InvalidUser();
+        } else {
+            user = new Client(username, encodedPassword, email, country, city);
         }
 
         userRepo.add(user);

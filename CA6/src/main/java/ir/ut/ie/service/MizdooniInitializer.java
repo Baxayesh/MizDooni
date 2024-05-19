@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import ir.ut.ie.database.Database;
 import ir.ut.ie.exceptions.FailedToFetchData;
+import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.models.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -116,7 +117,7 @@ public class MizdooniInitializer {
             if(!database.ReviewRepo.exists(review.restaurantName, review.username)){
                 var reviewModel = new Review(
                         mizdooni.findRestaurant(review.restaurantName),
-                        mizdooni.findClient(review.username),
+                        mizdooni.findClient(review.username).orElseThrow(NotExistentUser::new),
                         review.foodRate,
                         review.serviceRate,
                         review.ambianceRate,

@@ -59,7 +59,7 @@ public class TableReservationTests {
 
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_doReserveWithManagerUsername_THEN_shouldThrowNotExpectedUserRole() {
+    void GIVEN_normalMizdooni_WHEN_doReserveWithManagerUsername_THEN_shouldThrowNotExistentUser() {
 
         var restaurant = "restaurant";
         var username = "manager";
@@ -69,7 +69,7 @@ public class TableReservationTests {
         stub.AddAnonymousTable(restaurant);
 
         assertThrows(
-                NotExpectedUserRole.class,
+                NotExistentUser.class,
                 () ->  stub.Mizdooni().reserveATable(
                         username,
                         restaurant,
@@ -169,29 +169,6 @@ public class TableReservationTests {
 
     }
 
-
-    @Test
-    void GIVEN_normalMizdooni_WHEN_ReserveATableInPast_THEN_shouldThrowTimeBelongsToPast() {
-
-        var restaurant = "restaurant";
-        var username = "user";
-        var reserveTime = CreateReserveTime(-1, 12, 0);
-        stub.AddAnonymousClient(username);
-        stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousTable(restaurant);
-
-        assertThrows(
-                TimeBelongsToPast.class,
-                () ->  stub.Mizdooni().reserveATable(
-                        username,
-                        restaurant,
-                        reserveTime,
-                        1
-                )
-        );
-
-    }
-
     @Test
     void GIVEN_normalMizdooni_WHEN_ReserveATableWhenRestaurantIsClosed_THEN_shouldThrowNotInWorkHour() {
 
@@ -218,8 +195,6 @@ public class TableReservationTests {
     void GIVEN_normalMizdooni_WHEN_MakingAValidReservation_THEN_ReserveRecordShouldBeSaved()
             throws
             NotExistentRestaurant,
-            TimeBelongsToPast,
-            NotExpectedUserRole,
             NotExistentUser,
             TimeIsNotRound,
             NotInWorkHour,

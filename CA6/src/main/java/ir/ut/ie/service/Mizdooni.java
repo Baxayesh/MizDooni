@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Service
 public class Mizdooni {
@@ -41,11 +42,9 @@ public class Mizdooni {
     )
             throws
             NotExistentUser,
-            NotExpectedUserRole,
-            RestaurantAlreadyExists,
-            InvalidAddress
+            RestaurantAlreadyExists
     {
-        var manager = findManager(managerName);
+        var manager = findManager(managerName).orElseThrow(NotExistentUser::new);
 
         var restaurant = new Restaurant(name,openTime, closeTime, manager, type, description, country, city, street, image);
 
@@ -58,14 +57,14 @@ public class Mizdooni {
             String restaurantName,
             String managerName,
             int seatNumber
-    ) throws NotExistentRestaurant, MizdooniNotAuthorizedException, NotExistentUser, SeatNumNotPos {
+    ) throws NotExistentRestaurant {
 
         var restaurant = findRestaurant(restaurantName);
 
         var manager = findManager(managerName);
 
-        if(!manager.is(restaurant.getManager().getUsername())){
-            throw new MizdooniNotAuthorizedException();
+        if(manager.isEmpty() || !manager.get().is(restaurant.getManager().getUsername())){
+            throw new NotExistentRestaurant();
         }
 
         var table = new Table(restaurant, seatNumber);
@@ -78,10 +77,10 @@ public class Mizdooni {
 
     @Transactional
     public int reserveATable(String reserveeUsername, String restaurantName, LocalDateTime reserveTime, int seats)
-            throws NotExistentUser, NotExpectedUserRole, NotExistentRestaurant, TimeBelongsToPast, TimeIsNotRound,
+            throws NotExistentUser, NotExistentRestaurant, TimeIsNotRound,
             NotInWorkHour, NoFreeTable {
 
-        var reservee = findClient(reserveeUsername);
+        var reservee = findClient(reserveeUsername).orElseThrow(NotExistentUser::new);
 
         var restaurant = findRestaurant(restaurantName);
         var reserve = restaurant.MakeReserve(reservee, reserveTime, seats);
@@ -137,12 +136,10 @@ public class Mizdooni {
             throws
             NotExistentUser,
             NotExistentRestaurant,
-            NotExpectedUserRole,
-            ScoreOutOfRange,
             NotAllowedToAddReview
     {
         var restaurant = findRestaurant(restaurantName);
-        var issuer = findClient(issuerUsername);
+        var issuer = findClient(issuerUsername).orElseThrow(NotExistentUser::new);
 
         var review = new Review(restaurant, issuer, foodScore, serviceScore, ambianceScore,
                 overallScore, comment);
@@ -159,22 +156,23 @@ public class Mizdooni {
         }
     }
 
-    public Manager findManager(String username) throws NotExistentUser, NotExpectedUserRole {
-        var user = Database.UserRepo.get(username);
+    public Optional<Manager> findManager(String username) {
+        var user = Database.UserRepo.tryGet(username);
 
-        if(user instanceof Manager manager)
-            return manager;
+        if(user.isPresent() && user.get() instanceof Manager manager)
+            return Optional.of(manager);
 
-        throw new NotExpectedUserRole(UserRole.Manager);
+        return Optional.empty();
+
     }
 
-    public Client findClient(String username) throws NotExistentUser, NotExpectedUserRole {
-        var user = Database.UserRepo.get(username);
+    public Optional<Client> findClient(String username) {
+        var user = Database.UserRepo.tryGet(username);
 
-        if(user instanceof Client client)
-            return client;
+        if(user.isPresent() && user.get() instanceof Client client)
+            return Optional.of(client);
 
-        throw new NotExpectedUserRole(UserRole.Client);
+        return Optional.empty();
     }
 
     public Reserve findReserve(String username, int reserveNumber) throws NotExistentReserve {
@@ -201,8 +199,8 @@ public class Mizdooni {
         return Database.ReserveRepo.get(reservee);
     }
 
-    public Restaurant[] getBestRestaurantsFor(String username, int limit) throws NotExpectedUserRole, NotExistentUser {
-        var user = findClient(username);
+    public Restaurant[] getBestRestaurantsFor(String username, int limit) throws NotExistentUser {
+        var user = findClient(username).orElseThrow(NotExistentUser::new);
         return Database.RestaurantRepo.getBests(user.getAddress(), limit);
     }
 

@@ -2,14 +2,17 @@ package ir.ut.ie.controllers;
 
 import ir.ut.ie.contracts.EntityCreatedResponse;
 import ir.ut.ie.contracts.ReserveModel;
+import ir.ut.ie.contracts.ReserveTableRequest;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Reserve;
 import ir.ut.ie.utils.UserRole;
+import jakarta.validation.Valid;
+import lombok.SneakyThrows;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Stream;
 
 @RestController
@@ -27,36 +30,31 @@ public class ReservesController extends MizdooniController {
                 .toArray(ReserveModel[]::new);
     }
 
-    //time format : 2007-12-31T23:59:59
+
     @PostMapping
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public EntityCreatedResponse ReserveTable(@RequestBody Map<String, String> request)
-            throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidDatetime, NotExistentRestaurant,
-            TimeBelongsToPast, NotExistentUser, NotInWorkHour, NoFreeTable, TimeIsNotRound, NotAValidNumber {
-
+    @SneakyThrows(NotExistentUser.class)
+    public EntityCreatedResponse ReserveTable(@Valid @RequestBody ReserveTableRequest request)
+            throws NotExistentRestaurant, NotInWorkHour, NoFreeTable, TimeIsNotRound {
 
         var reservee = getCurrentUser();
-        var restaurant = getRequiredField(request, "restaurant");
-        var reserveTime = toDatetime(getRequiredField(request, "time"), "time");
-        var seats = getRequiredIntField(request, "seats");
 
         var id = mizdooni.reserveATable(
                 reservee.getUsername(),
-                restaurant,
-                reserveTime,
-                seats
+                request.restaurant(),
+                request.time(),
+                request.seats()
         );
-        return new EntityCreatedResponse(id);
 
+        return new EntityCreatedResponse(id);
     }
 
     @GetMapping(value = "/{id}")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public ReserveModel GetReserveDetails(@PathVariable String id)
-            throws NotAValidNumber, NotExistentReserve {
+    public ReserveModel GetReserveDetails(@PathVariable(name = "id") Integer reserveId)
+            throws NotExistentReserve {
 
         var reservee = getCurrentUser();
-        var reserveId = toInt(id, "id");
 
         var reserve = mizdooni.findReserve(reservee.getUsername(), reserveId);
 
@@ -66,35 +64,31 @@ public class ReservesController extends MizdooniController {
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public void CancelReserve(@PathVariable String id)
-            throws NotAValidNumber, NotExistentReserve,
-            CancelingExpiredReserve, CancelingCanceledReserve {
+    public void CancelReserve(@PathVariable(name = "id") Integer reserveId)
+            throws NotExistentReserve, CancelingExpiredReserve, CancelingCanceledReserve {
 
         var reservee = getCurrentUser();
-        var reserveId = toInt(id, "id");
 
         mizdooni.cancelReserve(reservee.getUsername(), reserveId);
-
 
     }
 
 
-    // date format : 2007-12-31
     @GetMapping(params = {"restaurant"})
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     public ReserveModel[] GetReservesForManager(
             @RequestParam(name = "restaurant") String restaurantName,
             @RequestParam(name = "table", required = false, defaultValue = "") String tableNumber,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             @RequestParam(name = "date" , required = false, defaultValue = "") String dateString)
-            throws MizdooniNotAuthorizedException, NotExistentRestaurant,
-            NotAValidNumber, NotExistentTable, NotAValidDatetime {
+            throws NotExistentRestaurant, NotAValidNumber, NotExistentTable, NotAValidDatetime {
 
         var owner = getCurrentUser();
 
         var restaurant = mizdooni.findRestaurant(restaurantName);
 
         if(!restaurant.getManager().is(owner.getUsername()))
-            throw new MizdooniNotAuthorizedException();
+            throw new NotExistentRestaurant();
 
         Stream<Reserve> reserves;
 

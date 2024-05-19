@@ -1,6 +1,5 @@
 package ir.ut.ie.models;
 
-import ir.ut.ie.exceptions.SeatNumNotPos;
 import ir.ut.ie.exceptions.TableIsReserved;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,11 +39,8 @@ public class Table {
     @OneToMany(mappedBy = "Table")
     private List<Reserve> Reserves;
 
-    public Table(Restaurant restaurant, int numOfSeats) throws SeatNumNotPos {
+    public Table(Restaurant restaurant, int numOfSeats) {
         super();
-
-        if(numOfSeats < 1)
-            throw new SeatNumNotPos();
 
         NumberOfSeats = numOfSeats;
         Restaurant = restaurant;

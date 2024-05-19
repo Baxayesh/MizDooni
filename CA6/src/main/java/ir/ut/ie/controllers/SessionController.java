@@ -1,24 +1,20 @@
 package ir.ut.ie.controllers;
 
+import ir.ut.ie.contracts.LoginRequest;
 import ir.ut.ie.contracts.LoginResponse;
-import ir.ut.ie.exceptions.FieldIsRequired;
 import ir.ut.ie.exceptions.MizdooniNotAuthenticatedException;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/sessions")
 public class SessionController extends MizdooniController {
 
     @PostMapping
-    public LoginResponse Login(@RequestBody Map<String, String> requestBody)
-            throws MizdooniNotAuthenticatedException, FieldIsRequired {
+    public LoginResponse Login(@Valid @RequestBody LoginRequest request)
+            throws MizdooniNotAuthenticatedException {
 
-        var username = getRequiredField(requestBody, "username");
-        var password = getRequiredField(requestBody, "password");
-
-        var token = authenticationService.login(username, password);
+        var token = authenticationService.login(request.username(), request.password());
 
         return new LoginResponse(token.getJwtText());
     }

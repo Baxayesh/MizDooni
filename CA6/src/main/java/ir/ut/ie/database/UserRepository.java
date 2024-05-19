@@ -1,5 +1,6 @@
 package ir.ut.ie.database;
 
+import ir.ut.ie.exceptions.EmailAlreadyExits;
 import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.exceptions.UserAlreadyExits;
 import ir.ut.ie.models.User;
@@ -23,12 +24,12 @@ public class UserRepository implements IUserRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserRepository(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
     @Override
-    public void add(User user) throws UserAlreadyExits {
+    public void add(User user) throws UserAlreadyExits, EmailAlreadyExits {
+
+        if(emailExists(user.getEmail()))
+            throw new EmailAlreadyExits();
+
         if(exists(user.getUsername()))
             throw new UserAlreadyExits();
 
@@ -39,6 +40,17 @@ public class UserRepository implements IUserRepository {
     @Override
     public User get(String username) throws NotExistentUser {
         return tryGet(username).orElseThrow(NotExistentUser::new);
+    }
+
+    @Override
+    public boolean emailExists(String email) {
+
+        var query = entityManager.createQuery("select count(u) from User u where " +
+                "u.Email = :email_pr", Long.class);
+
+        query.setParameter("email_pr", email);
+
+        return query.getSingleResult() > 0;
     }
 
     @Override

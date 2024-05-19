@@ -1,6 +1,5 @@
 package ir.ut.ie.models;
 
-import ir.ut.ie.exceptions.InvalidAddress;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -27,25 +26,11 @@ public class RestaurantAddress implements Serializable {
     @Column(nullable = false)
     String Street;
 
-    public RestaurantAddress(Restaurant restaurant, String country, String city, String street) throws InvalidAddress {
+    public RestaurantAddress(Restaurant restaurant, String country, String city, String street) {
         this.Country = country;
         this.City = city;
         this.Street = street;
         Restaurant = restaurant;
-        Validate();
-    }
-
-    void Validate() throws InvalidAddress {
-        if (
-                Country == null ||
-                Country.isEmpty() ||
-                City == null ||
-                City.isEmpty() ||
-                Street == null ||
-                Street.isEmpty()
-        ) {
-            throw new InvalidAddress();
-        }
     }
 
     @Override

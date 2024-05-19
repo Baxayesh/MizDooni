@@ -1,7 +1,5 @@
 package ir.ut.ie.models;
 
-import ir.ut.ie.exceptions.InvalidAddress;
-import ir.ut.ie.exceptions.InvalidUser;
 import ir.ut.ie.utils.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -13,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 @Getter
 @Setter
@@ -41,24 +38,11 @@ public abstract class User implements Serializable, UserDetails {
         return this.Username.equals(username);
     }
 
-    public User(String username, String encodedPassword, String email, String country, String city) throws InvalidAddress, InvalidUser {
+    public User(String username, String encodedPassword, String email, String country, String city)  {
         Username = username;
         EncodedPassword = encodedPassword;
         Email = email;
         Address = new UserAddress(this, country, city);
-        ValidateUser();
-    }
-
-    void ValidateUser()
-            throws InvalidUser {
-
-        if (Username.contains(" ") || Username.contains(";") || !Pattern.matches("^[a-zA-Z0-9_]*$", Username)){
-            throw new InvalidUser();
-        }
-        if (!Pattern.matches("^[A-Za-z0-9+_.-]+@(.+)$", Email)){
-            throw new InvalidUser();
-        }
-
     }
 
     public abstract UserRole getRole();

@@ -6,3 +6,4 @@ public class UserAlreadyExits extends MizdooniUserException {
     super(USER_ALREADY_EXISTS);
 }
 }
+

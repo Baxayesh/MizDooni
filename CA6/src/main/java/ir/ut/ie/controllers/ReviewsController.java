@@ -1,45 +1,41 @@
 package ir.ut.ie.controllers;
 
 import ir.ut.ie.contracts.PagedResponse;
+import ir.ut.ie.contracts.PostReviewRequest;
 import ir.ut.ie.contracts.ReviewModel;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.utils.UserRole;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/reviews")
 public class ReviewsController extends MizdooniController {
+
 
     @PostMapping
     @SneakyThrows(NotExistentUser.class)
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public void PostReview(
             @RequestParam(name="restaurant") String restaurantName,
-            @RequestBody Map<String, String> request
-    ) throws MizdooniNotAuthorizedException, FieldIsRequired, NotAValidNumber,
-            NotExistentRestaurant, NotAllowedToAddReview, ScoreOutOfRange {
+            @Valid @RequestBody PostReviewRequest request
+    ) throws NotExistentRestaurant, NotAllowedToAddReview {
 
         var issuer = getCurrentUser();
-
-        var foodScore = getRequiredNumberField(request, "foodRate");
-        var ambientScore = getRequiredNumberField(request, "ambientRate");
-        var serviceScore = getRequiredNumberField(request, "serviceRate");
-        var overallScore = getRequiredNumberField(request, "overallRate");
-        var comment = request.get("comment");
 
         mizdooni.addReview(
                 issuer.getUsername(),
                 restaurantName,
-                foodScore,
-                serviceScore,
-                ambientScore,
-                overallScore,
-                comment
+                request.foodRate(),
+                request.serviceRate(),
+                request.ambientRate(),
+                request.overallRate(),
+                request.comment()
         );
     }
 
@@ -47,8 +43,8 @@ public class ReviewsController extends MizdooniController {
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public PagedResponse<ReviewModel> GetAllReviews(
             @RequestParam(name="restaurant") String restaurantName,
-            @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
-            @RequestParam(name="limit", required = false, defaultValue = "5") int limit
+            @Positive @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
+            @Positive @Max(100) @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ){
 
         var allCount = mizdooni.getReviewCount(restaurantName);
@@ -65,8 +61,8 @@ public class ReviewsController extends MizdooniController {
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public ReviewModel GetOneReview(
             @RequestParam(name="restaurant") String restaurantName,
-            @RequestParam(name="issuer") String issuerUsername)
-            throws MizdooniNotFoundException {
+            @RequestParam(name="issuer") String issuerUsername
+    ) throws MizdooniNotFoundException {
 
         var review = mizdooni.findReview(restaurantName, issuerUsername);
 

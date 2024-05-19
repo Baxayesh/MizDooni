@@ -1,6 +1,5 @@
 package ir.ut.ie.models;
 
-import ir.ut.ie.exceptions.InvalidAddress;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -25,12 +24,9 @@ public class UserAddress implements Serializable {
     @Column(nullable = false)
     private String City;
 
-    public UserAddress(User user, String country, String city) throws InvalidAddress {
+    public UserAddress(User user, String country, String city) {
         Country = country;
         City = city;
         User = user;
-
-        if(country.isEmpty() || city.isEmpty())
-            throw new InvalidAddress();
     }
 }

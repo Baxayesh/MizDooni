@@ -62,7 +62,7 @@ public class Restaurant implements Serializable {
             String city,
             String street,
             String imageUri
-    ) throws InvalidAddress {
+    ) {
         Name = name;
         OpenTime = openTime;
         CloseTime = closeTime;
@@ -83,9 +83,9 @@ public class Restaurant implements Serializable {
         }
     }
 
-    void EnsureTimeBelongsToFuture(LocalDateTime time) throws TimeBelongsToPast {
+    void EnsureTimeBelongsToFuture(LocalDateTime time) throws NotInWorkHour {
         if(time.isBefore(LocalDateTime.now())){
-            throw new TimeBelongsToPast();
+            throw new NotInWorkHour();
         }
     }
 
@@ -95,7 +95,7 @@ public class Restaurant implements Serializable {
     }
 
     public void ValidateReserveTime(LocalDateTime reserveTime)
-            throws TimeIsNotRound, TimeBelongsToPast, NotInWorkHour {
+            throws TimeIsNotRound, NotInWorkHour {
 
         EnsureTimeIsRound(reserveTime.toLocalTime());
         EnsureTimeBelongsToFuture(reserveTime);
@@ -111,7 +111,7 @@ public class Restaurant implements Serializable {
     }
 
     public Reserve MakeReserve(Client reservee, LocalDateTime reserveTime, int seats) throws
-            NoFreeTable, TimeBelongsToPast, TimeIsNotRound, NotInWorkHour {
+            NoFreeTable, TimeIsNotRound, NotInWorkHour {
 
         ValidateReserveTime(reserveTime);
 
