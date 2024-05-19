@@ -38,7 +38,6 @@ public class GlobalExceptionHandler {
             MizdooniException.class,
             ExecutionControl.NotImplementedException.class,
             MethodArgumentNotValidException.class,
-            Exception.class
     })
     public ResponseEntity<Error> handleError(HttpServletRequest req, Exception ex) {
 

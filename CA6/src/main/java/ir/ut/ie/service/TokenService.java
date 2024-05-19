@@ -1,13 +1,13 @@
 package ir.ut.ie.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import ir.ut.ie.database.UserRepository;
 import ir.ut.ie.utils.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -19,7 +19,8 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class TokenService {
 
-    static Key _SignKey;
+    @Value("${application.security.jwt.sign-key}")
+    private String SignKey;
 
     @Value("${application.security.jwt.expiration-duration}")
     private long TokenExpirationDuration;
@@ -34,25 +35,30 @@ public class TokenService {
 
         jwtText = jwtText.substring(7);
 
-        var username = extractUsername(jwtText);
-        var owner = UserRepo.tryGet(username);
+        try{
+            var username = extractClaim(jwtText, Claims::getSubject);
+            var owner = UserRepo.tryGet(username);
 
-        if(owner.isEmpty())
+            if(owner.isEmpty())
+                return Optional.empty();
+
+            var token = new Token(
+                    owner.get(),
+                    extractClaim(jwtText, Claims::getIssuedAt),
+                    extractClaim(jwtText, Claims::getExpiration),
+                    jwtText
+            );
+
+            if(token.isValid()){
+                return Optional.of(token);
+            }
+
+
+        }catch (JwtException ex){
             return Optional.empty();
-
-        var token = new Token(
-            owner.get(),
-            extractClaim(jwtText, Claims::getIssuedAt),
-            extractExpiration(jwtText),
-            jwtText
-        );
-
-        if(token.isValid()){
-            return Optional.of(token);
         }
 
         return Optional.empty();
-
     }
 
     public Token createToken(UserDetails user){
@@ -71,14 +77,8 @@ public class TokenService {
     }
 
 
-    private String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws JwtException  {
 
-    <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         var claims = Jwts
                 .parserBuilder()
                 .setSigningKey(getSignKey())
@@ -89,9 +89,6 @@ public class TokenService {
     }
 
     private Key getSignKey() {
-        if(_SignKey == null){
-            _SignKey = io.jsonwebtoken.security.Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        }
-        return _SignKey;
+        return Keys.hmacShaKeyFor(Hex.decode(SignKey));
     }
 }
