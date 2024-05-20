@@ -1,8 +1,11 @@
 package ir.ut.ie.contracts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ir.ut.ie.exceptions.MizdooniException;
 import ir.ut.ie.exceptions.MizdooniInternalException;
 import lombok.Getter;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +41,8 @@ public class Error {
 
     }
 
-
-
+    @JsonIgnore
+    public ResponseEntity<Error> getResponse() {
+        return new ResponseEntity<>(this, HttpStatusCode.valueOf(getStatusCode()));
+    }
 }

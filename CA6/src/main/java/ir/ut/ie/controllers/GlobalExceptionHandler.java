@@ -6,6 +6,7 @@ import ir.ut.ie.exceptions.MizdooniNotAuthenticatedException;
 import ir.ut.ie.exceptions.MizdooniNotFoundException;
 import ir.ut.ie.exceptions.MizdooniUserException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,14 +17,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MizdooniException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public Error handleUserError(MizdooniException ex){
-        return new Error(ex);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Error> handleUserError(MizdooniException ex){
+        return new Error(ex).getResponse();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public Error handleValidationError(MethodArgumentNotValidException ex){
+    public ResponseEntity<Error> handleValidationError(MethodArgumentNotValidException ex){
         var error = new Error(
                 "Some request fields are invalid (see details)",
                 HttpStatus.BAD_REQUEST.value(),
@@ -36,6 +36,6 @@ public class GlobalExceptionHandler {
             error.getDetails().put(fieldName, errorMessage);
         });
 
-        return error;
+        return error.getResponse();
     }
 }

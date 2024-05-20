@@ -17,7 +17,8 @@ import { defineConfig } from 'orval';
         workspace: 'src/',
         client: 'axios',
         mode: 'split',
-        mock: false
+        mock: false,
+        baseUrl: 'https://localhost:500'
     }
 
    },

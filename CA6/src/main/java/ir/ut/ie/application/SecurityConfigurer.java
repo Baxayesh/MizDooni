@@ -40,8 +40,8 @@ public class SecurityConfigurer {
     private static final String[] ALLOWED_ORIGINS = {
             "http://localhost:3001",
             "http://localhost:3000",
-            "http://localhost:8080",
-            "https://localhost:443"
+            "http://localhost:5173",
+            "https://localhost:500"
     };
 
 

@@ -41,7 +41,7 @@ const signup = <TData = AxiosResponse<LoginResponse>>(
     signupRequest: SignupRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/users`,
+      `https://localhost:500/users`,
       signupRequest,options
     );
   }
@@ -50,7 +50,7 @@ const getRestaurantTables = <TData = AxiosResponse<TableModel[]>>(
     params: GetRestaurantTablesParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/tables`,{
+      `https://localhost:500/tables`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -60,7 +60,7 @@ const createTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     createTableRequest: CreateTableRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/tables`,
+      `https://localhost:500/tables`,
       createTableRequest,options
     );
   }
@@ -69,7 +69,7 @@ const login = <TData = AxiosResponse<LoginResponse>>(
     loginRequest: LoginRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/sessions`,
+      `https://localhost:500/sessions`,
       loginRequest,options
     );
   }
@@ -78,7 +78,7 @@ const manageGoogleOauth2Callback = <TData = AxiosResponse<LoginResponse>>(
     manageGoogleOauth2CallbackBody: string, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/sessions/oauth2`,
+      `https://localhost:500/sessions/oauth2`,
       manageGoogleOauth2CallbackBody,options
     );
   }
@@ -87,7 +87,7 @@ const getAllReviews = <TData = AxiosResponse<PagedResponseReviewModel>>(
     params: GetAllReviewsParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/reviews`,{
+      `https://localhost:500/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -98,7 +98,7 @@ const postReview = <TData = AxiosResponse<void>>(
     params: PostReviewParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/reviews`,
+      `https://localhost:500/reviews`,
       postReviewRequest,{
     ...options,
         params: {...params, ...options?.params},}
@@ -109,7 +109,7 @@ const getManagerRestaurants = <TData = AxiosResponse<RestaurantModel[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/restaurants`,options
+      `https://localhost:500/restaurants`,options
     );
   }
 
@@ -117,7 +117,7 @@ const addRestaurant = <TData = AxiosResponse<void>>(
     addRestaurantRequest: AddRestaurantRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/restaurants`,
+      `https://localhost:500/restaurants`,
       addRestaurantRequest,options
     );
   }
@@ -126,7 +126,7 @@ const getCurrentUserReserves = <TData = AxiosResponse<ReserveModel[]>>(
     params?: GetCurrentUserReservesParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/reserves`,{
+      `https://localhost:500/reserves`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -136,7 +136,7 @@ const reserveTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     reserveTableRequest: ReserveTableRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `/reserves`,
+      `https://localhost:500/reserves`,
       reserveTableRequest,options
     );
   }
@@ -145,7 +145,7 @@ const searchByType = <TData = AxiosResponse<PagedResponseRestaurantModel>>(
     params?: SearchByTypeParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/search`,{
+      `https://localhost:500/search`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -155,7 +155,7 @@ const getRestaurant = <TData = AxiosResponse<RestaurantModel>>(
     name: string, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/restaurants/${name}`,options
+      `https://localhost:500/restaurants/${name}`,options
     );
   }
 
@@ -164,7 +164,7 @@ const getAvailableReserveSlots = <TData = AxiosResponse<LocalTime[]>>(
     params: GetAvailableReserveSlotsParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/restaurants/${name}/availableTimeSlots`,{
+      `https://localhost:500/restaurants/${name}/availableTimeSlots`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -174,7 +174,7 @@ const getReserveDetails = <TData = AxiosResponse<ReserveModel>>(
     id: number, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/reserves/${id}`,options
+      `https://localhost:500/reserves/${id}`,options
     );
   }
 
@@ -182,7 +182,7 @@ const cancelReserve = <TData = AxiosResponse<void>>(
     id: number, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.delete(
-      `/reserves/${id}`,options
+      `https://localhost:500/reserves/${id}`,options
     );
   }
 
@@ -190,7 +190,7 @@ const recommend = <TData = AxiosResponse<RestaurantModel[]>>(
     params?: RecommendParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/recommend`,{
+      `https://localhost:500/recommend`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -200,7 +200,7 @@ const getLocations = <TData = AxiosResponse<LocationModel[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/locations`,options
+      `https://localhost:500/locations`,options
     );
   }
 
@@ -208,7 +208,7 @@ const getFoodTypes = <TData = AxiosResponse<string[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `/foodTypes`,options
+      `https://localhost:500/foodTypes`,options
     );
   }
 
