@@ -1,8 +1,10 @@
 import Logo from "../image/logo.png";
+import { useContext } from "react";
+import NavContext from "../context/nav";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-
+  const ctxt = useContext(NavContext);
   const navigate = useNavigate();
   const styles = {
     logoContainer: {
