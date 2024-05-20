@@ -19,10 +19,10 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class TokenService {
 
-    @Value("${application.security.jwt.sign-key}")
+    @Value("${spring.security.jwt.sign-key}")
     private String SignKey;
 
-    @Value("${application.security.jwt.expiration-duration}")
+    @Value("${spring.security.jwt.expiration-duration}")
     private long TokenExpirationDuration;
 
     private final UserRepository UserRepo;
@@ -92,3 +92,4 @@ public class TokenService {
         return Keys.hmacShaKeyFor(Hex.decode(SignKey));
     }
 }
+

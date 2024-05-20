@@ -30,6 +30,7 @@ public class SecurityConfigurer {
             "/sessions",
             "/users",
             "/error",
+            "/sessions/oauth",
             "/v3/api-docs",
             "/v3/api-docs/**",
             "/swagger-ui/**",

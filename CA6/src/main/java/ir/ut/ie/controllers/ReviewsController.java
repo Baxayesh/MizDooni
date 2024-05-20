@@ -57,15 +57,4 @@ public class ReviewsController extends MizdooniController {
         return new PagedResponse<>(allCount, offset, limit, reviewModels);
     }
 
-    @GetMapping(params = {"restaurant", "issuer"})
-    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public ReviewModel GetOneReview(
-            @RequestParam(name="restaurant") String restaurantName,
-            @RequestParam(name="issuer") String issuerUsername
-    ) throws MizdooniNotFoundException {
-
-        var review = mizdooni.findReview(restaurantName, issuerUsername);
-
-        return ReviewModel.fromDomainObject(review);
-    }
 }

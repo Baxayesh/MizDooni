@@ -1,5 +1,8 @@
 package ir.ut.ie.contracts;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
@@ -15,9 +18,10 @@ public record AddRestaurantRequest (
         String type,
 
         @DateTimeFormat(pattern = "HH:mm")
+        @JsonDeserialize(using = LocalTimeDeserializer.class)
         LocalTime openTime,
-
         @DateTimeFormat(pattern = "HH:mm")
+        @JsonDeserialize(using = LocalTimeDeserializer.class)
         LocalTime closeTime,
         String description,
         @Size(min = 2, max = 128)

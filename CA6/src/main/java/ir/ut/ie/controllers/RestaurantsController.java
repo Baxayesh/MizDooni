@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -15,13 +16,12 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 @RestController
-@RequestMapping("/restaurants")
 public class RestaurantsController extends MizdooniController {
 
     static final int RECOMMENDED_RESTAURANTS_COUNT = 6;
 
     @SneakyThrows(NotExistentUser.class)
-    @PostMapping
+    @PostMapping("/restaurants")
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     public void AddRestaurant(@Valid @RequestBody AddRestaurantRequest request) throws RestaurantAlreadyExists {
 
@@ -41,7 +41,7 @@ public class RestaurantsController extends MizdooniController {
         );
     }
 
-    @GetMapping
+    @GetMapping("/restaurants")
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     public RestaurantModel[] GetManagerRestaurants() {
 
@@ -65,63 +65,50 @@ public class RestaurantsController extends MizdooniController {
         );
     }
 
-    @GetMapping(params = {"name"})
-    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public PagedResponse<RestaurantModel> SearchByName(
-            @Size(min = 2) @RequestParam(name="name") String name,
-            @Positive @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
-            @Positive @Max(100) @RequestParam(name="limit", required = false, defaultValue = "5") int limit
-    ) {
-        return pageResults(mizdooni.searchRestaurantByName(name, offset, limit), offset, limit);
-    }
 
-    @GetMapping(params = {"type"})
+    @GetMapping("/search")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public PagedResponse<RestaurantModel> SearchByType(
-            @RequestParam(name="type") String type,
+            @RequestParam(name="name", required = false) String name,
+            @RequestParam(name="location", required = false) String location,
+            @RequestParam(name="type", required = false) String type,
             @Positive @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
             @Positive @Max(100) @RequestParam(name="limit", required = false, defaultValue = "5") int limit
     ) {
-        return pageResults(mizdooni.searchRestaurantByType(type, offset, limit), offset, limit);
+        var results = new Restaurant[0];
+
+        if(!name.isBlank()){
+            results = mizdooni.searchRestaurantByName(name, offset, limit);
+        }else if(!location.isBlank()){
+            results = mizdooni.searchRestaurantByLocation(location, offset, limit);
+        }else if (!type.isBlank()){
+            results = mizdooni.searchRestaurantByType(type, offset, limit);
+        }
+
+        return pageResults(results, offset, limit);
     }
 
-    @GetMapping(params = {"location"})
-    @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
-    public PagedResponse<RestaurantModel> SearchByLocation(
-            @RequestParam(name="location") String location,
-            @Positive @RequestParam(name="offset", required = false, defaultValue = "0") int offset,
-            @Positive @Max(100) @RequestParam(name="limit", required = false, defaultValue = "5") int limit
-    ) {
-        return pageResults(mizdooni.searchRestaurantByLocation(location, offset, limit), offset, limit);
-    }
-
-    Restaurant[] FetchRecommendations(String recommendingMethod) {
-        return switch (recommendingMethod) {
-            case "userLocation" -> {
-                var user = getCurrentUser();
-                try {
-                    yield mizdooni.getBestRestaurantsFor(user.getUsername(), RECOMMENDED_RESTAURANTS_COUNT);
-                } catch (NotExistentUser e) {
-                    yield mizdooni.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
-                }
-            }
-            case "rating" -> mizdooni.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
-            default -> new Restaurant[0];
-        };
-    }
-
-
-    @GetMapping(params = {"recommendBy"})
+    @SneakyThrows(NotExistentUser.class)
+    @GetMapping("/recommend")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public RestaurantModel[] Recommend(
-        @Pattern(regexp = "(userLocation|rating)") @RequestParam(name="recommendBy") String recommendingMethod
+        @RequestParam(name="recommendBy", required = false, defaultValue = "false") Boolean inUserLocation
     ) {
 
-        var restaurants = FetchRecommendations(recommendingMethod);
+        Restaurant[] restaurants;
+
+        if(inUserLocation){
+            var user = getCurrentUser();
+            restaurants = mizdooni.getBestRestaurantsFor(user.getUsername(), RECOMMENDED_RESTAURANTS_COUNT);
+
+        }else{
+            restaurants = mizdooni.getBestRestaurants(RECOMMENDED_RESTAURANTS_COUNT);
+        }
+
         return Arrays.stream(restaurants).map(RestaurantModel::fromDomainObject).toArray(RestaurantModel[]::new);
     }
 
-    @GetMapping(path = "/{name}")
+    @GetMapping(path = "/restaurants/{name}")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public RestaurantModel GetRestaurant(
             @PathVariable(name = "name") String restaurantName
@@ -130,7 +117,7 @@ public class RestaurantsController extends MizdooniController {
         return RestaurantModel.fromDomainObject(mizdooni.findRestaurant(restaurantName));
     }
 
-    @GetMapping(path = "/{name}/availableTimeSlots", params={"onDate", "requestedSeats"})
+    @GetMapping(path = "/restaurants/{name}/availableTimeSlots", params={"onDate", "requestedSeats"})
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public LocalTime[] GetAvailableReserveSlots(
             @PathVariable(name = "name") String restaurantName,

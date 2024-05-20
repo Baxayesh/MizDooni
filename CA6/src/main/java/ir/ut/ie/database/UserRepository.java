@@ -4,11 +4,13 @@ import ir.ut.ie.exceptions.EmailAlreadyExits;
 import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.exceptions.UserAlreadyExits;
 import ir.ut.ie.models.User;
+import ir.ut.ie.utils.OAuthUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
@@ -53,6 +55,15 @@ public class UserRepository implements IUserRepository {
         return query.getSingleResult() > 0;
     }
 
+    public User getByEmail(String email){
+        var query = entityManager.createQuery("from User u where " +
+                "u.Email = :email_pr", User.class);
+
+        query.setParameter("email_pr", email);
+
+        return query.getSingleResult();
+    }
+
     @Override
     public boolean exists(String username) {
         var obj = entityManager.find(User.class, username);
@@ -63,6 +74,20 @@ public class UserRepository implements IUserRepository {
     public Optional<User> tryGet(String username) {
         var user = entityManager.find(User.class, username);
         return Optional.ofNullable(user);
+    }
+
+    @Override
+    public User update(OAuthUser userData) {
+        var user = getByEmail(userData.Email());
+
+        if(user.is(userData.Username()))
+            return user;
+
+        entityManager.remove(user);
+        user.setUsername(userData.Username());
+        entityManager.persist(user);
+        entityManager.persist(user.getAddress());
+        return user;
     }
 
     @Override

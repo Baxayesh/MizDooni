@@ -36,7 +36,7 @@ public class MizdooniInitializer {
 
     private final Database database;
 
-    @PostConstruct
+    //@PostConstruct
     public void Initiate() {
         var tmpl = new TransactionTemplate(transactionManager);
         tmpl.execute(new TransactionCallbackWithoutResult() {

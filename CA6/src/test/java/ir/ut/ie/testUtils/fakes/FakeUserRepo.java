@@ -1,9 +1,11 @@
 package ir.ut.ie.testUtils.fakes;
 
 import ir.ut.ie.database.IUserRepository;
+import ir.ut.ie.exceptions.EmailAlreadyExits;
 import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.exceptions.UserAlreadyExits;
 import ir.ut.ie.models.User;
+import ir.ut.ie.utils.OAuthUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -34,6 +36,11 @@ public class FakeUserRepo implements IUserRepository {
         return memory.get(username);
     }
 
+    @Override
+    public boolean emailExists(String email) {
+        return false;
+    }
+
     public boolean exists(String username){
         return memory.containsKey(username);
     }
@@ -45,6 +52,11 @@ public class FakeUserRepo implements IUserRepository {
             return Optional.empty();
 
         return Optional.of(memory.get(username));
+    }
+
+    @Override
+    public User update(OAuthUser userData) throws EmailAlreadyExits, UserAlreadyExits {
+        return null;
     }
 
     @Override

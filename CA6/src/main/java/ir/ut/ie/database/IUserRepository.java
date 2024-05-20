@@ -4,6 +4,7 @@ import ir.ut.ie.exceptions.EmailAlreadyExits;
 import ir.ut.ie.exceptions.NotExistentUser;
 import ir.ut.ie.exceptions.UserAlreadyExits;
 import ir.ut.ie.models.User;
+import ir.ut.ie.utils.OAuthUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
@@ -17,5 +18,7 @@ public interface IUserRepository extends UserDetailsService {
 
     boolean exists(String username);
     Optional<User> tryGet(String username);
+
+    User update(OAuthUser userData) throws EmailAlreadyExits, UserAlreadyExits;
 }
 

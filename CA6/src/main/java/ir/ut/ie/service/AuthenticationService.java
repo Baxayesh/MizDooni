@@ -5,10 +5,12 @@ import ir.ut.ie.database.IUserRepository;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Client;
 import ir.ut.ie.models.Manager;
+import ir.ut.ie.utils.OAuthUser;
 import ir.ut.ie.utils.Token;
 import ir.ut.ie.models.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
+    private final OAuthService oAuthService;
 
     @Transactional
     public void addUser(
@@ -48,6 +51,11 @@ public class AuthenticationService {
     public Token login(String username, String password) throws MizdooniNotAuthenticatedException {
 
         try{
+            var user = userRepo.get(username);
+
+            if(user.getEncodedPassword() == null)
+                throw new MizdooniNotAuthenticatedException();
+
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             username,
@@ -55,7 +63,6 @@ public class AuthenticationService {
                     )
             );
 
-            var user = userRepo.get(username);
             return tokenService.createToken(user);
 
         } catch (NotExistentUser | org.springframework.security.core.AuthenticationException ex){
@@ -64,5 +71,23 @@ public class AuthenticationService {
 
     }
 
+    @Transactional
+    public Token LoginByOAuth(String userCode) throws MizdooniNotAuthenticatedException {
+        var userData = oAuthService.FetchUserDetails(userCode);
+        var user = upsertUser(userData);
+        return tokenService.createToken(user);
+    }
+
+
+    @SneakyThrows({UserAlreadyExits.class, EmailAlreadyExits.class})
+    public User upsertUser(OAuthUser userData){
+        if(userRepo.emailExists(userData.Email())){
+            return userRepo.update(userData);
+        }
+
+        var user = new Client(userData.Username(), null, userData.Email(), "Iran", "Tehran");
+        userRepo.add(user);
+        return user;
+    }
 
 }

@@ -147,7 +147,7 @@ public class MizdooniStubHelper {
         Database.ReserveRepo.add(
                 new Reserve(
                         Database.TableRepo.get(restaurant, table),
-                        Service.findClient(reservee),
+                        Service.findClient(reservee).orElseThrow(),
                         LocalDateTime.now().minusDays(1)
                 )
         );

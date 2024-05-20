@@ -73,11 +73,10 @@ public class ReservesController extends MizdooniController {
 
     }
 
-
     @GetMapping(params = {"restaurant"})
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
     public ReserveModel[] GetReservesForManager(
-            @RequestParam(name = "restaurant") String restaurantName,
+            @RequestParam(name = "restaurant", required = false, defaultValue = "") String restaurantName,
             @RequestParam(name = "table", required = false, defaultValue = "") String tableNumber,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             @RequestParam(name = "date" , required = false, defaultValue = "") String dateString)

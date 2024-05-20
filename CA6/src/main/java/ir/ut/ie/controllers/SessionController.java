@@ -19,4 +19,14 @@ public class SessionController extends MizdooniController {
         return new LoginResponse(token.getJwtText());
     }
 
+    @PostMapping("/oauth2")
+    public LoginResponse ManageGoogleOauth2Callback(@RequestBody String userCode)
+            throws MizdooniNotAuthenticatedException {
+
+        var token = authenticationService.LoginByOAuth(userCode);
+
+        return new LoginResponse(token.getJwtText());
+
+    }
+
 }

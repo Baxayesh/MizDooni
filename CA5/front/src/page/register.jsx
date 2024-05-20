@@ -27,7 +27,6 @@ const Register = () => {
         });
     }
 
-
     return (
         <div className='container mt-5'>
             <div className="reg-in-reg float-start text-center col-5 mt-5 ms-5">Register</div>

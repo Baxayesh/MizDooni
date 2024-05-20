@@ -40,7 +40,7 @@ public class ReviewTests {
     }
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewWithManagerUsername_THEN_shouldThrowNotExpectedUserRole() {
+    void GIVEN_normalMizdooni_WHEN_addReviewWithManagerUsername_THEN_shouldThrowNotExistentUser() {
 
         var restaurant = "restaurant";
         var username = "manager";
@@ -48,7 +48,7 @@ public class ReviewTests {
         stub.AddAnonymousManager(username);
 
         assertThrows(
-                NotExpectedUserRole.class,
+                NotExistentUser.class,
                 () ->  stub.Mizdooni().addReview(
                         username,
                         restaurant,
@@ -78,26 +78,6 @@ public class ReviewTests {
 
 
     @Test
-    void GIVEN_normalMizdooni_WHEN_addReviewWithOutOfRangeScores_THEN_shouldThrowScoreOutOfRange() {
-
-        var restaurant = "restaurant";
-        var username = "user";
-        stub.AddAnonymousRestaurant(restaurant);
-        stub.AddAnonymousClient(username);
-
-        assertThrows(
-                ScoreOutOfRange.class,
-                () ->  stub.Mizdooni().addReview(
-                        username,
-                        restaurant,
-                        -1,6,-1,6,""
-                )
-        );
-
-    }
-
-
-    @Test
     void GIVEN_userDoesNotHaveAnyPreviousPassedReserve_WHEN_addAValidReview_THEN_CannotAddReviewShouldBeThrown() {
 
         var restaurant = "restaurant";
@@ -120,7 +100,7 @@ public class ReviewTests {
 
     @Test
     void GIVEN_userHaveAPreviousPassedReserve_WHEN_addAValidReview_THEN_ReviewShouldBeAdded()
-            throws NotExistentRestaurant, NotExpectedUserRole, NotExistentUser, ScoreOutOfRange, NotAllowedToAddReview {
+            throws NotExistentRestaurant, NotExistentUser, NotAllowedToAddReview {
 
         var restaurant = "restaurant";
         var username = "user";
