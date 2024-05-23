@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import TextInput from "./TextInput";
 import { getMizdooni } from "../mizdooni";
-import { handleError, saveToken } from "../utils";
+import { handleError } from "../utils";
+import { TokenModel } from "../contracts";
 
-function RegisterForm() {
+interface RegisterFormProps{
+  login: (token: TokenModel) => void
+}
+
+function RegisterForm({login}: RegisterFormProps) : ReactNode{
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +28,7 @@ function RegisterForm() {
         role: isClient ? "client" : "manager",
       })
       .then((response) => {
-        saveToken(response.data.token || "");
+        login(response.data)
       }, handleError);
   }
 
@@ -60,6 +66,7 @@ function RegisterForm() {
         onValueChanged={setCity}
         label="City : "
       />
+      
       <div className="d-flex justify-content-around">
         <div className="mt-2 d-flex">I am a new </div>
         <div className="mb-3 d-flex">
@@ -92,7 +99,7 @@ function RegisterForm() {
 
       <button
         className="btn btn-danger col-12 d-flex justify-content-center"
-        onClick={submit}
+        onClick={(e)=> {submit()}}
       >
         Register
       </button>

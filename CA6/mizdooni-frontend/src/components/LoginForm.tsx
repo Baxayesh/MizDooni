@@ -1,12 +1,15 @@
 import { useState } from "react";
 import TextInput from "./TextInput";
 import { getMizdooni } from "../mizdooni";
-import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import type { Error } from '../contracts/error'
-import { handleError, saveToken } from "../utils";
+import { handleError } from "../utils";
+import { TokenModel } from "../contracts";
 
-function LoginForm() {
+interface LoginFormProps{
+  login: (token: TokenModel) => void
+}
+
+function LoginForm({login}: LoginFormProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +21,7 @@ function LoginForm() {
       })
       .then(
         (response) => {
-          saveToken(response.data.token || "");
+          login(response.data);
         },
         handleError
       );

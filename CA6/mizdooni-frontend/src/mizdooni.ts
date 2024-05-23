@@ -17,10 +17,10 @@ import type {
   GetAvailableReserveSlotsParams,
   GetCurrentUserReservesParams,
   GetRestaurantTablesParams,
+  GoogleOauth2CallbackParams,
   LocalTime,
   LocationModel,
   LoginRequest,
-  LoginResponse,
   PagedResponseRestaurantModel,
   PagedResponseReviewModel,
   PostReviewParams,
@@ -31,13 +31,14 @@ import type {
   RestaurantModel,
   SearchByTypeParams,
   SignupRequest,
-  TableModel
+  TableModel,
+  TokenModel
 } from './contracts'
 
 
 
   export const getMizdooni = () => {
-const signup = <TData = AxiosResponse<LoginResponse>>(
+const signup = <TData = AxiosResponse<TokenModel>>(
     signupRequest: SignupRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
@@ -65,21 +66,12 @@ const createTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     );
   }
 
-const login = <TData = AxiosResponse<LoginResponse>>(
+const login = <TData = AxiosResponse<TokenModel>>(
     loginRequest: LoginRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
       `https://localhost:500/sessions`,
       loginRequest,options
-    );
-  }
-
-const manageGoogleOauth2Callback = <TData = AxiosResponse<LoginResponse>>(
-    manageGoogleOauth2CallbackBody: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.post(
-      `https://localhost:500/sessions/oauth2`,
-      manageGoogleOauth2CallbackBody,options
     );
   }
 
@@ -138,6 +130,15 @@ const reserveTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     return axios.post(
       `https://localhost:500/reserves`,
       reserveTableRequest,options
+    );
+  }
+
+const manageGoogleOauth2Callback = <TData = AxiosResponse<TokenModel>>(
+    googleOauth2CallbackParams: GoogleOauth2CallbackParams, options?: AxiosRequestConfig
+ ): Promise<TData> => {
+    return axios.post(
+      `https://localhost:500/oauth2`,
+      googleOauth2CallbackParams,options
     );
   }
 
@@ -212,18 +213,18 @@ const getFoodTypes = <TData = AxiosResponse<string[]>>(
     );
   }
 
-return {signup,getRestaurantTables,createTable,login,manageGoogleOauth2Callback,getAllReviews,postReview,getManagerRestaurants,addRestaurant,getCurrentUserReserves,reserveTable,searchByType,getRestaurant,getAvailableReserveSlots,getReserveDetails,cancelReserve,recommend,getLocations,getFoodTypes}};
-export type SignupResult = AxiosResponse<LoginResponse>
+return {signup,getRestaurantTables,createTable,login,getAllReviews,postReview,getManagerRestaurants,addRestaurant,getCurrentUserReserves,reserveTable,manageGoogleOauth2Callback,searchByType,getRestaurant,getAvailableReserveSlots,getReserveDetails,cancelReserve,recommend,getLocations,getFoodTypes}};
+export type SignupResult = AxiosResponse<TokenModel>
 export type GetRestaurantTablesResult = AxiosResponse<TableModel[]>
 export type CreateTableResult = AxiosResponse<EntityCreatedResponse>
-export type LoginResult = AxiosResponse<LoginResponse>
-export type ManageGoogleOauth2CallbackResult = AxiosResponse<LoginResponse>
+export type LoginResult = AxiosResponse<TokenModel>
 export type GetAllReviewsResult = AxiosResponse<PagedResponseReviewModel>
 export type PostReviewResult = AxiosResponse<void>
 export type GetManagerRestaurantsResult = AxiosResponse<RestaurantModel[]>
 export type AddRestaurantResult = AxiosResponse<void>
 export type GetCurrentUserReservesResult = AxiosResponse<ReserveModel[]>
 export type ReserveTableResult = AxiosResponse<EntityCreatedResponse>
+export type ManageGoogleOauth2CallbackResult = AxiosResponse<TokenModel>
 export type SearchByTypeResult = AxiosResponse<PagedResponseRestaurantModel>
 export type GetRestaurantResult = AxiosResponse<RestaurantModel>
 export type GetAvailableReserveSlotsResult = AxiosResponse<LocalTime[]>

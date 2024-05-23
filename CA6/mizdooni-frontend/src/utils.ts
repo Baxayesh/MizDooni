@@ -11,41 +11,40 @@ export const _toError = (error: any): Error => {
     }
 }
 
-export const saveToken = (token: string) => {
-    toast.success('successfull login!')
-}
 
 export const handleError = (reason: any) => {
-    var error = _toError(reason.response.data)
-    var anyDetail = false
-    if(error.details){
-        for(var detail in error.details){
-            anyDetail = true
-            toast.error(
-                detail + ": " + error.details[detail] ,{
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            })
+    if(reason.response){
+        var error = _toError(reason.response.data)
+        var anyDetail = false
+        if(error.details){
+            for(var detail in error.details){
+                anyDetail = true
+                showError('Invalid Field(' + detail + '): ' + error.details[detail])
+            }
         }
+        if(!anyDetail){
+            showError(error.message)
+        }
+    }else{
+        showError('Failed to connect to backend server');
     }
-    if(!anyDetail){
-        toast.error(error.message ,{
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-
-        })
-    }
+    
 }
 
+export const showError = (message: string|undefined) => {
+    toast.error(message || 'Some Error Occuered :(' ,{
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored"
+
+    })
+}
+
+export const showSuccess = (message: string) =>{
+    toast.success('Successfull Login!')
+}

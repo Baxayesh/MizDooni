@@ -8,7 +8,7 @@
   "paths": {
     "/users": {
       "post": {
-        "tags": ["users-controller"],
+        "tags": ["authentication-controller"],
         "operationId": "Signup",
         "requestBody": {
           "content": {
@@ -28,9 +28,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/LoginResponse" }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
             }
           }
         }
@@ -101,7 +99,7 @@
     },
     "/sessions": {
       "post": {
-        "tags": ["session-controller"],
+        "tags": ["authentication-controller"],
         "operationId": "Login",
         "requestBody": {
           "content": {
@@ -121,35 +119,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/LoginResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sessions/oauth2": {
-      "post": {
-        "tags": ["session-controller"],
-        "operationId": "ManageGoogleOauth2Callback",
-        "requestBody": {
-          "content": { "application/json": { "schema": { "type": "string" } } },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/LoginResponse" }
-              }
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
             }
           }
         }
@@ -349,6 +319,36 @@
                   "$ref": "#/components/schemas/EntityCreatedResponse"
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2": {
+      "post": {
+        "tags": ["authentication-controller"],
+        "operationId": "ManageGoogleOauth2Callback",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleOauth2CallbackParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
             }
           }
         }
@@ -628,12 +628,12 @@
         "type": "object",
         "properties": {
           "message": { "type": "string" },
-          "statusCode": { "type": "integer", "format": "int32" },
+          "exceptionType": { "type": "string" },
           "details": {
             "type": "object",
             "additionalProperties": { "type": "string" }
           },
-          "exceptionType": { "type": "string" }
+          "statusCode": { "type": "integer", "format": "int32" }
         }
       },
       "SignupRequest": {
@@ -648,9 +648,30 @@
           "city": { "maxLength": 128, "minLength": 2, "type": "string" }
         }
       },
-      "LoginResponse": {
+      "TokenModel": {
         "type": "object",
-        "properties": { "token": { "type": "string" } }
+        "properties": {
+          "jwtToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/UserModel" },
+          "issueTime": { "type": "string", "format": "date-time" },
+          "expiration": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UserAddressModel": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string" },
+          "city": { "type": "string" }
+        }
+      },
+      "UserModel": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "$ref": "#/components/schemas/UserAddressModel" },
+          "role": { "type": "string", "enum": ["Manager", "Client"] }
+        }
       },
       "CreateTableRequest": {
         "required": ["restaurant"],
@@ -716,6 +737,11 @@
           "time": { "type": "string", "format": "date-time" },
           "seats": { "type": "integer", "format": "int32" }
         }
+      },
+      "GoogleOauth2CallbackParams": {
+        "required": ["userCode"],
+        "type": "object",
+        "properties": { "userCode": { "type": "string" } }
       },
       "TableModel": {
         "type": "object",
