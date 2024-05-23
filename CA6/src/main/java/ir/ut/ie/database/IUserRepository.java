@@ -15,10 +15,10 @@ public interface IUserRepository extends UserDetailsService {
     void add(User user) throws UserAlreadyExits, EmailAlreadyExits;
     User get(String username) throws NotExistentUser;
     boolean emailExists(String email);
-
+    Optional<User> getByEmail(String email);
     boolean exists(String username);
     Optional<User> tryGet(String username);
 
-    User update(OAuthUser userData) throws EmailAlreadyExits, UserAlreadyExits;
+    User updateName(String email, String name) throws NotExistentUser;
 }
 

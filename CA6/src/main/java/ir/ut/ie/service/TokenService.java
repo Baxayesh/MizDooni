@@ -3,10 +3,10 @@ package ir.ut.ie.service;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import ir.ut.ie.database.UserRepository;
+import ir.ut.ie.models.User;
 import ir.ut.ie.utils.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +61,7 @@ public class TokenService {
         return Optional.empty();
     }
 
-    public Token createToken(UserDetails user){
+    public Token createToken(User user){
         var issueTime = new Date();
         var expirationTime = new Date(issueTime.getTime() + TokenExpirationDuration);
 

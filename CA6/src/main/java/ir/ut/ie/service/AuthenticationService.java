@@ -51,10 +51,12 @@ public class AuthenticationService {
     public Token login(String username, String password) throws MizdooniNotAuthenticatedException {
 
         try{
-            var user = userRepo.get(username);
+            var user = userRepo
+                    .tryGet(username)
+                    .orElseThrow(MizdooniNotAuthenticatedException::new);
 
             if(user.getEncodedPassword() == null)
-                throw new MizdooniNotAuthenticatedException();
+                throw new MizdooniNotAuthenticatedException("Should Use Google OAuth to Login");
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -65,27 +67,27 @@ public class AuthenticationService {
 
             return tokenService.createToken(user);
 
-        } catch (NotExistentUser | org.springframework.security.core.AuthenticationException ex){
+        } catch (org.springframework.security.core.AuthenticationException ex){
             throw new MizdooniNotAuthenticatedException();
         }
 
     }
 
     @Transactional
-    public Token LoginByOAuth(String userCode) throws MizdooniNotAuthenticatedException {
-        var userData = oAuthService.FetchUserDetails(userCode);
-        var user = upsertUser(userData);
+    public Token LoginByOAuth(String userCode) throws MizdooniNotAuthenticatedException, ExternalServiceException {
+        var userData = oAuthService.fetchUserDetails(userCode);
+        var user = upsertUser(userData.email(), userData.name());
         return tokenService.createToken(user);
     }
 
 
-    @SneakyThrows({UserAlreadyExits.class, EmailAlreadyExits.class})
-    public User upsertUser(OAuthUser userData){
-        if(userRepo.emailExists(userData.Email())){
-            return userRepo.update(userData);
+    @SneakyThrows
+    public User upsertUser(String email, String name){
+        if(userRepo.emailExists(email)){
+            return userRepo.updateName(email, name);
         }
 
-        var user = new Client(userData.Username(), null, userData.Email(), "Iran", "Tehran");
+        var user = new Client(name, null, email, "Iran", "Tehran");
         userRepo.add(user);
         return user;
     }

@@ -2,6 +2,7 @@ package ir.ut.ie.application;
 
 import ir.ut.ie.filters.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -29,6 +30,7 @@ public class SecurityConfigurer {
     private static final String[] URL_WITHOUT_AUTHENTICATION = {
             "/sessions",
             "/users",
+            "/oauth2",
             "/error",
             "/sessions/oauth",
             "/v3/api-docs",
@@ -37,12 +39,8 @@ public class SecurityConfigurer {
             "/swagger-ui.html"
     };
 
-    private static final String[] ALLOWED_ORIGINS = {
-            "http://localhost:3001",
-            "http://localhost:3000",
-            "http://localhost:5173",
-            "https://localhost:500"
-    };
+    @Value("${spring.security.cros.origins}")
+    private final List<String> ALLOWED_ORIGINS;
 
 
 
@@ -77,7 +75,7 @@ public class SecurityConfigurer {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(ALLOWED_ORIGINS));
+        configuration.setAllowedOrigins(ALLOWED_ORIGINS);
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

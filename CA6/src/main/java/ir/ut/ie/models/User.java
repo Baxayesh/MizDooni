@@ -19,12 +19,12 @@ import java.util.Collection;
 @Table(name = "USERS")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "USER_ROLE")
-public abstract class User implements Serializable, UserDetails {
+public abstract class User implements Serializable, UserDetails, Cloneable {
 
     @Id
     private String Username;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String EncodedPassword;
 
     @Column(unique = true, nullable = false)
@@ -75,5 +75,17 @@ public abstract class User implements Serializable, UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    @Override
+    public User clone() {
+        try {
+            User clone = (User) super.clone();
+            clone.Address = new UserAddress(clone, this.Address.getCountry(), this.Address.getCity());
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
