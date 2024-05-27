@@ -1,0 +1,854 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "Mizdooni", "version": "1.0.0" },
+  "servers": [
+    { "url": "https://localhost:500", "description": "Generated server url" }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["authentication-controller"],
+        "operationId": "Signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignupRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
+            }
+          }
+        }
+      }
+    },
+    "/tables": {
+      "get": {
+        "tags": ["tables-controller"],
+        "operationId": "GetRestaurantTables",
+        "parameters": [
+          {
+            "name": "restaurant",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TableModel" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["tables-controller"],
+        "operationId": "CreateTable",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTableRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityCreatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": ["authentication-controller"],
+        "operationId": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
+            }
+          }
+        }
+      }
+    },
+    "/reviews": {
+      "get": {
+        "tags": ["reviews-controller"],
+        "operationId": "GetAllReviews",
+        "parameters": [
+          {
+            "name": "restaurant",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "type": "integer",
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseReviewModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["reviews-controller"],
+        "operationId": "PostReview",
+        "parameters": [
+          {
+            "name": "restaurant",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PostReviewRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/restaurants": {
+      "get": {
+        "tags": ["restaurants-controller"],
+        "operationId": "GetManagerRestaurants",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/RestaurantModel" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["restaurants-controller"],
+        "operationId": "AddRestaurant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AddRestaurantRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/reserves": {
+      "get": {
+        "tags": ["reserves-controller"],
+        "operationId": "GetCurrentUserReserves_۱",
+        "parameters": [
+          {
+            "name": "restaurant",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "table",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ReserveModel" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["reserves-controller"],
+        "operationId": "ReserveTable",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReserveTableRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityCreatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2": {
+      "post": {
+        "tags": ["authentication-controller"],
+        "operationId": "ManageGoogleOauth2Callback",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleOauth2CallbackParams"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/TokenModel" } }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": ["restaurants-controller"],
+        "operationId": "SearchByType",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "type": "integer",
+              "format": "int32",
+              "default": 5
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseRestaurantModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/{name}": {
+      "get": {
+        "tags": ["restaurants-controller"],
+        "operationId": "GetRestaurant",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RestaurantModel" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/restaurants/{name}/availableTimeSlots": {
+      "get": {
+        "tags": ["restaurants-controller"],
+        "operationId": "GetAvailableReserveSlots",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "onDate",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "requestedSeats",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/LocalTime" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reserves/{id}": {
+      "get": {
+        "tags": ["reserves-controller"],
+        "operationId": "GetReserveDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ReserveModel" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["reserves-controller"],
+        "operationId": "CancelReserve",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/recommend": {
+      "get": {
+        "tags": ["restaurants-controller"],
+        "operationId": "Recommend",
+        "parameters": [
+          {
+            "name": "recommendBy",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/RestaurantModel" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations": {
+      "get": {
+        "tags": ["autofill-controller"],
+        "operationId": "GetLocations",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/LocationModel" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/foodTypes": {
+      "get": {
+        "tags": ["autofill-controller"],
+        "operationId": "GetFoodTypes",
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "exceptionType": { "type": "string" },
+          "details": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "statusCode": { "type": "integer", "format": "int32" }
+        }
+      },
+      "SignupRequest": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "pattern": "(client|manager)", "type": "string" },
+          "email": { "type": "string" },
+          "country": { "maxLength": 128, "minLength": 2, "type": "string" },
+          "city": { "maxLength": 128, "minLength": 2, "type": "string" }
+        }
+      },
+      "TokenModel": {
+        "type": "object",
+        "properties": {
+          "jwtToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/UserModel" },
+          "issueTime": { "type": "string", "format": "date-time" },
+          "expiration": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UserAddressModel": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string" },
+          "city": { "type": "string" }
+        }
+      },
+      "UserModel": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "email": { "type": "string" },
+          "address": { "$ref": "#/components/schemas/UserAddressModel" },
+          "role": { "type": "string", "enum": ["Manager", "Client"] }
+        }
+      },
+      "CreateTableRequest": {
+        "required": ["restaurant"],
+        "type": "object",
+        "properties": {
+          "restaurant": { "type": "string" },
+          "seats": { "type": "integer", "format": "int32" }
+        }
+      },
+      "EntityCreatedResponse": {
+        "type": "object",
+        "properties": {
+          "newEntityId": { "type": "integer", "format": "int32" }
+        }
+      },
+      "LoginRequest": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "PostReviewRequest": {
+        "type": "object",
+        "properties": {
+          "foodRate": { "type": "number", "format": "double" },
+          "ambientRate": { "type": "number", "format": "double" },
+          "serviceRate": { "type": "number", "format": "double" },
+          "overallRate": { "type": "number", "format": "double" },
+          "comment": { "type": "string" }
+        }
+      },
+      "AddRestaurantRequest": {
+        "required": ["name", "type"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "openTime": { "$ref": "#/components/schemas/LocalTime" },
+          "closeTime": { "$ref": "#/components/schemas/LocalTime" },
+          "description": { "type": "string" },
+          "country": { "maxLength": 128, "minLength": 2, "type": "string" },
+          "city": { "maxLength": 128, "minLength": 2, "type": "string" },
+          "street": { "maxLength": 128, "minLength": 2, "type": "string" },
+          "image": { "type": "string" }
+        }
+      },
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": { "type": "integer", "format": "int32" },
+          "minute": { "type": "integer", "format": "int32" },
+          "second": { "type": "integer", "format": "int32" },
+          "nano": { "type": "integer", "format": "int32" }
+        }
+      },
+      "ReserveTableRequest": {
+        "required": ["restaurant"],
+        "type": "object",
+        "properties": {
+          "restaurant": { "type": "string" },
+          "time": { "type": "string", "format": "date-time" },
+          "seats": { "type": "integer", "format": "int32" }
+        }
+      },
+      "GoogleOauth2CallbackParams": {
+        "required": ["userCode"],
+        "type": "object",
+        "properties": { "userCode": { "type": "string" } }
+      },
+      "TableModel": {
+        "type": "object",
+        "properties": {
+          "tableNumber": { "type": "integer", "format": "int32" },
+          "numberOfSeats": { "type": "integer", "format": "int32" },
+          "restaurantName": { "type": "string" },
+          "managerName": { "type": "string" }
+        }
+      },
+      "PagedResponseRestaurantModel": {
+        "type": "object",
+        "properties": {
+          "totalItems": { "type": "integer", "format": "int64" },
+          "offset": { "type": "integer", "format": "int32" },
+          "limit": { "type": "integer", "format": "int32" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RestaurantModel" }
+          }
+        }
+      },
+      "RatingModel": {
+        "type": "object",
+        "properties": {
+          "foodScore": { "type": "number", "format": "double" },
+          "serviceScore": { "type": "number", "format": "double" },
+          "ambianceScore": { "type": "number", "format": "double" },
+          "overallScore": { "type": "number", "format": "double" },
+          "reviewCount": { "type": "integer", "format": "int32" }
+        }
+      },
+      "RestaurantAddressModel": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string" },
+          "city": { "type": "string" },
+          "street": { "type": "string" }
+        }
+      },
+      "RestaurantModel": {
+        "type": "object",
+        "properties": {
+          "Name": { "type": "string" },
+          "OpenTime": { "$ref": "#/components/schemas/LocalTime" },
+          "CloseTime": { "$ref": "#/components/schemas/LocalTime" },
+          "ManagerUsername": { "type": "string" },
+          "Type": { "type": "string" },
+          "Description": { "type": "string" },
+          "ImageUri": { "type": "string" },
+          "restaurantAddress": {
+            "$ref": "#/components/schemas/RestaurantAddressModel"
+          },
+          "rating": { "$ref": "#/components/schemas/RatingModel" }
+        }
+      },
+      "PagedResponseReviewModel": {
+        "type": "object",
+        "properties": {
+          "totalItems": { "type": "integer", "format": "int64" },
+          "offset": { "type": "integer", "format": "int32" },
+          "limit": { "type": "integer", "format": "int32" },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReviewModel" }
+          }
+        }
+      },
+      "ReviewModel": {
+        "type": "object",
+        "properties": {
+          "restaurant": { "type": "string" },
+          "issuer": { "type": "string" },
+          "foodScore": { "type": "number", "format": "double" },
+          "serviceScore": { "type": "number", "format": "double" },
+          "ambianceScore": { "type": "number", "format": "double" },
+          "overallScore": { "type": "number", "format": "double" },
+          "comment": { "type": "string" },
+          "issueTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ReserveModel": {
+        "type": "object",
+        "properties": {
+          "restaurant": { "type": "string" },
+          "tableNumber": { "type": "integer", "format": "int32" },
+          "reservee": { "type": "string" },
+          "reserveTime": { "type": "string", "format": "date-time" },
+          "isCanceled": { "type": "boolean" },
+          "address": { "$ref": "#/components/schemas/RestaurantAddressModel" }
+        }
+      },
+      "LocationModel": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string" },
+          "cities": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "JWT auth description",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

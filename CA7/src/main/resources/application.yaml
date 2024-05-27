@@ -1,0 +1,29 @@
+spring:
+    security:
+        cros:
+            origins: http://localhost:3000, http://localhost:3001, https://localhost:500
+        jwt:
+            sign-key: "d48ee7ebcbdf557264ce0819b7b78926da454db040980f5c920f7aba6504c73e"
+            expiration-duration: 86400000
+        oauth2:
+            google:
+                client-id: "27899273446-b24tu4ocvgtsca2iknqaajq7kd20uugj.apps.googleusercontent.com"
+                client-secret: "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"
+    application:
+        name: "MizdooniApplication"
+    jpa:
+        hibernate:
+            ddl-auto: update
+    datasource:
+        url: "jdbc:mysql://localhost:3306/mizdooni_db"
+        username: "mizdooni_db_user"
+        password: "Mizd00N!!"
+        driver-class-name: "com.mysql.cj.jdbc.Driver"
+server:
+    port: 500
+    ssl:
+        enabled: true
+        key-store-type: "PKCS12"
+        key-store: "mizdooni.p12"
+        key-store-password: "@Baxa3"
+        key-alias: "mizdooni"
