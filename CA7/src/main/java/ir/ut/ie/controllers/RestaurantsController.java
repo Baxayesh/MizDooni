@@ -1,5 +1,6 @@
 package ir.ut.ie.controllers;
 
+import co.elastic.apm.api.CaptureTransaction;
 import ir.ut.ie.contracts.*;
 import ir.ut.ie.exceptions.*;
 import ir.ut.ie.models.Restaurant;
@@ -23,6 +24,7 @@ public class RestaurantsController extends MizdooniController {
     @SneakyThrows(NotExistentUser.class)
     @PostMapping("/restaurants")
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
+    @CaptureTransaction("Add New Restaurant")
     public void AddRestaurant(@Valid @RequestBody AddRestaurantRequest request) throws RestaurantAlreadyExists {
 
         var owner = getCurrentUser();

@@ -1,5 +1,6 @@
 package ir.ut.ie.controllers;
 
+import co.elastic.apm.api.CaptureTransaction;
 import ir.ut.ie.contracts.EntityCreatedResponse;
 import ir.ut.ie.contracts.ReserveModel;
 import ir.ut.ie.contracts.ReserveTableRequest;
@@ -32,6 +33,7 @@ public class ReservesController extends MizdooniController {
 
 
     @PostMapping
+    @CaptureTransaction("Reserve a Table")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     @SneakyThrows(NotExistentUser.class)
     public EntityCreatedResponse ReserveTable(@Valid @RequestBody ReserveTableRequest request)
@@ -63,6 +65,7 @@ public class ReservesController extends MizdooniController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @CaptureTransaction("Cancel Reserve")
     @PreAuthorize(UserRole.SHOULD_BE_CLIENT)
     public void CancelReserve(@PathVariable(name = "id") Integer reserveId)
             throws NotExistentReserve, CancelingExpiredReserve, CancelingCanceledReserve {

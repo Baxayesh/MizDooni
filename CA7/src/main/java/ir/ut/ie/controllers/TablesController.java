@@ -1,5 +1,6 @@
 package ir.ut.ie.controllers;
 
+import co.elastic.apm.api.CaptureTransaction;
 import ir.ut.ie.contracts.CreateTableRequest;
 import ir.ut.ie.contracts.EntityCreatedResponse;
 import ir.ut.ie.contracts.TableModel;
@@ -15,6 +16,7 @@ public class TablesController extends MizdooniController {
 
     @PostMapping
     @PreAuthorize(UserRole.SHOULD_BE_MANAGER)
+    @CaptureTransaction("Add New Table")
     EntityCreatedResponse CreateTable(@Valid @RequestBody CreateTableRequest request)
             throws NotExistentRestaurant {
 

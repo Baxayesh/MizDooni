@@ -1,5 +1,6 @@
 package ir.ut.ie.controllers;
 
+import co.elastic.apm.api.CaptureTransaction;
 import ir.ut.ie.contracts.GoogleOauth2CallbackParams;
 import ir.ut.ie.contracts.LoginRequest;
 import ir.ut.ie.contracts.SignupRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController extends MizdooniController {
 
     @PostMapping("/sessions")
+    @CaptureTransaction("Login Using U/P")
     public TokenModel Login(@Valid @RequestBody LoginRequest request)
             throws MizdooniNotAuthenticatedException {
 
@@ -25,6 +27,7 @@ public class AuthenticationController extends MizdooniController {
     }
 
     @PostMapping("/oauth2")
+    @CaptureTransaction("Login Using OAuth")
     public TokenModel ManageGoogleOauth2Callback(@RequestBody GoogleOauth2CallbackParams request)
             throws MizdooniNotAuthenticatedException, ExternalServiceException {
 
@@ -37,6 +40,7 @@ public class AuthenticationController extends MizdooniController {
 
     @SneakyThrows(MizdooniNotAuthenticatedException.class)
     @PostMapping("/users")
+    @CaptureTransaction("Signup New User")
     public TokenModel Signup(@Valid @RequestBody SignupRequest request)
             throws UserAlreadyExits, EmailAlreadyExits {
 
