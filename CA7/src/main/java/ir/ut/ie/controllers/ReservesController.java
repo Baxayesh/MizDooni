@@ -48,6 +48,7 @@ public class ReservesController extends MizdooniController {
                 request.seats()
         );
 
+        observabilityService.addReserve();
         return new EntityCreatedResponse(id);
     }
 
@@ -73,7 +74,7 @@ public class ReservesController extends MizdooniController {
         var reservee = getCurrentUser();
 
         mizdooni.cancelReserve(reservee.getUsername(), reserveId);
-
+        observabilityService.addCanceledReserve();
     }
 
     @GetMapping(params = {"restaurant"})

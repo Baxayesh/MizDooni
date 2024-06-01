@@ -9,6 +9,7 @@ import ir.ut.ie.exceptions.EmailAlreadyExits;
 import ir.ut.ie.exceptions.ExternalServiceException;
 import ir.ut.ie.exceptions.MizdooniNotAuthenticatedException;
 import ir.ut.ie.exceptions.UserAlreadyExits;
+import ir.ut.ie.service.ObservabilityService;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class AuthenticationController extends MizdooniController {
 
         var token = authenticationService.login(request.username(), request.password());
 
+        observabilityService.addSuccessfulLogin("using-password");
         return TokenModel.fromDomainObject(token);
     }
 
@@ -33,6 +35,7 @@ public class AuthenticationController extends MizdooniController {
 
         var token = authenticationService.LoginByOAuth(request.userCode());
 
+        observabilityService.addSuccessfulLogin("using-oauth2");
         return TokenModel.fromDomainObject(token);
 
     }

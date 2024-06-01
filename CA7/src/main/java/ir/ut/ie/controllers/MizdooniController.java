@@ -1,5 +1,6 @@
 package ir.ut.ie.controllers;
 
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import ir.ut.ie.exceptions.NotAValidDatetime;
 import ir.ut.ie.exceptions.NotAValidNumber;
 import ir.ut.ie.service.*;
@@ -21,6 +22,8 @@ public abstract class MizdooniController {
     protected Mizdooni mizdooni;
     @Autowired
     protected AuthenticationService authenticationService;
+    @Autowired
+    protected ObservabilityService observabilityService;
 
     LocalDate toDate(String field, String fieldName) throws NotAValidDatetime {
         try {
@@ -41,6 +44,7 @@ public abstract class MizdooniController {
     UserDetails getCurrentUser(){
         return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
 }
 
 
