@@ -27,6 +27,8 @@ jobs:
         include:
           - context: ./CA8/mizdooni-backend
             image: ghcr.io/Baxayesh/mizdooni-backend
+          - context: ./CA8/mizdooni-frontend
+            image: ghcr.io/Baxayesh/mizdooni-frontend
             
     permissions:
       contents: read
