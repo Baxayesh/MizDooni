@@ -2,6 +2,14 @@ version: '2.2'
 
 services:
 
+  frontend:
+    image: mizdooni-react-app
+    container_name: mizdooni-react-app-container
+    build:
+      context: ./mizdooni-frontend
+    ports:
+      - "80:8080"
+
   backend:
     build:
       context: ./mizdooni-backend
