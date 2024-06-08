@@ -1,7 +1,7 @@
 spring:
     security:
         cros:
-            origins: http://localhost:3000, http://localhost:3001, https://localhost:500
+            origins: https://localhost, http://localhost:3001
         jwt:
             sign-key: "d48ee7ebcbdf557264ce0819b7b78926da454db040980f5c920f7aba6504c73e"
             expiration-duration: 86400000
@@ -20,7 +20,7 @@ spring:
         password: "Mizd00N!!"
         driver-class-name: "com.mysql.cj.jdbc.Driver"
 server:
-    port: 500
+    port: 443
     ssl:
         enabled: true
         key-store-type: "PKCS12"

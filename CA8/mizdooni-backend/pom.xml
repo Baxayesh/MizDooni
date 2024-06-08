@@ -12,7 +12,7 @@
 	<artifactId>MizdooniApplication</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MizdooniApplication</name>
-	<description>Mizdooni 4th computer assignment</description>
+	<description>Mizdooni 8th computer assignment</description>
 	<properties>
 		<java.version>19</java.version>
 	</properties>
@@ -133,6 +133,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

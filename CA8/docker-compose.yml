@@ -1,5 +1,48 @@
 version: '2.2'
+
 services:
+
+  backend:
+    build:
+      context: ./mizdooni-backend
+    environment:
+      - ELASTIC_APM_SERVICE_NAME=Mizdooni
+      - ELASTIC_APM_APPLICATION_PACKAGES=ir.ut.ie
+      - ELASTIC_APM_SERVER_URL=http://apm-server:8200
+      - SPRING_SECURITY_CROS_ORIGINS=https://localhost, http://localhost:3001
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=update
+      - SPRING_DATASOURCE_USERNAME=mizdooni_db_user
+      - SPRING_DATASOURCE_PASSWORD=Mizd00N!!
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/mizdooni_db
+    ports:
+      - "443:443"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - mizdooni-network
+
+  database:
+    image: mysql:8.4.0
+    environment:
+      MYSQL_DATABASE: "mizdooni_db"
+      MYSQL_USER: "mizdooni_db_user"
+      MYSQL_PASSWORD: "Mizd00N!!"
+      MYSQL_ROOT_PASSWORD: "Mizd00N!!@@db@@root@@password"
+    ports:
+      - "3307:3306"
+    networks:
+      - mizdooni-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "database"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
   apm-server:
     image: docker.elastic.co/apm/apm-server:7.17.21
     depends_on:
@@ -9,10 +52,8 @@ services:
         condition: service_healthy
     cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
     cap_drop: ["ALL"]
-    ports:
-    - 8200:8200
     networks:
-    - elastic
+    - mizdooni-network
     command: >
        apm-server -e
          -E apm-server.rum.enabled=true
@@ -40,10 +81,8 @@ services:
         soft: -1
     volumes:
     - esdata:/usr/share/elasticsearch/data
-    ports:
-    - 9200:9200
     networks:
-    - elastic
+    - mizdooni-network
     healthcheck:
       interval: 20s
       retries: 10
@@ -60,16 +99,17 @@ services:
     ports:
     - 5601:5601
     networks:
-    - elastic
+    - mizdooni-network
     healthcheck:
       interval: 10s
       retries: 20
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
 
 volumes:
+  mysql-data:
   esdata:
     driver: local
 
 networks:
-  elastic:
+  mizdooni-network:
     driver: bridge
