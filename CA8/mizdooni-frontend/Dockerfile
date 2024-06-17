@@ -1,24 +1,41 @@
 # Stage 1: Build the React Application
 
-FROM node:18 as build
+FROM node:18.16.0-alpine as base
 
-WORKDIR /app
+COPY package.json ./
 
-COPY package*.json .
+RUN yarn install
 
-RUN npm install
+COPY src ./src
 
-COPY . .
+COPY tsconfig.json ./tsconfig.json
 
-# Stage 2: Setup the Nginx Server to serve the React Application
+RUN npm run build
 
-FROM nginx:1.25.0-alpine as production
+FROM node:18.16.0-alpine
 
-COPY --from=build /app /usr/share/nginx/html
+COPY --from=base ./node_modules ./node_modules
+COPY --from=base ./package.json ./package.json
+COPY --from=base /dist /dist
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 3000
+CMD ["npm", "run", "start"]
 
-EXPOSE 80
+# COPY package*.json .
 
-CMD ["nginx", "-g", "daemon off;"]
+# RUN npm install
+
+# COPY . .
+
+# # Stage 2: Setup the Nginx Server to serve the React Application
+
+# FROM nginx:1.25.0-alpine as production
+
+# COPY --from=build /app /usr/share/nginx/html
+
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# EXPOSE 3000
+
+# CMD ["nginx", "-g", "daemon off;"]
 
