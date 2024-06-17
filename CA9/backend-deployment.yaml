@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: mishap
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: ghcr.io/baxayesh/mizdooni-backend:main
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: ELASTIC_APM_SERVICE_NAME
+          value: "Mizdooni"
+        - name: ELASTIC_APM_APPLICATION_PACKAGES
+          value: "ir.ut.ie"
+        - name: ELASTIC_APM_SERVER_URL
+          value: "http://apm-server:8200"
+        - name: SPRING_SECURITY_CROS_ORIGINS
+          value: "https://localhost, http://localhost:80"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "mizdooni_db_user"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "Mizd00N!!"
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: "com.mysql.cj.jdbc.Driver"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql:3306/mizdooni_db"
+        ports:
+        - containerPort: 443

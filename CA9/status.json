@@ -1,0 +1,828 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "cni.projectcalico.org/containerID": "7a0ae31dc88397de460e623b9585d424e5965b6a1164c4309a1c8bc769ecda83",
+                    "cni.projectcalico.org/podIP": "10.232.94.74/32",
+                    "cni.projectcalico.org/podIPs": "10.232.94.74/32"
+                },
+                "creationTimestamp": "2024-06-16T08:39:36Z",
+                "generateName": "backend-59ff65b5bb-",
+                "labels": {
+                    "app": "backend",
+                    "pod-template-hash": "59ff65b5bb"
+                },
+                "name": "backend-59ff65b5bb-5cghr",
+                "namespace": "mishap",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "backend-59ff65b5bb",
+                        "uid": "77b03ab9-5bb6-4ec4-8784-a79da7e04db2"
+                    }
+                ],
+                "resourceVersion": "10850098",
+                "uid": "4323855e-e5b3-4db9-8305-2feaaf7dcba8"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "ELASTIC_APM_SERVICE_NAME",
+                                "value": "Mizdooni"
+                            },
+                            {
+                                "name": "ELASTIC_APM_APPLICATION_PACKAGES",
+                                "value": "ir.ut.ie"
+                            },
+                            {
+                                "name": "ELASTIC_APM_SERVER_URL",
+                                "value": "http://apm-server:8200"
+                            },
+                            {
+                                "name": "SPRING_SECURITY_CROS_ORIGINS",
+                                "value": "https://localhost, http://localhost:80"
+                            },
+                            {
+                                "name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+                                "value": "update"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_USERNAME",
+                                "value": "mizdooni_db_user"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_PASSWORD",
+                                "value": "Mizd00N!!"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_DRIVER_CLASS_NAME",
+                                "value": "com.mysql.cj.jdbc.Driver"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_URL",
+                                "value": "jdbc:mysql://mysql:3306/mizdooni_db"
+                            }
+                        ],
+                        "image": "ghcr.io/baxayesh/mizdooni-backend",
+                        "imagePullPolicy": "Always",
+                        "name": "backend",
+                        "ports": [
+                            {
+                                "containerPort": 443,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "500m",
+                                "memory": "512Mi"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-t679n",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "ut-worker-b32-6chkb-ht6mv",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "kube-api-access-t679n",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:36Z",
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T09:05:33Z",
+                        "message": "containers with unready status: [backend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T09:05:33Z",
+                        "message": "containers with unready status: [backend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:36Z",
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "containerID": "containerd://edd95a9d5a86454d3720f2fd8ddfecb1b7496046c3cd73eb698b8580af35dbf6",
+                        "image": "ghcr.io/baxayesh/mizdooni-backend:latest",
+                        "imageID": "ghcr.io/baxayesh/mizdooni-backend@sha256:6836d0f365efdcf0dcba66a28d3ccff30f4c00ec653ca7d0fa22fda3c51ec1c9",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://edd95a9d5a86454d3720f2fd8ddfecb1b7496046c3cd73eb698b8580af35dbf6",
+                                "exitCode": 1,
+                                "finishedAt": "2024-06-16T09:05:33Z",
+                                "reason": "Error",
+                                "startedAt": "2024-06-16T09:05:06Z"
+                            }
+                        },
+                        "name": "backend",
+                        "ready": false,
+                        "restartCount": 9,
+                        "started": false,
+                        "state": {
+                            "waiting": {
+                                "message": "back-off 5m0s restarting failed container=backend pod=backend-59ff65b5bb-5cghr_mishap(4323855e-e5b3-4db9-8305-2feaaf7dcba8)",
+                                "reason": "CrashLoopBackOff"
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.2.239",
+                "phase": "Running",
+                "podIP": "10.232.94.74",
+                "podIPs": [
+                    {
+                        "ip": "10.232.94.74"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2024-06-16T08:39:36Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "cni.projectcalico.org/containerID": "8e288ded26414814a71356259255025306e5939f9c8b4879305f4416fdbcbf3e",
+                    "cni.projectcalico.org/podIP": "10.232.68.203/32",
+                    "cni.projectcalico.org/podIPs": "10.232.68.203/32"
+                },
+                "creationTimestamp": "2024-06-16T08:39:36Z",
+                "generateName": "backend-59ff65b5bb-",
+                "labels": {
+                    "app": "backend",
+                    "pod-template-hash": "59ff65b5bb"
+                },
+                "name": "backend-59ff65b5bb-6h8vz",
+                "namespace": "mishap",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "backend-59ff65b5bb",
+                        "uid": "77b03ab9-5bb6-4ec4-8784-a79da7e04db2"
+                    }
+                ],
+                "resourceVersion": "10850112",
+                "uid": "8b952912-3a2a-4eb6-875e-7c0e5c2eb6c4"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "ELASTIC_APM_SERVICE_NAME",
+                                "value": "Mizdooni"
+                            },
+                            {
+                                "name": "ELASTIC_APM_APPLICATION_PACKAGES",
+                                "value": "ir.ut.ie"
+                            },
+                            {
+                                "name": "ELASTIC_APM_SERVER_URL",
+                                "value": "http://apm-server:8200"
+                            },
+                            {
+                                "name": "SPRING_SECURITY_CROS_ORIGINS",
+                                "value": "https://localhost, http://localhost:80"
+                            },
+                            {
+                                "name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+                                "value": "update"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_USERNAME",
+                                "value": "mizdooni_db_user"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_PASSWORD",
+                                "value": "Mizd00N!!"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_DRIVER_CLASS_NAME",
+                                "value": "com.mysql.cj.jdbc.Driver"
+                            },
+                            {
+                                "name": "SPRING_DATASOURCE_URL",
+                                "value": "jdbc:mysql://mysql:3306/mizdooni_db"
+                            }
+                        ],
+                        "image": "ghcr.io/baxayesh/mizdooni-backend",
+                        "imagePullPolicy": "Always",
+                        "name": "backend",
+                        "ports": [
+                            {
+                                "containerPort": 443,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "cpu": "1",
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "500m",
+                                "memory": "512Mi"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-v79k2",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "ut-worker-b32-6chkb-kbjfs",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "kube-api-access-v79k2",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:36Z",
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T09:05:36Z",
+                        "message": "containers with unready status: [backend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T09:05:36Z",
+                        "message": "containers with unready status: [backend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:36Z",
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "containerID": "containerd://47c633a1cee385b074d7900c3e660dd0dd3a56a604e11f2e5373dd19870bc586",
+                        "image": "ghcr.io/baxayesh/mizdooni-backend:latest",
+                        "imageID": "ghcr.io/baxayesh/mizdooni-backend@sha256:6836d0f365efdcf0dcba66a28d3ccff30f4c00ec653ca7d0fa22fda3c51ec1c9",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://47c633a1cee385b074d7900c3e660dd0dd3a56a604e11f2e5373dd19870bc586",
+                                "exitCode": 1,
+                                "finishedAt": "2024-06-16T09:05:36Z",
+                                "reason": "Error",
+                                "startedAt": "2024-06-16T09:05:09Z"
+                            }
+                        },
+                        "name": "backend",
+                        "ready": false,
+                        "restartCount": 9,
+                        "started": false,
+                        "state": {
+                            "waiting": {
+                                "message": "back-off 5m0s restarting failed container=backend pod=backend-59ff65b5bb-6h8vz_mishap(8b952912-3a2a-4eb6-875e-7c0e5c2eb6c4)",
+                                "reason": "CrashLoopBackOff"
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.2.103",
+                "phase": "Running",
+                "podIP": "10.232.68.203",
+                "podIPs": [
+                    {
+                        "ip": "10.232.68.203"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2024-06-16T08:39:36Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "cni.projectcalico.org/containerID": "ff369fcf382ece40dee9d2f37fa8d792eab9f6e5ce88a4a9adb6cf2ebae19ed0",
+                    "cni.projectcalico.org/podIP": "10.232.81.71/32",
+                    "cni.projectcalico.org/podIPs": "10.232.81.71/32"
+                },
+                "creationTimestamp": "2024-06-16T08:39:38Z",
+                "generateName": "frontend-f755fd748-",
+                "labels": {
+                    "app": "frontend",
+                    "pod-template-hash": "f755fd748"
+                },
+                "name": "frontend-f755fd748-6nr7k",
+                "namespace": "mishap",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "frontend-f755fd748",
+                        "uid": "68cd0ade-65ba-4c40-a153-eef84b5d5e1a"
+                    }
+                ],
+                "resourceVersion": "10850208",
+                "uid": "c3f140b6-01c0-479c-8a4b-09dffc912070"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "image": "ghcr.io/baxayesh/mizdooni-frontend",
+                        "imagePullPolicy": "Always",
+                        "name": "frontend",
+                        "ports": [
+                            {
+                                "containerPort": 8080,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "cpu": "500m",
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "256Mi"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-4kxxm",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "nodeName": "ut-worker-b32-6chkb-p96xt",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "kube-api-access-4kxxm",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:38Z",
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:38Z",
+                        "message": "containers with unready status: [frontend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:38Z",
+                        "message": "containers with unready status: [frontend]",
+                        "reason": "ContainersNotReady",
+                        "status": "False",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:38Z",
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "image": "ghcr.io/baxayesh/mizdooni-frontend",
+                        "imageID": "",
+                        "lastState": {},
+                        "name": "frontend",
+                        "ready": false,
+                        "restartCount": 0,
+                        "started": false,
+                        "state": {
+                            "waiting": {
+                                "message": "Back-off pulling image \"ghcr.io/baxayesh/mizdooni-frontend\"",
+                                "reason": "ImagePullBackOff"
+                            }
+                        }
+                    }
+                ],
+                "hostIP": "10.0.2.141",
+                "phase": "Pending",
+                "podIP": "10.232.81.71",
+                "podIPs": [
+                    {
+                        "ip": "10.232.81.71"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2024-06-16T08:39:38Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2024-06-16T08:39:34Z",
+                "generateName": "mysql-7f878f56b6-",
+                "labels": {
+                    "app": "mysql",
+                    "pod-template-hash": "7f878f56b6"
+                },
+                "name": "mysql-7f878f56b6-dcwvk",
+                "namespace": "mishap",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "ReplicaSet",
+                        "name": "mysql-7f878f56b6",
+                        "uid": "5c8cdf89-0e71-477d-a84e-12a6215b2bbd"
+                    }
+                ],
+                "resourceVersion": "10844856",
+                "uid": "286aae00-f809-49bc-84c3-566784c5c6b5"
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "MYSQL_DATABASE",
+                                "value": "mizdooni_db"
+                            },
+                            {
+                                "name": "MYSQL_USER",
+                                "value": "mizdooni_db_user"
+                            },
+                            {
+                                "name": "MYSQL_PASSWORD",
+                                "value": "Mizd00N!!"
+                            },
+                            {
+                                "name": "MYSQL_ROOT_PASSWORD",
+                                "value": "Mizd00N!!@@db@@root@@password"
+                            }
+                        ],
+                        "image": "mysql:8.4.0",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "mysql",
+                        "ports": [
+                            {
+                                "containerPort": 3306,
+                                "name": "mysql",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/lib/mysql",
+                                "name": "mysql-persistent-storage"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-57pvg",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "name": "mysql-persistent-storage",
+                        "persistentVolumeClaim": {
+                            "claimName": "mysql-pvc"
+                        }
+                    },
+                    {
+                        "name": "kube-api-access-57pvg",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2024-06-16T08:39:34Z",
+                        "message": "0/6 nodes are available: 6 pod has unbound immediate PersistentVolumeClaims. preemption: 0/6 nodes are available: 6 Preemption is not helpful for scheduling.",
+                        "reason": "Unschedulable",
+                        "status": "False",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "phase": "Pending",
+                "qosClass": "BestEffort"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}
