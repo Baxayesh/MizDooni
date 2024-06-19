@@ -18,7 +18,7 @@ import { defineConfig } from 'orval';
         client: 'axios',
         mode: 'split',
         mock: false,
-        baseUrl: 'https://backend:443'
+        baseUrl: 'https://localhost:443'
     }
 
    },

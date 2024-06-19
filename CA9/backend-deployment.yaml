@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ghcr.io/baxayesh/mizdooni-backend:main
+        image: ghcr.io/baxayesh/mizdooni-backend:v3.0.1
         resources:
           requests:
             memory: "256Mi"

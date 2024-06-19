@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ghcr.io/baxayesh/mizdooni-frontend:main
+        image: ghcr.io/baxayesh/mizdooni-frontend:v3.0.1
         resources:
           requests:
             memory: "256Mi"
@@ -24,4 +24,4 @@ spec:
             memory: "512Mi"
             cpu: "500m"
         ports:
-        - containerPort: 80
+        - containerPort: 3000

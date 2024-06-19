@@ -42,7 +42,7 @@ const signup = <TData = AxiosResponse<TokenModel>>(
     signupRequest: SignupRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/users`,
+      `https://localhost:443/users`,
       signupRequest,options
     );
   }
@@ -51,7 +51,7 @@ const getRestaurantTables = <TData = AxiosResponse<TableModel[]>>(
     params: GetRestaurantTablesParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/tables`,{
+      `https://localhost:443/tables`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -61,7 +61,7 @@ const createTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     createTableRequest: CreateTableRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/tables`,
+      `https://localhost:443/tables`,
       createTableRequest,options
     );
   }
@@ -70,7 +70,7 @@ const login = <TData = AxiosResponse<TokenModel>>(
     loginRequest: LoginRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/sessions`,
+      `https://localhost:443/sessions`,
       loginRequest,options
     );
   }
@@ -79,7 +79,7 @@ const getAllReviews = <TData = AxiosResponse<PagedResponseReviewModel>>(
     params: GetAllReviewsParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/reviews`,{
+      `https://localhost:443/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -90,7 +90,7 @@ const postReview = <TData = AxiosResponse<void>>(
     params: PostReviewParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/reviews`,
+      `https://localhost:443/reviews`,
       postReviewRequest,{
     ...options,
         params: {...params, ...options?.params},}
@@ -101,7 +101,7 @@ const getManagerRestaurants = <TData = AxiosResponse<RestaurantModel[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/restaurants`,options
+      `https://localhost:443/restaurants`,options
     );
   }
 
@@ -109,7 +109,7 @@ const addRestaurant = <TData = AxiosResponse<void>>(
     addRestaurantRequest: AddRestaurantRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/restaurants`,
+      `https://localhost:443/restaurants`,
       addRestaurantRequest,options
     );
   }
@@ -118,7 +118,7 @@ const getCurrentUserReserves = <TData = AxiosResponse<ReserveModel[]>>(
     params?: GetCurrentUserReservesParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/reserves`,{
+      `https://localhost:443/reserves`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -128,7 +128,7 @@ const reserveTable = <TData = AxiosResponse<EntityCreatedResponse>>(
     reserveTableRequest: ReserveTableRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/reserves`,
+      `https://localhost:443/reserves`,
       reserveTableRequest,options
     );
   }
@@ -137,7 +137,7 @@ const manageGoogleOauth2Callback = <TData = AxiosResponse<TokenModel>>(
     googleOauth2CallbackParams: GoogleOauth2CallbackParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.post(
-      `https://backend:443/oauth2`,
+      `https://localhost:443/oauth2`,
       googleOauth2CallbackParams,options
     );
   }
@@ -146,7 +146,7 @@ const searchByType = <TData = AxiosResponse<PagedResponseRestaurantModel>>(
     params?: SearchByTypeParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/search`,{
+      `https://localhost:443/search`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -156,7 +156,7 @@ const getRestaurant = <TData = AxiosResponse<RestaurantModel>>(
     name: string, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/restaurants/${name}`,options
+      `https://localhost:443/restaurants/${name}`,options
     );
   }
 
@@ -165,7 +165,7 @@ const getAvailableReserveSlots = <TData = AxiosResponse<LocalTime[]>>(
     params: GetAvailableReserveSlotsParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/restaurants/${name}/availableTimeSlots`,{
+      `https://localhost:443/restaurants/${name}/availableTimeSlots`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -175,7 +175,7 @@ const getReserveDetails = <TData = AxiosResponse<ReserveModel>>(
     id: number, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/reserves/${id}`,options
+      `https://localhost:443/reserves/${id}`,options
     );
   }
 
@@ -183,7 +183,7 @@ const cancelReserve = <TData = AxiosResponse<void>>(
     id: number, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.delete(
-      `https://backend:443/reserves/${id}`,options
+      `https://localhost:443/reserves/${id}`,options
     );
   }
 
@@ -191,7 +191,7 @@ const recommend = <TData = AxiosResponse<RestaurantModel[]>>(
     params?: RecommendParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/recommend`,{
+      `https://localhost:443/recommend`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -201,7 +201,7 @@ const getLocations = <TData = AxiosResponse<LocationModel[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/locations`,options
+      `https://localhost:443/locations`,options
     );
   }
 
@@ -209,7 +209,7 @@ const getFoodTypes = <TData = AxiosResponse<string[]>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.get(
-      `https://backend:443/foodTypes`,options
+      `https://localhost:443/foodTypes`,options
     );
   }
 
