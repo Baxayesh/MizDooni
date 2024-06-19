@@ -1,17 +1,6 @@
 version: '2.2'
 
 services:
-  frontend:
-    build:
-      context: ./mizdooni-frontend
-      target: build
-    volumes:
-      - ./api:/app
-      - /app/node_modules
-    ports:
-      - 3000:3000
-    command: npm run dev
-
   backend:
     build:
       context: ./mizdooni-backend
@@ -52,6 +41,16 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+  frontend:
+    build:
+      context: ./mizdooni-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    networks:
+      - mizdooni-network
 
 volumes:
   mysql-data:

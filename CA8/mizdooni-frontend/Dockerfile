@@ -6,7 +6,7 @@ COPY package*.json .
 
 RUN yarn install
 
-ENV PATH /app/node_modules/.bin:$PATH
+ENV NODE_ENV build
 
 COPY . .
 
