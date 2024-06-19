@@ -1,16 +1,16 @@
 version: '2.2'
 
 services:
-
   frontend:
-    image: mizdooni-react-app
-    container_name: mizdooni-ts-app-container
-    build: .
-    command: npm run start
-    ports:
-      - "4000:3000"
+    build:
+      context: ./mizdooni-frontend
+      target: build
     volumes:
       - ./api:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: npm run dev
 
   backend:
     build:
@@ -47,12 +47,11 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "database"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "database" ]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
-
 
 volumes:
   mysql-data:

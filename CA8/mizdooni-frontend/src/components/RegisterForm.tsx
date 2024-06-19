@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { ReactNode, useState } from "react";
 import TextInput from "./TextInput";
 import { getMizdooni } from "../mizdooni";
 import { handleError } from "../utils";
@@ -8,7 +8,7 @@ interface RegisterFormProps{
   login: (token: TokenModel) => void
 }
 
-function RegisterForm({login}: RegisterFormProps) : ReactNode{
+function RegisterForm({login}: RegisterFormProps) : React.ReactElement | null {
   
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

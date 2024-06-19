@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import React,{ ReactNode, useEffect, useMemo, useState } from "react";
 import queryString from "query-string";
 import { Navigate, useNavigate } from "react-router-dom";
 import { loginManagerProps } from "./loginManagerProps";
@@ -7,7 +7,7 @@ import { handleError, showError } from "../utils";
 import { toSession } from "../models/Session";
 import * as configs from '../configs'
 
-export default function CallbackManager({login}: loginManagerProps): ReactNode {
+export default function CallbackManager({login}: loginManagerProps): React.ReactElement | null  {
 
     const navigate = useNavigate();
 
