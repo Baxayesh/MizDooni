@@ -31,7 +31,7 @@ spec:
         - name: ELASTIC_APM_SERVER_URL
           value: "http://apm-server:8200"
         - name: SPRING_SECURITY_CROS_ORIGINS
-          value: "https://localhost, http://localhost:80"
+          value: "https://localhost, http://localhost:80, http://localhost"
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "update"
         - name: SPRING_DATASOURCE_USERNAME
