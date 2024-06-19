@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import LoginWithGoogleBottom from "../components/LoginWithGoogleBottom";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
@@ -7,7 +7,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Session, { toSession } from "../models/Session";
 import { showError } from "../utils";
 
-export default function Login(session: Session|null, login: (session: Session)=>void): ReactNode {
+export default function Login(session: Session|null, login: (session: Session)=>void) : React.ReactElement | null  {
 
   const [showLogin, setShowLogin] = useState(false);
   const natigate = useNavigate();
