@@ -2,15 +2,9 @@ version: '2.2'
 
 services:
   frontend:
-    build:
-      context: ./mizdooni-frontend
-      target: build
-    volumes:
-      - ./api:/app
-      - /app/node_modules
+    image: ghcr.io/baxayesh/mizdooni-frontend:v3.0.1
     ports:
-      - 3000:3000
-    command: npm run dev
+      - 3001:3000
 
   backend:
     build:
