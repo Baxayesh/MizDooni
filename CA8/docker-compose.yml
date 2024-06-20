@@ -1,6 +1,7 @@
 version: '2.2'
 
 services:
+
   frontend:
     image: ghcr.io/baxayesh/mizdooni-frontend:v3.0.1
     ports:
@@ -46,7 +47,7 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-
+  
 volumes:
   mysql-data:
   esdata:
